@@ -54,6 +54,7 @@ namespace Task.Service.API
 
       app.UseEndpoints(endpoints =>
       {
+        endpoints.MapDefaultControllerRoute();
         endpoints.MapControllers();
       });
     }
