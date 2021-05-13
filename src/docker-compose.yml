@@ -1,0 +1,34 @@
+version: "3.4"
+
+services:
+  taskserviceapi:
+    image: taskserviceapi
+    build:
+      context: .
+      dockerfile: Services/Task.Service/Task.Service.API/Dockerfile
+    ports:
+      - 5000:5000
+
+  workserviceapi:
+    image: workserviceapi
+    build:
+      context: .
+      dockerfile: Services/Work.Service/Work.Service.API/Dockerfile
+    ports:
+      - 5001:5001
+
+  reviewserviceapi:
+    image: reviewserviceapi
+    build:
+      context: .
+      dockerfile: Services/Review.Service/Review.Service.API/Dockerfile
+    ports:
+      - 5002:5002
+
+  webclient:
+    image: webclient
+    build:
+      context: .
+      dockerfile: Web/Dockerfile
+    ports:
+      - 80:80

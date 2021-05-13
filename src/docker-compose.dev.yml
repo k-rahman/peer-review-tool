@@ -1,0 +1,41 @@
+version: "3.8"
+
+services:
+  taskserviceapi:
+    image: taskserviceapi:dev
+    build:
+      context: .
+      dockerfile: Services/Task.Service/Task.Service.API/Dockerfile.dev
+    ports:
+      - 5000:5000
+    volumes:
+      - ./Services/Task.Service/Task.Service.API:/app
+  workserviceapi:
+    image: workserviceapi:dev
+    build:
+      context: .
+      dockerfile: Services/Work.Service/Work.Service.API/Dockerfile.dev
+    ports:
+      - 5001:5001
+    volumes:
+      - ./Services/Work.Service/Work.Service.API:/app
+  reviewserviceapi:
+    image: reviewserviceapi:dev
+    build:
+      context: .
+      dockerfile: Services/Review.Service/Review.Service.API/Dockerfile.dev
+    ports:
+      - 5002:5002
+    volumes:
+      - ./Services/Review.Service/Review.Service.API:/app
+  webclient:
+    image: webclient:dev
+    build:
+      context: .
+      dockerfile: Web/Dockerfile.dev
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    volumes:
+      - ./Web:/app
+      - /app/node_modules
