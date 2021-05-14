@@ -11,52 +11,63 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using Task.Service.API.Db;
+using Task.Service.API.Domain.Repositories;
+using Task.Service.API.Domain.Services;
+using Task.Service.API.Persistence.Context;
+using Task.Service.API.Persistence.Repositories;
+using Task.Service.API.Services;
 
 namespace Task.Service.API
 {
-  public class Startup
-  {
-    public Startup(IConfiguration configuration)
-    {
-      Configuration = configuration;
-    }
+        public class Startup
+        {
+                public Startup(IConfiguration configuration)
+                {
+                        Configuration = configuration;
+                }
 
-    public IConfiguration Configuration { get; }
+                public IConfiguration Configuration { get; }
 
-    // This method gets called by the runtime. Use this method to add services to the container.
-    public void ConfigureServices(IServiceCollection services)
-    {
+                // This method gets called by the runtime. Use this method to add services to the container.
+                public void ConfigureServices(IServiceCollection services)
+                {
 
-      services.AddDbContext<TaskContext>(options => options.UseNpgsql(Configuration.GetConnectionString("Default")));
-      services.AddControllers();
-      services.AddSwaggerGen(c =>
-      {
-        c.SwaggerDoc("v1", new OpenApiInfo { Title = "Task.Service.API", Version = "v1" });
-      });
-    }
+                        services.AddScoped<ITaskService, TaskService>();
+                        services.AddScoped<ITaskRepository, TaskRepository>();
 
-    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-    {
-      if (env.IsDevelopment())
-      {
-        app.UseDeveloperExceptionPage();
+                        services.AddAutoMapper(typeof(Startup));
 
-        app.UseSwagger();
-        app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Task.Service.API v1"));
-      }
+                        services.AddDbContext<TaskContext>(options => options.UseNpgsql(Configuration.GetConnectionString("Default")));
+
+                        services.AddControllers();
+
+                        services.AddSwaggerGen(c =>
+                        {
+                                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Task.Service.API", Version = "v1" });
+                        });
+                }
+
+                // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+                public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+                {
+                        if (env.IsDevelopment())
+                        {
+                                app.UseDeveloperExceptionPage();
+
+                                app.UseSwagger();
+                                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Task.Service.API v1"));
+                        }
 
 
-      app.UseRouting();
+                        app.UseRouting();
 
-      app.UseAuthorization();
+                        app.UseAuthorization();
 
-      app.UseEndpoints(endpoints =>
-      {
-        endpoints.MapDefaultControllerRoute();
-        endpoints.MapControllers();
-      });
-    }
-  }
+                        app.UseEndpoints(endpoints =>
+                        {
+                                endpoints.MapDefaultControllerRoute();
+                                endpoints.MapControllers();
+                        });
+                }
+        }
 }
