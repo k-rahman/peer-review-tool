@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Supermarket.API.Persistence.Repositories;
 using Task.Service.API.Domain.Repositories;
 using Task.Service.API.Domain.Services;
 using Task.Service.API.Persistence.Context;
@@ -34,6 +35,7 @@ namespace Task.Service.API
 
                         services.AddScoped<ITaskService, TaskService>();
                         services.AddScoped<ITaskRepository, TaskRepository>();
+                        services.AddScoped<IUnitOfWork, UnitOfWork>();
 
                         services.AddAutoMapper(typeof(Startup));
 
