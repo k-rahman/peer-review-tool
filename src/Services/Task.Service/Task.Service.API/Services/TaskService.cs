@@ -34,6 +34,11 @@ namespace Task.Service.API.Services
                         var result = await _taskRepository.GetByIdAsync(id);
                         return _mapper.Map<Domain.Models.Task, TaskResource>(result);
                 }
+                public async Task<TaskResource> GetByLinkAsync(Guid link)
+                {
+                        var result = await _taskRepository.GetByLinkAsync(link);
+                        return _mapper.Map<Domain.Models.Task, TaskResource>(result);
+                }
 
                 public async Task<TaskResponse> InsertAsync(SaveTaskResource resource)
                 {
