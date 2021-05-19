@@ -15,17 +15,16 @@ namespace Task.Service.API.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasPostgresExtension("uuid-ossp")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
                 .HasAnnotation("ProductVersion", "5.0.6")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
             modelBuilder.Entity("Task.Service.API.Domain.Models.Criterion", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("uuid_generate_v4()");
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -34,13 +33,10 @@ namespace Task.Service.API.Migrations
                     b.Property<int>("MaxPoints")
                         .HasColumnType("integer");
 
-                    b.Property<Guid>("TaskId")
-                        .HasColumnType("uuid");
+                    b.Property<int>("TaskId")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Id")
-                        .IsUnique();
 
                     b.HasIndex("TaskId");
 
@@ -49,10 +45,10 @@ namespace Task.Service.API.Migrations
 
             modelBuilder.Entity("Task.Service.API.Domain.Models.Task", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("uuid_generate_v4()");
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<DateTimeOffset>("Created")
                         .HasColumnType("timestamp with time zone");
@@ -61,13 +57,11 @@ namespace Task.Service.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("InstructorId")
-                        .HasColumnType("uuid");
+                    b.Property<int>("InstructorId")
+                        .HasColumnType("integer");
 
-                    b.Property<string>("Link")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                    b.Property<Guid>("Link")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTimeOffset>("Modified")
                         .HasColumnType("timestamp with time zone");
@@ -93,9 +87,6 @@ namespace Task.Service.API.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Id")
-                        .IsUnique();
 
                     b.ToTable("Tasks");
                 });
