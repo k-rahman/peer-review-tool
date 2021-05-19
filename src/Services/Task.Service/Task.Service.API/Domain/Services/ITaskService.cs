@@ -9,9 +9,9 @@ namespace Task.Service.API.Domain.Services
         public interface ITaskService
         {
                 Task<IEnumerable<TaskResource>> GetAsync();
-                Task<TaskResource> GetByIdAsync(Guid id);
+                Task<TaskResource> GetByIdAsync(int id);
                 Task<TaskResponse> InsertAsync(SaveTaskResource task);
-                Task<TaskResponse> UpdateAsync(Guid id, SaveTaskResource task);
-                Task<TaskResponse> DeleteAsync(Guid id);
+                Task<TaskResponse> UpdateAsync(int id, SaveTaskResource task);
+                Task<TaskResponse> DeleteAsync(int id);
         }
 }

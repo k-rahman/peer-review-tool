@@ -14,9 +14,6 @@ namespace Task.Service.API.Resources
                 public string Description { get; set; }
 
                 [Required]
-                public string Link { get; set; }
-
-                [Required]
                 public DateTimeOffset SubmissionStart { get; set; }
 
                 [Required]
@@ -32,7 +29,7 @@ namespace Task.Service.API.Resources
                 public DateTimeOffset Published { get; set; }
 
                 [Required]
-                public Guid InstructorId { get; set; }
+                public int InstructorId { get; set; }
 
                 [Required]
                 public IEnumerable<Criterion> Criteria { get; set; }

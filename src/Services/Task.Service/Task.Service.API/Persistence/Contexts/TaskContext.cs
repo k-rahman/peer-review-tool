@@ -14,7 +14,6 @@ namespace Task.Service.API.Persistence.Context
 
                 protected override void OnModelCreating(ModelBuilder builder)
                 {
-                        builder.HasPostgresExtension("uuid-ossp");
                         builder.ApplyConfiguration(new TaskEntityTypeConfiguration());
                         builder.ApplyConfiguration(new CriterionEntityTypeConfiguration());
                 }

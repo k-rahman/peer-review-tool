@@ -6,10 +6,10 @@ namespace Task.Service.API.Domain.Models
 {
         public class Task
         {
-                public Guid Id { get; set; }
+                public int Id { get; set; }
                 public string Name { get; set; }
                 public string Description { get; set; }
-                public string Link { get; set; }
+                public Guid Link { get; set; }
                 public DateTimeOffset SubmissionStart { get; set; }
                 public DateTimeOffset SubmissionEnd { get; set; }
                 public DateTimeOffset ReviewStart { get; set; }
@@ -17,7 +17,7 @@ namespace Task.Service.API.Domain.Models
                 public DateTimeOffset Published { get; set; }
                 public DateTimeOffset Created { get; set; }
                 public DateTimeOffset Modified { get; set; }
-                public Guid InstructorId { get; set; }
+                public int InstructorId { get; set; }
                 public ICollection<Criterion> Criteria { get; set; } = new Collection<Criterion>();
         }
 }

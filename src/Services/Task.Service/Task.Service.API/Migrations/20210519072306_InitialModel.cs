@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Task.Service.API.Migrations
 {
@@ -7,17 +8,15 @@ namespace Task.Service.API.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterDatabase()
-                .Annotation("Npgsql:PostgresExtension:uuid-ossp", ",,");
-
             migrationBuilder.CreateTable(
                 name: "Tasks",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "uuid_generate_v4()"),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
-                    Link = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    Link = table.Column<Guid>(type: "uuid", nullable: false),
                     SubmissionStart = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     SubmissionEnd = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     ReviewStart = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
@@ -25,7 +24,7 @@ namespace Task.Service.API.Migrations
                     Published = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     Modified = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    InstructorId = table.Column<Guid>(type: "uuid", nullable: false)
+                    InstructorId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -36,10 +35,11 @@ namespace Task.Service.API.Migrations
                 name: "Criteria",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "uuid_generate_v4()"),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Description = table.Column<string>(type: "text", nullable: false),
                     MaxPoints = table.Column<int>(type: "integer", nullable: false),
-                    TaskId = table.Column<Guid>(type: "uuid", nullable: false)
+                    TaskId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -53,21 +53,9 @@ namespace Task.Service.API.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Criteria_Id",
-                table: "Criteria",
-                column: "Id",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Criteria_TaskId",
                 table: "Criteria",
                 column: "TaskId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tasks_Id",
-                table: "Tasks",
-                column: "Id",
-                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
