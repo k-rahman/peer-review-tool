@@ -25,7 +25,7 @@ namespace Task.Service.API.Controllers
                 }
 
                 [HttpGet("{id}")]
-                public async Task<IActionResult> GetTaskById(Guid id)
+                public async Task<IActionResult> GetTaskById(int id)
                 {
                         var task = await _taskService.GetByIdAsync(id);
 
@@ -47,7 +47,7 @@ namespace Task.Service.API.Controllers
                 }
 
                 [HttpPut("{id}")]
-                public async Task<IActionResult> UpdateTask(Guid id, SaveTaskResource resource)
+                public async Task<IActionResult> UpdateTask(int id, SaveTaskResource resource)
                 {
                         var result = await _taskService.UpdateAsync(id, resource);
 
@@ -58,7 +58,7 @@ namespace Task.Service.API.Controllers
                 }
 
                 [HttpDelete("{id}")]
-                public async Task<IActionResult> DeleteTask(Guid id)
+                public async Task<IActionResult> DeleteTask(int id)
                 {
                         var result = await _taskService.DeleteAsync(id);
 

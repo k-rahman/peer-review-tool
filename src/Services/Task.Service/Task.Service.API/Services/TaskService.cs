@@ -29,7 +29,7 @@ namespace Task.Service.API.Services
                         return tasks;
                 }
 
-                public async Task<TaskResource> GetByIdAsync(Guid id)
+                public async Task<TaskResource> GetByIdAsync(int id)
                 {
                         var result = await _taskRepository.GetByIdAsync(id);
                         return _mapper.Map<Domain.Models.Task, TaskResource>(result);
@@ -39,6 +39,7 @@ namespace Task.Service.API.Services
                 {
                         var task = _mapper.Map<SaveTaskResource, Domain.Models.Task>(resource);
 
+                        task.Link = Guid.NewGuid();
                         task.Created = DateTimeOffset.Now;
                         task.Modified = DateTimeOffset.Now;
 
@@ -58,7 +59,7 @@ namespace Task.Service.API.Services
                         }
                 }
 
-                public async Task<TaskResponse> UpdateAsync(Guid id, SaveTaskResource task)
+                public async Task<TaskResponse> UpdateAsync(int id, SaveTaskResource task)
                 {
                         var existingTask = await _taskRepository.GetByIdAsync(id);
 
@@ -84,7 +85,7 @@ namespace Task.Service.API.Services
                         }
                 }
 
-                public async Task<TaskResponse> DeleteAsync(Guid id)
+                public async Task<TaskResponse> DeleteAsync(int id)
                 {
                         var existingTask = await _taskRepository.GetByIdAsync(id);
 

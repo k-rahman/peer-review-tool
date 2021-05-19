@@ -12,24 +12,19 @@ namespace Task.Service.API.Persistence.EntityConfiguration
 
                         builder.HasKey(task => task.Id);
 
-                        builder.HasIndex(task => task.Id)
-                            .IsUnique();
-
                         builder.Property(task => task.Id)
-                            .HasColumnType("uuid")
-                            .HasDefaultValueSql("uuid_generate_v4()")
-                            .IsRequired();
+                              .IsRequired();
 
                         builder.Property(task => task.Name)
-                            .IsRequired()
-                            .HasMaxLength(255);
+                              .IsRequired()
+                              .HasMaxLength(255);
 
                         builder.Property(task => task.Description)
-                            .IsRequired();
+                              .IsRequired();
 
                         builder.Property(task => task.Link)
-                            .IsRequired()
-                            .HasMaxLength(255);
+                              .HasColumnType("uuid")
+                              .IsRequired();
 
                         builder.Property(task => task.SubmissionStart)
                               .IsRequired();

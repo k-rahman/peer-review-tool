@@ -19,7 +19,7 @@ namespace Task.Service.API.Persistence.Repositories
                         return await _context.Tasks.Include(task => task.Criteria).ToListAsync();
                 }
 
-                public async Task<Domain.Models.Task> GetByIdAsync(Guid Id)
+                public async Task<Domain.Models.Task> GetByIdAsync(int Id)
                 {
                         return await _context.Tasks.Include(task => task.Criteria)
                                                 .SingleOrDefaultAsync(task => task.Id == Id);
