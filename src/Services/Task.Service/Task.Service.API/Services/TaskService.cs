@@ -56,7 +56,9 @@ namespace Task.Service.API.Services
                                 await _taskRepository.InsertAsync(task);
                                 await _unitOfWork.CompleteAsync();
 
-                                await _publishEndpoint.Publish(new TaskCreated(task.Id, task.Name, task.Published, task.InstructorId));
+                                await _publishEndpoint.Publish(
+                                        new TaskCreated(task.Id, task.Link, task.SubmissionStart, task.SubmissionEnd, task.ReviewStart, task.ReviewEnd, task.InstructorId)
+                                        );
 
                                 var taskResource = _mapper.Map<Domain.Models.Task, TaskResource>(task);
 
