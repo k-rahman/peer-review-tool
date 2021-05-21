@@ -35,7 +35,7 @@ namespace Task.Service.API.Controllers
                         return Ok(task);
                 }
 
-                [HttpGet("{link}")]
+                [HttpGet("link/{link}")]
                 public async Task<IActionResult> GetTaskByLink(Guid link)
                 {
                         var task = await _taskService.GetByLinkAsync(link);
