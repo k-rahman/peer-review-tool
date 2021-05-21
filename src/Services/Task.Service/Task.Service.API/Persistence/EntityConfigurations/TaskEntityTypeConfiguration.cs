@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Task.Service.API.Persistence.EntityConfiguration
+namespace Task.Service.API.Persistence.EntityConfigurations
 {
         class TaskEntityTypeConfiguration
             : IEntityTypeConfiguration<Domain.Models.Task>
@@ -50,8 +50,7 @@ namespace Task.Service.API.Persistence.EntityConfiguration
                         builder.HasMany(task => task.Criteria)
                             .WithOne()
                             .HasForeignKey("TaskId")
-                            .IsRequired()
-                            .OnDelete(DeleteBehavior.NoAction);
+                            .IsRequired();
                 }
         }
 }

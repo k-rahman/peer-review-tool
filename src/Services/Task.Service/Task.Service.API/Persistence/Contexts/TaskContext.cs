@@ -1,8 +1,7 @@
-using System;
 using Microsoft.EntityFrameworkCore;
-using Task.Service.API.Persistence.EntityConfiguration;
+using Task.Service.API.Persistence.EntityConfigurations;
 
-namespace Task.Service.API.Persistence.Context
+namespace Task.Service.API.Persistence.Contexts
 {
         public class TaskContext : DbContext
         {

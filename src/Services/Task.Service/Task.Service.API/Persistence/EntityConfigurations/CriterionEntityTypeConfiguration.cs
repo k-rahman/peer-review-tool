@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Task.Service.API.Persistence.EntityConfiguration
+namespace Task.Service.API.Persistence.EntityConfigurations
 {
         class CriterionEntityTypeConfiguration
             : IEntityTypeConfiguration<Domain.Models.Criterion>

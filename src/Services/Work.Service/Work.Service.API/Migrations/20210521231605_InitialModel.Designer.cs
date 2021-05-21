@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using Task.Service.API.Persistence.Contexts;
+using Work.Service.API.Presistence.Contexts;
 
-namespace Task.Service.API.Migrations
+namespace Work.Service.API.Migrations
 {
-    [DbContext(typeof(TaskContext))]
-    [Migration("20210519072306_InitialModel")]
+    [DbContext(typeof(WorkContext))]
+    [Migration("20210521231605_InitialModel")]
     partial class InitialModel
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,66 +21,44 @@ namespace Task.Service.API.Migrations
                 .HasAnnotation("ProductVersion", "5.0.6")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-            modelBuilder.Entity("Task.Service.API.Domain.Models.Criterion", b =>
+            modelBuilder.Entity("Work.Service.API.Domain.Models.Work", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<string>("Description")
-                        .IsRequired()
+                    b.Property<string>("Content")
                         .HasColumnType("text");
 
-                    b.Property<int>("MaxPoints")
+                    b.Property<DateTimeOffset?>("Modified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("StudentId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("TaskId")
+                    b.Property<DateTimeOffset?>("Submitted")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("WorksDeadlineId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TaskId");
+                    b.HasIndex("WorksDeadlineId");
 
-                    b.ToTable("Criteria");
+                    b.ToTable("Works");
                 });
 
-            modelBuilder.Entity("Task.Service.API.Domain.Models.Task", b =>
+            modelBuilder.Entity("Work.Service.API.Domain.Models.WorksDeadline", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<DateTimeOffset>("Created")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("InstructorId")
-                        .HasColumnType("integer");
-
                     b.Property<Guid>("Link")
                         .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset>("Modified")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
-
-                    b.Property<DateTimeOffset>("Published")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTimeOffset>("ReviewEnd")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTimeOffset>("ReviewStart")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTimeOffset>("SubmissionEnd")
                         .HasColumnType("timestamp with time zone");
@@ -90,21 +68,21 @@ namespace Task.Service.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tasks");
+                    b.ToTable("WorksDeadlines");
                 });
 
-            modelBuilder.Entity("Task.Service.API.Domain.Models.Criterion", b =>
+            modelBuilder.Entity("Work.Service.API.Domain.Models.Work", b =>
                 {
-                    b.HasOne("Task.Service.API.Domain.Models.Task", null)
-                        .WithMany("Criteria")
-                        .HasForeignKey("TaskId")
+                    b.HasOne("Work.Service.API.Domain.Models.WorksDeadline", null)
+                        .WithMany("Works")
+                        .HasForeignKey("WorksDeadlineId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Task.Service.API.Domain.Models.Task", b =>
+            modelBuilder.Entity("Work.Service.API.Domain.Models.WorksDeadline", b =>
                 {
-                    b.Navigation("Criteria");
+                    b.Navigation("Works");
                 });
 #pragma warning restore 612, 618
         }

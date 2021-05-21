@@ -15,7 +15,7 @@ using Microsoft.OpenApi.Models;
 using Supermarket.API.Persistence.Repositories;
 using Task.Service.API.Domain.Repositories;
 using Task.Service.API.Domain.Services;
-using Task.Service.API.Persistence.Context;
+using Task.Service.API.Persistence.Contexts;
 using Task.Service.API.Persistence.Repositories;
 using Task.Service.API.Services;
 
