@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Common.EventBus.RabbitMQ.MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -40,6 +41,8 @@ namespace Task.Service.API
                         services.AddAutoMapper(typeof(Startup));
 
                         services.AddDbContext<TaskContext>(options => options.UseNpgsql(Configuration.GetConnectionString("Default")));
+
+                        services.AddMassTransitWithRabbitMq(Configuration);
 
                         services.AddControllers();
 
