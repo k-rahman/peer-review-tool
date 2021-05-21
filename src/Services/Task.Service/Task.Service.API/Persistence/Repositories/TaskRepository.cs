@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Task.Service.API.Domain.Repositories;
-using Task.Service.API.Persistence.Context;
+using Task.Service.API.Persistence.Contexts;
 
 namespace Task.Service.API.Persistence.Repositories
 {
