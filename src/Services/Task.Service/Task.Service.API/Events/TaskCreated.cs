@@ -4,8 +4,11 @@ namespace Task.Service.API.Events
 {
         public record TaskCreated(
                 int Id,
-                string Name,
-                DateTimeOffset Published,
+                Guid Link,
+                DateTimeOffset SubmissionStart,
+                DateTimeOffset SubmissionEnd,
+                DateTimeOffset ReviewStart,
+                DateTimeOffset ReviewEnd,
                 int InstructorId
                 );
 }
