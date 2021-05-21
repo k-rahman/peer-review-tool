@@ -10,6 +10,7 @@ namespace Task.Service.API.Domain.Services
         {
                 Task<IEnumerable<TaskResource>> GetAsync();
                 Task<TaskResource> GetByIdAsync(int id);
+                Task<TaskResource> GetByLinkAsync(Guid link);
                 Task<TaskResponse> InsertAsync(SaveTaskResource task);
                 Task<TaskResponse> UpdateAsync(int id, SaveTaskResource task);
                 Task<TaskResponse> DeleteAsync(int id);

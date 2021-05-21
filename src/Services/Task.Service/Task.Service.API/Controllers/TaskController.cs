@@ -35,6 +35,17 @@ namespace Task.Service.API.Controllers
                         return Ok(task);
                 }
 
+                [HttpGet("link/{link}")]
+                public async Task<IActionResult> GetTaskByLink(Guid link)
+                {
+                        var task = await _taskService.GetByLinkAsync(link);
+
+                        if (task == null)
+                                return NotFound();
+
+                        return Ok(task);
+                }
+
                 [HttpPost]
                 public async Task<IActionResult> createTask(SaveTaskResource resource)
                 {
