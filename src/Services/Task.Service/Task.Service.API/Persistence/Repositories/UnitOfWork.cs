@@ -1,5 +1,5 @@
 using Task.Service.API.Domain.Repositories;
-using Task.Service.API.Persistence.Context;
+using Task.Service.API.Persistence.Contexts;
 
 namespace Supermarket.API.Persistence.Repositories
 {

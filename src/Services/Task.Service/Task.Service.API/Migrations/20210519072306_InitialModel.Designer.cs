@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using Task.Service.API.Persistence.Context;
+using Task.Service.API.Persistence.Contexts;
 
 namespace Task.Service.API.Migrations
 {
