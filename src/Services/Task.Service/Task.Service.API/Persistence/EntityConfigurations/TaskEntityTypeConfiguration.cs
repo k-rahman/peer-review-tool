@@ -8,49 +8,55 @@ namespace Task.Service.API.Persistence.EntityConfigurations
         {
                 public void Configure(EntityTypeBuilder<Domain.Models.Task> builder)
                 {
-                        builder.ToTable("Tasks");
+                        builder.ToTable("tasks");
 
                         builder.HasKey(task => task.Id);
 
                         builder.Property(task => task.Id)
+                              .HasColumnName("id");
+
+                        builder.HasIndex(task => task.Uid)
+                              .IsUnique();
+
+                        builder.Property(task => task.Uid)
+                              .HasColumnName("uid")
+                              .HasColumnType("uuid")
                               .IsRequired();
 
                         builder.Property(task => task.Name)
+                              .HasColumnName("name")
                               .IsRequired()
                               .HasMaxLength(255);
 
                         builder.Property(task => task.Description)
-                              .IsRequired();
-
-                        builder.Property(task => task.Link)
-                              .HasColumnType("uuid")
+                              .HasColumnName("description")
                               .IsRequired();
 
                         builder.Property(task => task.SubmissionStart)
-                              .IsRequired();
+                              .HasColumnName("submission_start");
 
                         builder.Property(task => task.SubmissionEnd)
-                              .IsRequired();
+                              .HasColumnName("submission_end");
 
                         builder.Property(task => task.ReviewStart)
-                              .IsRequired();
+                              .HasColumnName("review_start");
 
                         builder.Property(task => task.ReviewEnd)
-                              .IsRequired();
+                              .HasColumnName("review_end");
 
                         builder.Property(task => task.Published)
-                              .IsRequired();
+                              .HasColumnName("published");
 
                         builder.Property(task => task.Created)
-                              .IsRequired();
+                              .HasColumnName("created");
 
                         builder.Property(task => task.Modified)
-                              .IsRequired();
+                              .HasColumnName("modified");
 
-                        builder.HasMany(task => task.Criteria)
-                            .WithOne()
-                            .HasForeignKey("TaskId")
-                            .IsRequired();
+                        // builder.HasMany(task => task.Criteria)
+                        //     .WithOne()
+                        //     .HasForeignKey("TaskId")
+                        //     .IsRequired();
                 }
         }
 }
