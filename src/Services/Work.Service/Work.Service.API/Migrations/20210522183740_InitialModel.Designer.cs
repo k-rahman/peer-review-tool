@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Work.Service.API.Persistence.Contexts;
@@ -9,9 +10,10 @@ using Work.Service.API.Persistence.Contexts;
 namespace Work.Service.API.Migrations
 {
     [DbContext(typeof(WorkContext))]
-    partial class WorkContextModelSnapshot : ModelSnapshot
+    [Migration("20210522183740_InitialModel")]
+    partial class InitialModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -27,10 +29,6 @@ namespace Work.Service.API.Migrations
                         .HasColumnName("id")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<int>("AuthorId")
-                        .HasColumnType("integer")
-                        .HasColumnName("author_id");
-
                     b.Property<string>("Content")
                         .HasColumnType("text")
                         .HasColumnName("content");
@@ -38,6 +36,10 @@ namespace Work.Service.API.Migrations
                     b.Property<DateTimeOffset?>("Modified")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("modified");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("integer")
+                        .HasColumnName("student_id");
 
                     b.Property<DateTimeOffset?>("Submitted")
                         .HasColumnType("timestamp with time zone")
@@ -62,6 +64,10 @@ namespace Work.Service.API.Migrations
                         .HasColumnName("id")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<Guid>("Link")
+                        .HasColumnType("uuid")
+                        .HasColumnName("link");
+
                     b.Property<DateTimeOffset>("SubmissionEnd")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("submission_end");
@@ -69,10 +75,6 @@ namespace Work.Service.API.Migrations
                     b.Property<DateTimeOffset>("SubmissionStart")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("submission_start");
-
-                    b.Property<Guid>("Uid")
-                        .HasColumnType("uuid")
-                        .HasColumnName("Uid");
 
                     b.HasKey("Id");
 
