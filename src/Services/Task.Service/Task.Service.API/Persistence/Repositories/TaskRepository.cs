@@ -24,20 +24,15 @@ namespace Task.Service.API.Persistence.Repositories
                         return await _context.Tasks.Include(task => task.Criteria)
                                                 .SingleOrDefaultAsync(task => task.Id == id);
                 }
-                public async Task<Domain.Models.Task> GetByLinkAsync(Guid link)
+                public async Task<Domain.Models.Task> GetByUidAsync(Guid uid)
                 {
                         return await _context.Tasks.Include(task => task.Criteria)
-                                                .SingleOrDefaultAsync(task => task.Link == link);
+                                                .SingleOrDefaultAsync(task => task.Uid == uid);
                 }
 
                 public async System.Threading.Tasks.Task InsertAsync(Domain.Models.Task task)
                 {
                         await _context.Tasks.AddAsync(task);
-                }
-
-                public void Update(Domain.Models.Task task)
-                {
-                        _context.Tasks.Update(task);
                 }
 
                 public void Delete(Domain.Models.Task task)

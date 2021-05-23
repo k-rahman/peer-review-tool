@@ -4,7 +4,7 @@ namespace Task.Service.API.Events
 {
         public record TaskCreated(
                 int Id,
-                Guid Link,
+                Guid Uid,
                 DateTimeOffset SubmissionStart,
                 DateTimeOffset SubmissionEnd,
                 DateTimeOffset ReviewStart,
