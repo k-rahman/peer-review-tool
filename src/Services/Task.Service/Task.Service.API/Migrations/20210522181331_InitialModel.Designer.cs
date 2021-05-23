@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Task.Service.API.Persistence.Contexts;
@@ -9,9 +10,10 @@ using Task.Service.API.Persistence.Contexts;
 namespace Task.Service.API.Migrations
 {
     [DbContext(typeof(TaskContext))]
-    partial class TaskContextModelSnapshot : ModelSnapshot
+    [Migration("20210522181331_InitialModel")]
+    partial class InitialModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,7 +69,11 @@ namespace Task.Service.API.Migrations
                     b.Property<int>("InstructorId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTimeOffset?>("Modified")
+                    b.Property<Guid>("Link")
+                        .HasColumnType("uuid")
+                        .HasColumnName("link");
+
+                    b.Property<DateTimeOffset>("Modified")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("modified");
 
@@ -97,14 +103,7 @@ namespace Task.Service.API.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("submission_start");
 
-                    b.Property<Guid>("Uid")
-                        .HasColumnType("uuid")
-                        .HasColumnName("uid");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("Uid")
-                        .IsUnique();
 
                     b.ToTable("tasks");
                 });
