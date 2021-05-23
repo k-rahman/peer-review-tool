@@ -11,7 +11,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using Work.Service.API.Presistence.Contexts;
+using Work.Service.API.Domain.Repositories;
+using Work.Service.API.Domain.Services;
+using Work.Service.API.Persistence.Contexts;
+using Work.Service.API.Persistence.Repositories;
+using Work.Service.API.Services;
 
 namespace Work.Service.API
 {
@@ -27,6 +31,12 @@ namespace Work.Service.API
                 // This method gets called by the runtime. Use this method to add services to the container.
                 public void ConfigureServices(IServiceCollection services)
                 {
+                        services.AddScoped<IWorkService, WorkService>();
+                        services.AddScoped<IWorkRepository, WorkRepository>();
+                        services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+                        services.AddAutoMapper(typeof(Startup));
+
                         services.AddDbContext<WorkContext>(options => options.UseNpgsql(Configuration.GetConnectionString("Default")));
                         services.AddControllers();
                         services.AddSwaggerGen(c =>
@@ -42,7 +52,11 @@ namespace Work.Service.API
                         {
                                 app.UseDeveloperExceptionPage();
                                 app.UseSwagger();
-                                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Work.Service.API v1"));
+                                app.UseSwaggerUI(c =>
+                                {
+                                        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Work.Service.API v1");
+                                        c.RoutePrefix = string.Empty;
+                                });
                         }
 
                         app.UseRouting();
