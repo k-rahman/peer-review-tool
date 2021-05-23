@@ -11,6 +11,8 @@ USER appuser
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
+COPY ["packages/Common.EventBus.RabbitMQ.1.0.1.nupkg", "src/Services/packages/"]
+COPY ["Services/Work.Service/Work.Service.API/nuget.config", "src/Services/Work.Service/Work.Service.API/"]
 COPY ["Services/Work.Service/Work.Service.API/Work.Service.API.csproj", "src/Services/Work.Service/Work.Service.API/"]
 RUN dotnet restore "src/Services/Work.Service/Work.Service.API/Work.Service.API.csproj"
 COPY . .

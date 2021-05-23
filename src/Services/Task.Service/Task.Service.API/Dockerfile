@@ -11,6 +11,8 @@ USER appuser
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
+COPY ["packages/Common.EventBus.RabbitMQ.1.0.1.nupkg", "src/Services/packages/"]
+COPY ["Services/Task.Service/Task.Service.API/nuget.config", "src/Services/Task.Service/Task.Service.API/"]
 COPY ["Services/Task.Service/Task.Service.API/Task.Service.API.csproj", "src/Services/Task.Service/Task.Service.API/"]
 RUN dotnet restore "src/Services/Task.Service/Task.Service.API/Task.Service.API.csproj"
 COPY . .
