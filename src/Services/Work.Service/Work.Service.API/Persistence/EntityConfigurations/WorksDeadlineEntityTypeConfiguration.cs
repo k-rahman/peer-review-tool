@@ -9,27 +9,23 @@ namespace Work.Service.API.Presistence.EntityConfigurations
         {
                 public void Configure(EntityTypeBuilder<WorksDeadline> builder)
                 {
-                        builder.ToTable("WorksDeadlines");
+                        builder.ToTable("works_deadlines");
 
                         builder.HasKey(worksDeadline => worksDeadline.Id);
 
                         builder.Property(worksDeadline => worksDeadline.Id)
-                              .IsRequired();
+                              .HasColumnName("id");
 
-                        builder.Property(worksDeadline => worksDeadline.Link)
-                                .HasColumnType("uuid")
+                        builder.Property(worksDeadline => worksDeadline.Uid)
+                              .HasColumnName("Uid")
+                              .HasColumnType("uuid")
                               .IsRequired();
 
                         builder.Property(worksDeadline => worksDeadline.SubmissionStart)
-                              .IsRequired();
+                              .HasColumnName("submission_start");
 
                         builder.Property(worksDeadline => worksDeadline.SubmissionEnd)
-                              .IsRequired();
-
-                        builder.HasMany(worksDeadline => worksDeadline.Works)
-                            .WithOne()
-                            .HasForeignKey("WorksDeadlineId")
-                            .IsRequired();
+                              .HasColumnName("submission_end");
                 }
         }
 }
