@@ -37,9 +37,10 @@ namespace Task.Service.API.Services
                         var result = await _taskRepository.GetByIdAsync(id);
                         return _mapper.Map<Domain.Models.Task, TaskResource>(result);
                 }
-                public async Task<TaskResource> GetByLinkAsync(Guid link)
+
+                public async Task<TaskResource> GetByUidAsync(Guid uid)
                 {
-                        var result = await _taskRepository.GetByLinkAsync(link);
+                        var result = await _taskRepository.GetByUidAsync(uid);
                         return _mapper.Map<Domain.Models.Task, TaskResource>(result);
                 }
 
@@ -47,9 +48,8 @@ namespace Task.Service.API.Services
                 {
                         var task = _mapper.Map<SaveTaskResource, Domain.Models.Task>(resource);
 
-                        task.Link = Guid.NewGuid();
+                        task.Uid = Guid.NewGuid();
                         task.Created = DateTimeOffset.Now;
-                        task.Modified = DateTimeOffset.Now;
 
                         try
                         {
@@ -57,7 +57,7 @@ namespace Task.Service.API.Services
                                 await _unitOfWork.CompleteAsync();
 
                                 await _publishEndpoint.Publish(
-                                        new TaskCreated(task.Id, task.Link, task.SubmissionStart, task.SubmissionEnd, task.ReviewStart, task.ReviewEnd, task.InstructorId)
+                                        new TaskCreated(task.Id, task.Uid, task.SubmissionStart, task.SubmissionEnd, task.ReviewStart, task.ReviewEnd, task.InstructorId)
                                         );
 
                                 var taskResource = _mapper.Map<Domain.Models.Task, TaskResource>(task);
