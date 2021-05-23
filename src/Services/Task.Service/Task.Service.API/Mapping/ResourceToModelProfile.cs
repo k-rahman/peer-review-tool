@@ -1,4 +1,5 @@
 using AutoMapper;
+using Task.Service.API.Domain.Models;
 using Task.Service.API.Resources;
 
 namespace Task.Service.API.Mapping
@@ -8,6 +9,7 @@ namespace Task.Service.API.Mapping
                 public ResourceToModelProfile()
                 {
                         CreateMap<SaveTaskResource, Domain.Models.Task>();
+                        CreateMap<SaveCriterionResource, Criterion>();
                 }
         }
 }

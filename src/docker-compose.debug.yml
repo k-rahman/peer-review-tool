@@ -3,11 +3,18 @@
 version: "3.4"
 
 services:
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    ports:
+      - 15672:15672
+      - 5672:5672
+
   taskserviceapi:
     image: taskserviceapi
     build:
       context: .
-      dockerfile: src/Services/Task.Service/Task.Service.API/Dockerfile
+      dockerfile: Services/Task.Service/Task.Service.API/Dockerfile
     ports:
       - 5000:5000
     environment:
@@ -19,7 +26,7 @@ services:
     image: workserviceapi
     build:
       context: .
-      dockerfile: src/Services/Work.Service/Work.Service.API/Dockerfile
+      dockerfile: Services/Work.Service/Work.Service.API/Dockerfile
     ports:
       - 5001:5001
     environment:
@@ -31,7 +38,7 @@ services:
     image: reviewserviceapi
     build:
       context: .
-      dockerfile: src/Services/Review.Service/Review.Service.API/Dockerfile
+      dockerfile: Services/Review.Service/Review.Service.API/Dockerfile
     ports:
       - 5002:5002
     environment:

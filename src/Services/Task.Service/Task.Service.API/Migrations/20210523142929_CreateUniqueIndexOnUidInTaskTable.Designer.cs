@@ -10,8 +10,8 @@ using Task.Service.API.Persistence.Contexts;
 namespace Task.Service.API.Migrations
 {
     [DbContext(typeof(TaskContext))]
-    [Migration("20210519072306_InitialModel")]
-    partial class InitialModel
+    [Migration("20210523142929_CreateUniqueIndexOnUidInTaskTable")]
+    partial class CreateUniqueIndexOnUidInTaskTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,23 +26,27 @@ namespace Task.Service.API.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
+                        .HasColumnName("id")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<int>("MaxPoints")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("max_points");
 
                     b.Property<int>("TaskId")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("task_id");
 
                     b.HasKey("Id");
 
                     b.HasIndex("TaskId");
 
-                    b.ToTable("Criteria");
+                    b.ToTable("criteria");
                 });
 
             modelBuilder.Entity("Task.Service.API.Domain.Models.Task", b =>
@@ -50,56 +54,72 @@ namespace Task.Service.API.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
+                        .HasColumnName("id")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<DateTimeOffset>("Created")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
                     b.Property<int>("InstructorId")
                         .HasColumnType("integer");
 
-                    b.Property<Guid>("Link")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset>("Modified")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset?>("Modified")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("modified");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("name");
 
                     b.Property<DateTimeOffset>("Published")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("published");
 
                     b.Property<DateTimeOffset>("ReviewEnd")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("review_end");
 
                     b.Property<DateTimeOffset>("ReviewStart")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("review_start");
 
                     b.Property<DateTimeOffset>("SubmissionEnd")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("submission_end");
 
                     b.Property<DateTimeOffset>("SubmissionStart")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("submission_start");
+
+                    b.Property<Guid>("Uid")
+                        .HasColumnType("uuid")
+                        .HasColumnName("uid");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tasks");
+                    b.HasIndex("Uid")
+                        .IsUnique();
+
+                    b.ToTable("tasks");
                 });
 
             modelBuilder.Entity("Task.Service.API.Domain.Models.Criterion", b =>
                 {
-                    b.HasOne("Task.Service.API.Domain.Models.Task", null)
+                    b.HasOne("Task.Service.API.Domain.Models.Task", "Task")
                         .WithMany("Criteria")
                         .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Task");
                 });
 
             modelBuilder.Entity("Task.Service.API.Domain.Models.Task", b =>

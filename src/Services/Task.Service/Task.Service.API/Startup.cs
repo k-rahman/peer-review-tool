@@ -12,7 +12,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using Supermarket.API.Persistence.Repositories;
 using Task.Service.API.Domain.Repositories;
 using Task.Service.API.Domain.Services;
 using Task.Service.API.Persistence.Contexts;
@@ -69,7 +68,11 @@ namespace Task.Service.API
                                 app.UseDeveloperExceptionPage();
 
                                 app.UseSwagger();
-                                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Task.Service.API v1"));
+                                app.UseSwaggerUI(c =>
+                                {
+                                        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Task.Service.API v1");
+                                        c.RoutePrefix = string.Empty;
+                                });
                         }
 
                         app.UseRouting();

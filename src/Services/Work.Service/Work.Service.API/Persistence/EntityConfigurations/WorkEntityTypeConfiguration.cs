@@ -8,21 +8,27 @@ namespace Work.Service.API.Presistence.EntityConfigurations
         {
                 public void Configure(EntityTypeBuilder<Domain.Models.Work> builder)
                 {
-                        builder.ToTable("Works");
+                        builder.ToTable("works");
 
                         builder.HasKey(work => work.Id);
 
                         builder.Property(work => work.Id)
-                              .IsRequired();
+                                .HasColumnName("id");
 
                         builder.Property(work => work.Content)
-                        .IsRequired(false);
+                               .HasColumnName("content");
 
                         builder.Property(work => work.Submitted)
-                        .IsRequired(false);
+                                .HasColumnName("submitted");
 
                         builder.Property(work => work.Modified)
-                        .IsRequired(false);
+                                .HasColumnName("modified");
+
+                        builder.Property(work => work.AuthorId)
+                                .HasColumnName("author_id");
+
+                        builder.Property(work => work.WorksDeadlineId)
+                                .HasColumnName("works_deadline_id");
                 }
         }
 }

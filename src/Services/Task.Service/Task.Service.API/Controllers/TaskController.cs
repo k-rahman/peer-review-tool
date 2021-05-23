@@ -24,21 +24,10 @@ namespace Task.Service.API.Controllers
                         return await _taskService.GetAsync();
                 }
 
-                [HttpGet("{id}")]
-                public async Task<IActionResult> GetTaskById(int id)
+                [HttpGet("{uid}")]
+                public async Task<IActionResult> GetTaskByLink(Guid uid)
                 {
-                        var task = await _taskService.GetByIdAsync(id);
-
-                        if (task == null)
-                                return NotFound();
-
-                        return Ok(task);
-                }
-
-                [HttpGet("link/{link}")]
-                public async Task<IActionResult> GetTaskByLink(Guid link)
-                {
-                        var task = await _taskService.GetByLinkAsync(link);
+                        var task = await _taskService.GetByUidAsync(uid);
 
                         if (task == null)
                                 return NotFound();
@@ -47,7 +36,7 @@ namespace Task.Service.API.Controllers
                 }
 
                 [HttpPost]
-                public async Task<IActionResult> createTask(SaveTaskResource resource)
+                public async Task<IActionResult> createTask([FromBody] SaveTaskResource resource)
                 {
                         var result = await _taskService.InsertAsync(resource);
 
@@ -58,7 +47,7 @@ namespace Task.Service.API.Controllers
                 }
 
                 [HttpPut("{id}")]
-                public async Task<IActionResult> UpdateTask(int id, SaveTaskResource resource)
+                public async Task<IActionResult> UpdateTask(int id, [FromBody] SaveTaskResource resource)
                 {
                         var result = await _taskService.UpdateAsync(id, resource);
 

@@ -8,103 +8,123 @@ using Task.Service.API.Persistence.Contexts;
 
 namespace Task.Service.API.Migrations
 {
-        [DbContext(typeof(TaskContext))]
-        partial class TaskContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(TaskContext))]
+    partial class TaskContextModelSnapshot : ModelSnapshot
+    {
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
-                protected override void BuildModel(ModelBuilder modelBuilder)
-                {
 #pragma warning disable 612, 618
-                        modelBuilder
-                            .HasAnnotation("Relational:MaxIdentifierLength", 63)
-                            .HasAnnotation("ProductVersion", "5.0.6")
-                            .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+            modelBuilder
+                .HasAnnotation("Relational:MaxIdentifierLength", 63)
+                .HasAnnotation("ProductVersion", "5.0.6")
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                        modelBuilder.Entity("Task.Service.API.Domain.Models.Criterion", b =>
-                            {
-                                    b.Property<int>("Id")
-                            .ValueGeneratedOnAdd()
-                            .HasColumnType("integer")
-                            .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+            modelBuilder.Entity("Task.Service.API.Domain.Models.Criterion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                                    b.Property<string>("Description")
-                            .IsRequired()
-                            .HasColumnType("text");
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
-                                    b.Property<int>("MaxPoints")
-                            .HasColumnType("integer");
+                    b.Property<int>("MaxPoints")
+                        .HasColumnType("integer")
+                        .HasColumnName("max_points");
 
-                                    b.Property<int>("TaskId")
-                            .HasColumnType("integer");
+                    b.Property<int>("TaskId")
+                        .HasColumnType("integer")
+                        .HasColumnName("task_id");
 
-                                    b.HasKey("Id");
+                    b.HasKey("Id");
 
-                                    b.HasIndex("TaskId");
+                    b.HasIndex("TaskId");
 
-                                    b.ToTable("Criteria");
-                            });
+                    b.ToTable("criteria");
+                });
 
-                        modelBuilder.Entity("Task.Service.API.Domain.Models.Task", b =>
-                            {
-                                    b.Property<int>("Id")
-                            .ValueGeneratedOnAdd()
-                            .HasColumnType("integer")
-                            .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+            modelBuilder.Entity("Task.Service.API.Domain.Models.Task", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                                    b.Property<DateTimeOffset>("Created")
-                            .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created");
 
-                                    b.Property<string>("Description")
-                            .IsRequired()
-                            .HasColumnType("text");
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
-                                    b.Property<int>("InstructorId")
-                            .HasColumnType("integer");
+                    b.Property<int>("InstructorId")
+                        .HasColumnType("integer");
 
-                                    b.Property<Guid>("Link")
-                            .HasColumnType("uuid");
+                    b.Property<DateTimeOffset?>("Modified")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("modified");
 
-                                    b.Property<DateTimeOffset>("Modified")
-                            .HasColumnType("timestamp with time zone");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("name");
 
-                                    b.Property<string>("Name")
-                            .IsRequired()
-                            .HasMaxLength(255)
-                            .HasColumnType("character varying(255)");
+                    b.Property<DateTimeOffset>("Published")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("published");
 
-                                    b.Property<DateTimeOffset>("Published")
-                            .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("ReviewEnd")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("review_end");
 
-                                    b.Property<DateTimeOffset>("ReviewEnd")
-                            .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("ReviewStart")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("review_start");
 
-                                    b.Property<DateTimeOffset>("ReviewStart")
-                            .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("SubmissionEnd")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("submission_end");
 
-                                    b.Property<DateTimeOffset>("SubmissionEnd")
-                            .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("SubmissionStart")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("submission_start");
 
-                                    b.Property<DateTimeOffset>("SubmissionStart")
-                            .HasColumnType("timestamp with time zone");
+                    b.Property<Guid>("Uid")
+                        .HasColumnType("uuid")
+                        .HasColumnName("uid");
 
-                                    b.HasKey("Id");
+                    b.HasKey("Id");
 
-                                    b.ToTable("Tasks");
-                            });
+                    b.HasIndex("Uid")
+                        .IsUnique();
 
-                        modelBuilder.Entity("Task.Service.API.Domain.Models.Criterion", b =>
-                            {
-                                    b.HasOne("Task.Service.API.Domain.Models.Task", null)
-                            .WithMany("Criteria")
-                            .HasForeignKey("TaskId")
-                            .OnDelete(DeleteBehavior.Cascade)
-                            .IsRequired();
-                            });
+                    b.ToTable("tasks");
+                });
 
-                        modelBuilder.Entity("Task.Service.API.Domain.Models.Task", b =>
-                            {
-                                    b.Navigation("Criteria");
-                            });
+            modelBuilder.Entity("Task.Service.API.Domain.Models.Criterion", b =>
+                {
+                    b.HasOne("Task.Service.API.Domain.Models.Task", "Task")
+                        .WithMany("Criteria")
+                        .HasForeignKey("TaskId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Task");
+                });
+
+            modelBuilder.Entity("Task.Service.API.Domain.Models.Task", b =>
+                {
+                    b.Navigation("Criteria");
+                });
 #pragma warning restore 612, 618
-                }
         }
+    }
 }

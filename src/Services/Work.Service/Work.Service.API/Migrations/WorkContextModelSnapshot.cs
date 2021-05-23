@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using Work.Service.API.Presistence.Contexts;
+using Work.Service.API.Persistence.Contexts;
 
 namespace Work.Service.API.Migrations
 {
@@ -24,28 +24,34 @@ namespace Work.Service.API.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
+                        .HasColumnName("id")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<int>("AuthorId")
+                        .HasColumnType("integer")
+                        .HasColumnName("author_id");
+
                     b.Property<string>("Content")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("content");
 
                     b.Property<DateTimeOffset?>("Modified")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("StudentId")
-                        .HasColumnType("integer");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("modified");
 
                     b.Property<DateTimeOffset?>("Submitted")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("submitted");
 
                     b.Property<int>("WorksDeadlineId")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("works_deadline_id");
 
                     b.HasKey("Id");
 
                     b.HasIndex("WorksDeadlineId");
 
-                    b.ToTable("Works");
+                    b.ToTable("works");
                 });
 
             modelBuilder.Entity("Work.Service.API.Domain.Models.WorksDeadline", b =>
@@ -53,29 +59,35 @@ namespace Work.Service.API.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
+                        .HasColumnName("id")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<Guid>("Link")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTimeOffset>("SubmissionEnd")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("submission_end");
 
                     b.Property<DateTimeOffset>("SubmissionStart")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("submission_start");
+
+                    b.Property<Guid>("Uid")
+                        .HasColumnType("uuid")
+                        .HasColumnName("Uid");
 
                     b.HasKey("Id");
 
-                    b.ToTable("WorksDeadlines");
+                    b.ToTable("works_deadlines");
                 });
 
             modelBuilder.Entity("Work.Service.API.Domain.Models.Work", b =>
                 {
-                    b.HasOne("Work.Service.API.Domain.Models.WorksDeadline", null)
+                    b.HasOne("Work.Service.API.Domain.Models.WorksDeadline", "WorksDeadline")
                         .WithMany("Works")
                         .HasForeignKey("WorksDeadlineId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("WorksDeadline");
                 });
 
             modelBuilder.Entity("Work.Service.API.Domain.Models.WorksDeadline", b =>

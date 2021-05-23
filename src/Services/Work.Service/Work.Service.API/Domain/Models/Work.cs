@@ -8,6 +8,10 @@ namespace Work.Service.API.Domain.Models
                 public string Content { get; set; }
                 public DateTimeOffset? Submitted { get; set; }
                 public DateTimeOffset? Modified { get; set; }
-                public int StudentId { get; set; }
+
+                public int AuthorId { get; set; }
+
+                public int WorksDeadlineId { get; set; }
+                public WorksDeadline WorksDeadline { get; set; }
         }
 }

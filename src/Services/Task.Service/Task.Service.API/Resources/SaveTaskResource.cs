@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Task.Service.API.Domain.Models;
 
 namespace Task.Service.API.Resources
 {
@@ -32,6 +31,6 @@ namespace Task.Service.API.Resources
                 public int InstructorId { get; set; }
 
                 [Required]
-                public IEnumerable<Criterion> Criteria { get; set; }
+                public IEnumerable<SaveCriterionResource> Criteria { get; set; }
         }
 }
