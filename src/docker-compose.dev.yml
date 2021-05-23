@@ -1,6 +1,12 @@
 version: "3.8"
 
 services:
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+		ports:
+			- "15672:15672"
+			- "5672:5672"
+
   taskserviceapi:
     image: taskserviceapi:dev
     build:
@@ -10,6 +16,7 @@ services:
       - 5000:5000
     volumes:
       - ./Services/Task.Service/Task.Service.API:/app
+
   workserviceapi:
     image: workserviceapi:dev
     build:
@@ -19,6 +26,7 @@ services:
       - 5001:5001
     volumes:
       - ./Services/Work.Service/Work.Service.API:/app
+
   reviewserviceapi:
     image: reviewserviceapi:dev
     build:
@@ -28,6 +36,7 @@ services:
       - 5002:5002
     volumes:
       - ./Services/Review.Service/Review.Service.API:/app
+
   webclient:
     image: webclient:dev
     build:

@@ -1,0 +1,23 @@
+version: "3.4"
+
+services:
+  rabbitmq:
+    ports:
+      - 15672:15672
+      - 5672:5672
+
+  taskserviceapi:
+    ports:
+      - 5000:5000
+
+  workserviceapi:
+    ports:
+      - 5001:5001
+
+  reviewserviceapi:
+    ports:
+      - 5002:5002
+
+  webclient:
+    ports:
+      - 80:80
