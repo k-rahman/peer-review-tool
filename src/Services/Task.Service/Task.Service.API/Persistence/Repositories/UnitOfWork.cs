@@ -1,7 +1,7 @@
 using Task.Service.API.Domain.Repositories;
 using Task.Service.API.Persistence.Contexts;
 
-namespace Supermarket.API.Persistence.Repositories
+namespace Task.Service.API.Persistence.Repositories
 {
         public class UnitOfWork : IUnitOfWork
         {
