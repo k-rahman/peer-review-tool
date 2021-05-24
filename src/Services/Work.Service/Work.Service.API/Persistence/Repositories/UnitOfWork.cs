@@ -13,7 +13,7 @@ namespace Work.Service.API.Persistence.Repositories
                         _context = context;
                 }
 
-                public async Task CompleteAsync()
+                public async System.Threading.Tasks.Task CompleteAsync()
                 {
                         await _context.SaveChangesAsync();
                 }
