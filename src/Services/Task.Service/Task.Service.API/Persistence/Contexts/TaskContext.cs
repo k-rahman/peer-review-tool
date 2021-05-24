@@ -8,6 +8,7 @@ namespace Task.Service.API.Persistence.Contexts
         {
                 public DbSet<Domain.Models.Task> Tasks { get; set; }
                 public DbSet<Criterion> Criteria { get; set; }
+                public DbSet<Participant> Participants { get; set; }
 
                 public TaskContext(DbContextOptions<TaskContext> options) : base(options)
                 {
@@ -17,6 +18,7 @@ namespace Task.Service.API.Persistence.Contexts
                 {
                         builder.ApplyConfiguration(new TaskEntityTypeConfiguration());
                         builder.ApplyConfiguration(new CriterionEntityTypeConfiguration());
+                        builder.ApplyConfiguration(new ParticipantEntityTypeConfiguration());
                 }
         }
 }
