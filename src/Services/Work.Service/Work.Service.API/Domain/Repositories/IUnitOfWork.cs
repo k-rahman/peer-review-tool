@@ -4,6 +4,6 @@ namespace Work.Service.API.Domain.Repositories
 {
         public interface IUnitOfWork
         {
-                Task CompleteAsync();
+                System.Threading.Tasks.Task CompleteAsync();
         }
 }

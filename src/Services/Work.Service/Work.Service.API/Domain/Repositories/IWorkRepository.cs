@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Work.Service.API.Domain.Services.Communication;
 
 namespace Work.Service.API.Domain.Repositories
 {
