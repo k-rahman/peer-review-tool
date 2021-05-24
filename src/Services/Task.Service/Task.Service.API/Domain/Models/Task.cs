@@ -20,6 +20,8 @@ namespace Task.Service.API.Domain.Models
 
                 public int InstructorId { get; set; }
 
-                public ICollection<Criterion> Criteria { get; set; } = new Collection<Criterion>();
+                public ICollection<Criterion> Criteria { get; } = new List<Criterion>();
+
+                public ICollection<Participant> Participants { get; } = new List<Participant>();
         }
 }
