@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Common.EventBus.RabbitMQ.MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -33,12 +34,17 @@ namespace Work.Service.API
                 {
                         services.AddScoped<IWorkService, WorkService>();
                         services.AddScoped<IWorkRepository, WorkRepository>();
+                        services.AddScoped<IWorksDeadlineRepository, WorksDeadlineRepository>();
                         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
                         services.AddAutoMapper(typeof(Startup));
 
                         services.AddDbContext<WorkContext>(options => options.UseNpgsql(Configuration.GetConnectionString("Default")));
+
+                        services.AddMassTransitWithRabbitMq(Configuration);
+
                         services.AddControllers();
+
                         services.AddSwaggerGen(c =>
                         {
                                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Work.Service.API", Version = "v1" });
