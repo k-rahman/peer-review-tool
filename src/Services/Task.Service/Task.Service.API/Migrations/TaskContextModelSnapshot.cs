@@ -55,25 +55,7 @@ namespace Task.Service.API.Migrations
                         .HasColumnName("id")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("first_name");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("last_name");
-
-                    b.Property<int>("TaskId")
-                        .HasColumnType("integer")
-                        .HasColumnName("task_id");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("TaskId");
 
                     b.ToTable("participant");
                 });
@@ -96,7 +78,8 @@ namespace Task.Service.API.Migrations
                         .HasColumnName("description");
 
                     b.Property<int>("InstructorId")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("instructor_id");
 
                     b.Property<DateTimeOffset?>("Modified")
                         .HasColumnType("timestamp with time zone")
@@ -140,6 +123,21 @@ namespace Task.Service.API.Migrations
                     b.ToTable("tasks");
                 });
 
+            modelBuilder.Entity("task_participants", b =>
+                {
+                    b.Property<int>("participant_id")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("task_id")
+                        .HasColumnType("integer");
+
+                    b.HasKey("participant_id", "task_id");
+
+                    b.HasIndex("task_id");
+
+                    b.ToTable("task_participants");
+                });
+
             modelBuilder.Entity("Task.Service.API.Domain.Models.Criterion", b =>
                 {
                     b.HasOne("Task.Service.API.Domain.Models.Task", "Task")
@@ -151,15 +149,19 @@ namespace Task.Service.API.Migrations
                     b.Navigation("Task");
                 });
 
-            modelBuilder.Entity("Task.Service.API.Domain.Models.Participant", b =>
+            modelBuilder.Entity("task_participants", b =>
                 {
-                    b.HasOne("Task.Service.API.Domain.Models.Task", "Task")
+                    b.HasOne("Task.Service.API.Domain.Models.Participant", null)
                         .WithMany()
-                        .HasForeignKey("TaskId")
+                        .HasForeignKey("participant_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Task");
+                    b.HasOne("Task.Service.API.Domain.Models.Task", null)
+                        .WithMany()
+                        .HasForeignKey("task_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Task.Service.API.Domain.Models.Task", b =>
