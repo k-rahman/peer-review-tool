@@ -39,7 +39,13 @@ namespace Task.Service.API
 
                         services.AddAutoMapper(typeof(Startup));
 
-                        services.AddDbContext<TaskContext>(options => options.UseNpgsql(Configuration.GetConnectionString("Default")));
+                        services.AddDbContext<TaskContext>(options =>
+                        {
+                                options.UseNpgsql(
+                                        Configuration.GetConnectionString("Default"),
+                                        o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
+                                );
+                        });
 
                         services.AddMassTransitWithRabbitMq(Configuration);
 
