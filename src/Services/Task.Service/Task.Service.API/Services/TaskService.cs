@@ -6,8 +6,8 @@ using MassTransit;
 using Task.Service.API.Domain.Repositories;
 using Task.Service.API.Domain.Services;
 using Task.Service.API.Domain.Services.Communication;
-using Task.Service.API.Events;
 using Task.Service.API.Resources;
+using Task.Service.Contracts;
 
 namespace Task.Service.API.Services
 {
@@ -56,9 +56,16 @@ namespace Task.Service.API.Services
                                 await _taskRepository.InsertAsync(task);
                                 await _unitOfWork.CompleteAsync();
 
-                                await _publishEndpoint.Publish(
-                                        new TaskCreated(task.Id, task.Uid, task.SubmissionStart, task.SubmissionEnd, task.ReviewStart, task.ReviewEnd, task.InstructorId)
-                                        );
+                                await _publishEndpoint.Publish<TaskCreated>(new
+                                {
+                                        task.Id,
+                                        task.Uid,
+                                        task.SubmissionStart,
+                                        task.SubmissionEnd,
+                                        task.ReviewStart,
+                                        task.ReviewEnd,
+                                        task.InstructorId
+                                });
 
                                 var taskResource = _mapper.Map<Domain.Models.Task, TaskResource>(task);
 
@@ -86,7 +93,15 @@ namespace Task.Service.API.Services
                         {
                                 await _unitOfWork.CompleteAsync();
 
-                                await _publishEndpoint.Publish(new TaskUpdated(existingTask.Id, existingTask.Name));
+                                await _publishEndpoint.Publish<TaskUpdated>(new
+                                {
+                                        existingTask.Id,
+                                        existingTask.Uid,
+                                        existingTask.SubmissionStart,
+                                        existingTask.SubmissionEnd,
+                                        existingTask.ReviewStart,
+                                        existingTask.ReviewEnd
+                                });
 
                                 var updatedTask = _mapper.Map<Domain.Models.Task, TaskResource>(existingTask);
 
@@ -111,7 +126,11 @@ namespace Task.Service.API.Services
                                 _taskRepository.Delete(existingTask);
                                 await _unitOfWork.CompleteAsync();
 
-                                await _publishEndpoint.Publish(new TaskDeleted(id));
+                                await _publishEndpoint.Publish<TaskDeleted>(new
+                                {
+                                        existingTask.Id,
+                                        existingTask.Uid
+                                });
 
                                 var removedTask = _mapper.Map<Domain.Models.Task, TaskResource>(existingTask);
 
