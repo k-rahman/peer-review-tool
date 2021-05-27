@@ -10,7 +10,7 @@ namespace Task.Service.API.Persistence.EntityConfigurations
         {
                 public void Configure(EntityTypeBuilder<Participant> builder)
                 {
-                        builder.ToTable("participant");
+                        builder.ToTable("participants");
 
                         builder.HasKey(participant => participant.Id);
 
