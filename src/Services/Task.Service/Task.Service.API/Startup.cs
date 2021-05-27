@@ -60,7 +60,8 @@ namespace Task.Service.API
                         {
                                 options.AddPolicy(name: AllowSpecificOrigins,
                                         builder => builder
-                                                .WithOrigins("http://localhost:3000")
+                                                // .WithOrigins("http://localhost:3000")
+                                                .AllowAnyOrigin()
                                                 .AllowAnyMethod()
                                                 .AllowAnyHeader());
                         });
