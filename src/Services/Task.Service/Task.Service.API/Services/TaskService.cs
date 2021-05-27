@@ -32,6 +32,19 @@ namespace Task.Service.API.Services
                         return tasks;
                 }
 
+                public async Task<IEnumerable<TaskResource>> GetByInstructorIdAsync(int id)
+                {
+                        var result = await _taskRepository.GetByInstructorIdAsync(id);
+                        var tasks = _mapper.Map<IEnumerable<Domain.Models.Task>, IEnumerable<TaskResource>>(result);
+                        return tasks;
+                }
+                public async Task<IEnumerable<TaskResource>> GetByParticipantIdAsync(int id)
+                {
+                        var result = await _taskRepository.GetByParticipantIdAsync(id);
+                        var tasks = _mapper.Map<IEnumerable<Domain.Models.Task>, IEnumerable<TaskResource>>(result);
+                        return tasks;
+                }
+
                 public async Task<TaskResource> GetByIdAsync(int id)
                 {
                         var result = await _taskRepository.GetByIdAsync(id);

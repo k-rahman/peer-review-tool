@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Task.Service.API.Domain.Models;
 using Task.Service.API.Domain.Repositories;
 using Task.Service.API.Persistence.Contexts;
 
@@ -16,18 +18,42 @@ namespace Task.Service.API.Persistence.Repositories
 
                 public async Task<IEnumerable<Domain.Models.Task>> GetAsync()
                 {
-                        return await _context.Tasks.Include(task => task.Criteria).ToListAsync();
+                        return await _context.Tasks
+                                        .Include(task => task.Criteria)
+                                        .Include(task => task.Participants)
+                                        .ToListAsync();
+                }
+
+                public async Task<IEnumerable<Domain.Models.Task>> GetByInstructorIdAsync(int id)
+                {
+                        return await _context.Tasks
+                                        .Include(task => task.Criteria)
+                                        .Include(task => task.Participants)
+                                        .Where(task => task.InstructorId == id)
+                                        .ToListAsync();
+                }
+                public async Task<IEnumerable<Domain.Models.Task>> GetByParticipantIdAsync(int id)
+                {
+                        return await _context.Tasks
+                                        .Include(task => task.Criteria)
+                                        .Include(task => task.Participants)
+                                        .Where(task => task.Participants.FirstOrDefault(p => p.Id == id).Id == id)
+                                        .ToListAsync();
                 }
 
                 public async Task<Domain.Models.Task> GetByIdAsync(int id)
                 {
-                        return await _context.Tasks.Include(task => task.Criteria)
-                                                .SingleOrDefaultAsync(task => task.Id == id);
+                        return await _context.Tasks
+                                        .Include(task => task.Criteria)
+                                        .Include(task => task.Participants)
+                                        .SingleOrDefaultAsync(task => task.Id == id);
                 }
                 public async Task<Domain.Models.Task> GetByUidAsync(Guid uid)
                 {
-                        return await _context.Tasks.Include(task => task.Criteria)
-                                                .SingleOrDefaultAsync(task => task.Uid == uid);
+                        return await _context.Tasks
+                                        .Include(task => task.Criteria)
+                                        .Include(task => task.Participants)
+                                        .SingleOrDefaultAsync(task => task.Uid == uid);
                 }
 
                 public async System.Threading.Tasks.Task InsertAsync(Domain.Models.Task task)

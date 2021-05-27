@@ -9,6 +9,8 @@ namespace Task.Service.API.Domain.Services
         public interface ITaskService
         {
                 Task<IEnumerable<TaskResource>> GetAsync();
+                Task<IEnumerable<TaskResource>> GetByInstructorIdAsync(int id);
+                Task<IEnumerable<TaskResource>> GetByParticipantIdAsync(int id);
                 Task<TaskResource> GetByIdAsync(int id);
                 Task<TaskResource> GetByUidAsync(Guid uid);
                 Task<TaskResponse> InsertAsync(SaveTaskResource task);
