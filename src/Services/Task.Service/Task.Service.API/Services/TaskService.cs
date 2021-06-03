@@ -1,17 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
 using System.Threading.Tasks;
-using Auth0.ManagementApi;
-using Auth0.ManagementApi.Models;
 using AutoMapper;
 using MassTransit;
 using RestSharp;
+using Task.Service.API.Domain.Models;
 using Task.Service.API.Domain.Repositories;
 using Task.Service.API.Domain.Services;
 using Task.Service.API.Domain.Services.Communication;
 using Task.Service.API.Resources;
+using Task.Service.API.Utils;
 using Task.Service.Contracts;
 
 namespace Task.Service.API.Services
@@ -20,15 +19,27 @@ namespace Task.Service.API.Services
         {
                 private readonly IMapper _mapper;
                 private readonly ITaskRepository _taskRepository;
+                private readonly IParticipantRepository _participantRepository;
                 private readonly IUnitOfWork _unitOfWork;
                 private readonly IPublishEndpoint _publishEndpoint;
+                private readonly ManagementApiAccessTokenClient _apiAccessTokenClient;
+                private record _participant(string user_id);
 
-                public TaskService(IMapper mapper, ITaskRepository taskRepository, IUnitOfWork unitOfWork, IPublishEndpoint publishEndpoint)
+                public TaskService(
+                        IMapper mapper,
+                        ITaskRepository taskRepository,
+                        IParticipantRepository participantRepository,
+                        IUnitOfWork unitOfWork,
+                        IPublishEndpoint publishEndpoint,
+                        ManagementApiAccessTokenClient apiAccessTokenClient
+                        )
                 {
                         _mapper = mapper;
                         _taskRepository = taskRepository;
+                        _participantRepository = participantRepository;
                         _unitOfWork = unitOfWork;
                         _publishEndpoint = publishEndpoint;
+                        _apiAccessTokenClient = apiAccessTokenClient;
                 }
                 public async Task<IEnumerable<TaskResource>> GetAsync()
                 {
@@ -64,28 +75,18 @@ namespace Task.Service.API.Services
 
                 public async Task<TaskResponse> InsertAsync(SaveTaskResource resource, string instructorId)
                 {
-                        var client = new RestClient("https://peer-review-tool.eu.auth0.com/oauth/token");
+
+                        var task = _mapper.Map<SaveTaskResource, Domain.Models.Task>(resource);
+                        var managementApiAccessToken = await _apiAccessTokenClient.GetApiToken();
+                        var emails = new List<string>();
+                        char[] delimiters = new char[] { ';', ',' };
+                        var participants = new List<string>();
+
+                        var client = new RestClient("https://peer-review-tool.eu.auth0.com/api/v2/users");
                         var request = new RestRequest(Method.POST);
                         request.AddHeader("content-type", "application/json");
-                        request.AddParameter("application/json", "{\"client_id\":\"qGZpmZNT3i6q42ioFUT8Y0NyT7RqDs5a\",\"client_secret\":\"DGiiQaVdHvEHmPpxq1kKT1yKbQbFPu0ED9zNGEXD60h0oPTP9LH_L3DWG2b9V0Ru\",\"audience\":\"https://peer-review-tool.eu.auth0.com/api/v2/\",\"grant_type\":\"client_credentials\"}", ParameterType.RequestBody);
-                        IRestResponse response = client.Execute(request);
+                        request.AddHeader("authorization", $"Bearer {managementApiAccessToken}");
 
-                        // var re = JsonConvert.(response.Content);
-                        var result = JsonSerializer.Deserialize<Response>(response.Content);
-
-                        // var client = new AuthenticationApiClient("https://peer-review-tool.eu.auth0.com");
-                        // var client_credentials = new ClientCredentialsTokenRequest() { Audience = "https://peer-review-tool.eu.auth0.com/api/v2/", ClientId = "ydPIXFxKbaD7gklx81XrFCjSfLozwpob", ClientSecret = "cHQ3I0ICZgsVErYr7F5c9jkZKM7ca3Ne8abNwN5hMJwHI5fS47xZ2YgYe-z_AdLo" };
-                        // try
-                        // {
-                        //         var token = await client.GetTokenAsync(client_credentials);
-                        // }
-                        // catch (Exception e)
-                        // {
-
-                        // };
-
-
-                        // object result = JsonConvert.DeserializeObject(response.Content);
 
                         // create accounts using emails in "ParticipantsEmails" from "SaveTaskResource"
                         using (var reader = new StreamReader(resource.ParticipantsEmails.OpenReadStream()))
@@ -93,34 +94,42 @@ namespace Task.Service.API.Services
                                 while (reader.Peek() >= 0)
                                 {
                                         var line = reader.ReadLine();
-                                        char[] delimiters = new char[] { ';', ',' };
-                                        var email = line.Split(delimiters)[0];
+                                        emails.Add(line.Split(delimiters)[0]);
+                                }
+                        };
+
+                        emails.ForEach(email =>
+                        {
+                                // use email to check if participant already exists in our database
+                                var existingParticipant = _participantRepository.GetByEmail(email);
+
+                                // if it exists, add to task participants
+                                if (existingParticipant != null)
+                                {
+                                        task.Participants.Add(existingParticipant);
+                                }
+                                // if it doesn't exists, create an account and add it to task participants
+                                else
+                                {
+                                        var password = RandomPasswordGenerator.GeneratePassword(16, 1);
                                         var user = new
                                         {
                                                 email = email,
-                                                password = "XWoshogongfu1234@",
+                                                password = password,
                                                 connection = "Username-Password-Authentication"
                                         };
 
-                                        var newClient = new RestClient("https://peer-review-tool.eu.auth0.com/api/v2/users");
-                                        var newRequest = new RestRequest(Method.POST);
-                                        newRequest.AddHeader("content-type", "application/json");
-                                        newRequest.AddHeader("authorization", $"Bearer {result.access_token}");
-                                        newRequest.AddJsonBody(user);
-                                        IRestResponse newResponse = newClient.Execute(newRequest);
+                                        request.AddJsonBody(user);
+                                        IRestResponse response = client.Execute(request);
 
-                                        // var managementApiClient =
-                                        //         new ManagementApiClient(
-                                        //                 result.access_token,
-                                        //                 "https://peer-review-tool.eu.auth0.com"
-                                        //                 );
-                                        // var newUser = new UserCreateRequest() { Email = email, Password = "XWoshogongfu1234@", Connection = "Username=Password-Authentication" };
-
-                                        // await managementApiClient.Users.CreateAsync(newUser);
-
+                                        if (response.IsSuccessful)
+                                        {
+                                                var participant = System.Text.Json.JsonSerializer.Deserialize<_participant>(response.Content);
+                                                task.Participants.Add(new Participant { auth0Id = participant.user_id, email = email });
+                                        }
                                 }
-                        };
-                        var task = _mapper.Map<SaveTaskResource, Domain.Models.Task>(resource);
+                        });
+
 
                         task.Uid = Guid.NewGuid();
                         task.Created = DateTimeOffset.Now;
@@ -219,6 +228,4 @@ namespace Task.Service.API.Services
                         }
                 }
         }
-
-        public record Response(string access_token);
 }
