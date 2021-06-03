@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Task.Service.API.Resources
 {
@@ -28,9 +31,11 @@ namespace Task.Service.API.Resources
                 public DateTimeOffset Published { get; set; }
 
                 [Required]
-                public int InstructorId { get; set; }
+                [ModelBinder(BinderType = typeof(FormDataJsonBinder))]
+                public IEnumerable<SaveCriterionResource> Criteria { get; set; }
 
                 [Required]
-                public IEnumerable<SaveCriterionResource> Criteria { get; set; }
+                public IFormFile ParticipantsEmails { get; set; }
+
         }
 }
