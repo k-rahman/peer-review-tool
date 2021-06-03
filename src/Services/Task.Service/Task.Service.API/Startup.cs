@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Common.EventBus.RabbitMQ.MassTransit;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Task.Service.API.Domain.Repositories;
 using Task.Service.API.Domain.Services;
@@ -23,12 +26,13 @@ namespace Task.Service.API
         public class Startup
         {
                 readonly string AllowSpecificOrigins = "_AllowSpecificOrigins";
+                public IConfiguration Configuration { get; }
+
                 public Startup(IConfiguration configuration)
                 {
                         Configuration = configuration;
                 }
 
-                public IConfiguration Configuration { get; }
 
                 // This method gets called by the runtime. Use this method to add services to the container.
                 public void ConfigureServices(IServiceCollection services)
@@ -39,7 +43,13 @@ namespace Task.Service.API
 
                         services.AddAutoMapper(typeof(Startup));
 
-                        services.AddDbContext<TaskContext>(options => options.UseNpgsql(Configuration.GetConnectionString("Default")));
+                        services.AddDbContext<TaskContext>(options =>
+                        {
+                                options.UseNpgsql(
+                                        Configuration.GetConnectionString("Default"),
+                                        o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
+                                );
+                        });
 
                         services.AddMassTransitWithRabbitMq(Configuration);
 
@@ -54,10 +64,34 @@ namespace Task.Service.API
                         {
                                 options.AddPolicy(name: AllowSpecificOrigins,
                                         builder => builder
-                                                .WithOrigins("http://localhost:3000")
+                                                // .WithOrigins("http://localhost:3000")
+                                                .AllowAnyOrigin()
                                                 .AllowAnyMethod()
                                                 .AllowAnyHeader());
                         });
+
+                        services.AddAuthentication(options =>
+                        {
+                                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+                        }).AddJwtBearer(options =>
+                        {
+                                options.Authority = "https://peer-review-tool.eu.auth0.com/";
+                                options.Audience = "https://api.peer-review-tool.com";
+                                options.TokenValidationParameters = new TokenValidationParameters
+                                {
+                                        NameClaimType = ClaimTypes.NameIdentifier,
+                                        RoleClaimType = "https://schemas.peer-review-tool/roles"
+                                };
+                        });
+
+                        services.AddAuthorization(options =>
+                        {
+                                options.AddPolicy("RequireInstructorRole", policy => policy.RequireClaim("https://schemas.peer-review-tool/roles", "Instructor"));
+
+                        }
+                        );
                 }
 
                 // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -78,6 +112,8 @@ namespace Task.Service.API
                         app.UseRouting();
 
                         app.UseCors(AllowSpecificOrigins);
+
+                        app.UseAuthentication();
 
                         app.UseAuthorization();
 

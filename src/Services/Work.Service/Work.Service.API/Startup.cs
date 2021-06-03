@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Common.EventBus.RabbitMQ.MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -21,28 +22,52 @@ namespace Work.Service.API
 {
         public class Startup
         {
+                readonly string AllowSpecificOrigins = "_AllowSpecificOrigins";
+                public IConfiguration Configuration { get; }
+
                 public Startup(IConfiguration configuration)
                 {
                         Configuration = configuration;
                 }
 
-                public IConfiguration Configuration { get; }
 
                 // This method gets called by the runtime. Use this method to add services to the container.
                 public void ConfigureServices(IServiceCollection services)
                 {
                         services.AddScoped<IWorkService, WorkService>();
                         services.AddScoped<IWorkRepository, WorkRepository>();
+                        services.AddScoped<IWorksDeadlineRepository, WorksDeadlineRepository>();
                         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
                         services.AddAutoMapper(typeof(Startup));
 
-                        services.AddDbContext<WorkContext>(options => options.UseNpgsql(Configuration.GetConnectionString("Default")));
+                        services.AddDbContext<WorkContext>(options =>
+                        {
+                                options.UseNpgsql(
+                                        Configuration.GetConnectionString("Default"),
+                                        o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
+                                );
+                        });
+
+                        services.AddMassTransitWithRabbitMq(Configuration);
+
                         services.AddControllers();
+
                         services.AddSwaggerGen(c =>
                         {
                                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Work.Service.API", Version = "v1" });
                         });
+
+                        services.AddCors(options =>
+                        {
+                                options.AddPolicy(name: AllowSpecificOrigins,
+                                        builder => builder
+                                                // .WithOrigins("http://localhost:3000")
+                                                .AllowAnyOrigin()
+                                                .AllowAnyMethod()
+                                                .AllowAnyHeader());
+                        });
+
                 }
 
                 // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,6 +85,8 @@ namespace Work.Service.API
                         }
 
                         app.UseRouting();
+
+                        app.UseCors(AllowSpecificOrigins);
 
                         app.UseAuthorization();
 

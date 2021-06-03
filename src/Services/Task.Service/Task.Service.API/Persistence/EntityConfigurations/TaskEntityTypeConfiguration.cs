@@ -53,10 +53,10 @@ namespace Task.Service.API.Persistence.EntityConfigurations
                         builder.Property(task => task.Modified)
                               .HasColumnName("modified");
 
-                        // builder.HasMany(task => task.Criteria)
-                        //     .WithOne()
-                        //     .HasForeignKey("TaskId")
-                        //     .IsRequired();
+                        builder.Property(task => task.InstructorId)
+                              .HasColumnName("instructor_id")
+                              .HasMaxLength(255)
+                              .IsRequired();
                 }
         }
 }

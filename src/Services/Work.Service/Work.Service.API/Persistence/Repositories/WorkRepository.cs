@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Work.Service.API.Domain.Repositories;
@@ -14,9 +15,12 @@ namespace Work.Service.API.Persistence.Repositories
                 {
                 }
 
-                public async Task<IEnumerable<Domain.Models.Work>> GetAsync()
+                public async Task<Domain.Models.Work> GetAuthorWorkByTaskAsync(Guid taskUid, int authorId)
                 {
-                        return await _context.Works.Include(work => work.WorksDeadline).ToListAsync();
+                        return await _context.Works
+                                .Include(work => work.WorksDeadline)
+                                .Where(work => work.AuthorId == authorId && work.WorksDeadline.Uid == taskUid)
+                                .SingleOrDefaultAsync();
                 }
 
                 public async Task<Domain.Models.Work> GetByIdAsync(int id)
