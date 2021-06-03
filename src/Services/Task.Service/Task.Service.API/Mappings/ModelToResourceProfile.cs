@@ -3,7 +3,7 @@ using AutoMapper;
 using Task.Service.API.Domain.Models;
 using Task.Service.API.Resources;
 
-namespace Task.Service.API.Mapping
+namespace Task.Service.API.Mappings
 {
         public class ModelToResourceProfile : Profile
         {
