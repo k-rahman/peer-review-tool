@@ -52,11 +52,11 @@ const TimeLine = ({ events }) => {
 	};
 
 	return (
-		<Timeline align="left">
+		<Timeline align="left" style={{ margin: 0, padding: 20 }}>
 			{events.map((event, index) => (
 				<TimelineItem>
 					{highlightCurrentEvent(event)}
-					<TimelineOppositeContent>
+					<TimelineOppositeContent style={{ flex: 0 }}>
 						<Typography variant="body2" color="textSecondary">
 							{event.date && format(new Date(event.date), "dd.MM.yyyy")}
 						</Typography>
