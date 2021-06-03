@@ -18,7 +18,7 @@ namespace Task.Service.API.Domain.Models
                 public DateTimeOffset Created { get; set; }
                 public DateTimeOffset? Modified { get; set; }
 
-                public int InstructorId { get; set; }
+                public string InstructorId { get; set; }
 
                 public ICollection<Criterion> Criteria { get; } = new List<Criterion>();
 

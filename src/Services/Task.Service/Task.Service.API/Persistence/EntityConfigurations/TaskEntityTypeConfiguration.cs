@@ -54,7 +54,9 @@ namespace Task.Service.API.Persistence.EntityConfigurations
                               .HasColumnName("modified");
 
                         builder.Property(task => task.InstructorId)
-                              .HasColumnName("instructor_id");
+                              .HasColumnName("instructor_id")
+                              .HasMaxLength(255)
+                              .IsRequired();
                 }
         }
 }
