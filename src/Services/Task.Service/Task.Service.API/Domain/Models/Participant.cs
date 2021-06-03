@@ -7,6 +7,7 @@ namespace Task.Service.API.Domain.Models
         {
                 public int Id { get; set; }
                 public string auth0Id { get; set; }
+                public string email { get; set; }
 
                 public ICollection<Task> Tasks = new List<Task>();
 
