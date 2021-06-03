@@ -2,7 +2,7 @@ using AutoMapper;
 using Task.Service.Contracts;
 using Work.Service.API.Resources;
 
-namespace Work.Service.API.Mapping
+namespace Work.Service.API.Mappings
 {
         public class EventToModelProfile : Profile
         {
