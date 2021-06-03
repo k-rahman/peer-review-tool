@@ -1,8 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
 using System.Threading.Tasks;
+using Auth0.ManagementApi;
+using Auth0.ManagementApi.Models;
 using AutoMapper;
 using MassTransit;
+using RestSharp;
 using Task.Service.API.Domain.Repositories;
 using Task.Service.API.Domain.Services;
 using Task.Service.API.Domain.Services.Communication;
@@ -32,13 +37,13 @@ namespace Task.Service.API.Services
                         return tasks;
                 }
 
-                public async Task<IEnumerable<TaskResource>> GetByInstructorIdAsync(int id)
+                public async Task<IEnumerable<TaskResource>> GetByInstructorIdAsync(string id)
                 {
                         var result = await _taskRepository.GetByInstructorIdAsync(id);
                         var tasks = _mapper.Map<IEnumerable<Domain.Models.Task>, IEnumerable<TaskResource>>(result);
                         return tasks;
                 }
-                public async Task<IEnumerable<TaskResource>> GetByParticipantIdAsync(int id)
+                public async Task<IEnumerable<TaskResource>> GetByParticipantIdAsync(string id)
                 {
                         var result = await _taskRepository.GetByParticipantIdAsync(id);
                         var tasks = _mapper.Map<IEnumerable<Domain.Models.Task>, IEnumerable<TaskResource>>(result);
@@ -57,12 +62,69 @@ namespace Task.Service.API.Services
                         return _mapper.Map<Domain.Models.Task, TaskResource>(result);
                 }
 
-                public async Task<TaskResponse> InsertAsync(SaveTaskResource resource)
+                public async Task<TaskResponse> InsertAsync(SaveTaskResource resource, string instructorId)
                 {
+                        var client = new RestClient("https://peer-review-tool.eu.auth0.com/oauth/token");
+                        var request = new RestRequest(Method.POST);
+                        request.AddHeader("content-type", "application/json");
+                        request.AddParameter("application/json", "{\"client_id\":\"qGZpmZNT3i6q42ioFUT8Y0NyT7RqDs5a\",\"client_secret\":\"DGiiQaVdHvEHmPpxq1kKT1yKbQbFPu0ED9zNGEXD60h0oPTP9LH_L3DWG2b9V0Ru\",\"audience\":\"https://peer-review-tool.eu.auth0.com/api/v2/\",\"grant_type\":\"client_credentials\"}", ParameterType.RequestBody);
+                        IRestResponse response = client.Execute(request);
+
+                        // var re = JsonConvert.(response.Content);
+                        var result = JsonSerializer.Deserialize<Response>(response.Content);
+
+                        // var client = new AuthenticationApiClient("https://peer-review-tool.eu.auth0.com");
+                        // var client_credentials = new ClientCredentialsTokenRequest() { Audience = "https://peer-review-tool.eu.auth0.com/api/v2/", ClientId = "ydPIXFxKbaD7gklx81XrFCjSfLozwpob", ClientSecret = "cHQ3I0ICZgsVErYr7F5c9jkZKM7ca3Ne8abNwN5hMJwHI5fS47xZ2YgYe-z_AdLo" };
+                        // try
+                        // {
+                        //         var token = await client.GetTokenAsync(client_credentials);
+                        // }
+                        // catch (Exception e)
+                        // {
+
+                        // };
+
+
+                        // object result = JsonConvert.DeserializeObject(response.Content);
+
+                        // create accounts using emails in "ParticipantsEmails" from "SaveTaskResource"
+                        using (var reader = new StreamReader(resource.ParticipantsEmails.OpenReadStream()))
+                        {
+                                while (reader.Peek() >= 0)
+                                {
+                                        var line = reader.ReadLine();
+                                        char[] delimiters = new char[] { ';', ',' };
+                                        var email = line.Split(delimiters)[0];
+                                        var user = new
+                                        {
+                                                email = email,
+                                                password = "XWoshogongfu1234@",
+                                                connection = "Username-Password-Authentication"
+                                        };
+
+                                        var newClient = new RestClient("https://peer-review-tool.eu.auth0.com/api/v2/users");
+                                        var newRequest = new RestRequest(Method.POST);
+                                        newRequest.AddHeader("content-type", "application/json");
+                                        newRequest.AddHeader("authorization", $"Bearer {result.access_token}");
+                                        newRequest.AddJsonBody(user);
+                                        IRestResponse newResponse = newClient.Execute(newRequest);
+
+                                        // var managementApiClient =
+                                        //         new ManagementApiClient(
+                                        //                 result.access_token,
+                                        //                 "https://peer-review-tool.eu.auth0.com"
+                                        //                 );
+                                        // var newUser = new UserCreateRequest() { Email = email, Password = "XWoshogongfu1234@", Connection = "Username=Password-Authentication" };
+
+                                        // await managementApiClient.Users.CreateAsync(newUser);
+
+                                }
+                        };
                         var task = _mapper.Map<SaveTaskResource, Domain.Models.Task>(resource);
 
                         task.Uid = Guid.NewGuid();
                         task.Created = DateTimeOffset.Now;
+                        task.InstructorId = instructorId;
 
                         try
                         {
@@ -77,7 +139,8 @@ namespace Task.Service.API.Services
                                         task.SubmissionEnd,
                                         task.ReviewStart,
                                         task.ReviewEnd,
-                                        task.InstructorId
+                                        task.InstructorId,
+                                        task.Criteria
                                 });
 
                                 var taskResource = _mapper.Map<Domain.Models.Task, TaskResource>(task);
@@ -156,4 +219,6 @@ namespace Task.Service.API.Services
                         }
                 }
         }
+
+        public record Response(string access_token);
 }

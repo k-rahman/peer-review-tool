@@ -24,7 +24,7 @@ namespace Task.Service.API.Persistence.Repositories
                                         .ToListAsync();
                 }
 
-                public async Task<IEnumerable<Domain.Models.Task>> GetByInstructorIdAsync(int id)
+                public async Task<IEnumerable<Domain.Models.Task>> GetByInstructorIdAsync(string id)
                 {
                         return await _context.Tasks
                                         .Include(task => task.Criteria)
@@ -32,12 +32,12 @@ namespace Task.Service.API.Persistence.Repositories
                                         .Where(task => task.InstructorId == id)
                                         .ToListAsync();
                 }
-                public async Task<IEnumerable<Domain.Models.Task>> GetByParticipantIdAsync(int id)
+                public async Task<IEnumerable<Domain.Models.Task>> GetByParticipantIdAsync(string id)
                 {
                         return await _context.Tasks
                                         .Include(task => task.Criteria)
                                         .Include(task => task.Participants)
-                                        .Where(task => task.Participants.FirstOrDefault(p => p.Id == id).Id == id)
+                                        .Where(task => task.Participants.FirstOrDefault(p => p.auth0Id == id).auth0Id == id)
                                         .ToListAsync();
                 }
 
