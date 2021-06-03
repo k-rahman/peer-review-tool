@@ -1,0 +1,17 @@
+.form-field {
+  margin-top: 30px !important;
+  margin-left: 30px !important;
+  margin-right: 30px !important;
+}
+
+.criteria-field {
+  width: 80%;
+}
+
+.max-points-field {
+  width: 10%;
+}
+
+.upload-field {
+  width: 74%;
+}
