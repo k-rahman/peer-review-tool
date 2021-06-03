@@ -22,12 +22,14 @@ namespace Work.Service.API
 {
         public class Startup
         {
+                readonly string AllowSpecificOrigins = "_AllowSpecificOrigins";
+                public IConfiguration Configuration { get; }
+
                 public Startup(IConfiguration configuration)
                 {
                         Configuration = configuration;
                 }
 
-                public IConfiguration Configuration { get; }
 
                 // This method gets called by the runtime. Use this method to add services to the container.
                 public void ConfigureServices(IServiceCollection services)
@@ -55,6 +57,17 @@ namespace Work.Service.API
                         {
                                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Work.Service.API", Version = "v1" });
                         });
+
+                        services.AddCors(options =>
+                        {
+                                options.AddPolicy(name: AllowSpecificOrigins,
+                                        builder => builder
+                                                // .WithOrigins("http://localhost:3000")
+                                                .AllowAnyOrigin()
+                                                .AllowAnyMethod()
+                                                .AllowAnyHeader());
+                        });
+
                 }
 
                 // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -72,6 +85,8 @@ namespace Work.Service.API
                         }
 
                         app.UseRouting();
+
+                        app.UseCors(AllowSpecificOrigins);
 
                         app.UseAuthorization();
 
