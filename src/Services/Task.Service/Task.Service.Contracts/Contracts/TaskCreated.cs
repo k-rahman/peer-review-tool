@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Task.Service.Contracts.Models;
 
 namespace Task.Service.Contracts
 {
@@ -11,5 +13,6 @@ namespace Task.Service.Contracts
                 DateTimeOffset ReviewStart { get; }
                 DateTimeOffset ReviewEnd { get; }
                 int InstructorId { get; }
+                List<Criterion> Criteria { get; }
         }
 }
