@@ -16,7 +16,7 @@ namespace Task.Service.API.Resources
                 public DateTimeOffset Published { get; set; }
                 public DateTimeOffset Created { get; set; }
                 public DateTimeOffset? Modified { get; set; }
-                public int InstructorId { get; set; }
+                public string InstructorId { get; set; }
                 public IEnumerable<CriterionResource> Criteria { get; set; }
                 public IEnumerable<int> Participants { get; set; } = new List<int>();
         }
