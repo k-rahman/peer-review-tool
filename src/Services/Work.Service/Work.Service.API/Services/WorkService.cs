@@ -21,10 +21,10 @@ namespace Work.Service.API.Services
                         _workRepository = workRepository;
                         _unitOfWork = unitOfWork;
                 }
-                public async Task<IEnumerable<WorkResource>> GetAsync()
+                public async Task<WorkResource> GetAuthorWorkByTaskAsync(Guid taskUid, int authorId)
                 {
-                        var result = await _workRepository.GetAsync();
-                        var works = _mapper.Map<IEnumerable<Domain.Models.Work>, IEnumerable<WorkResource>>(result);
+                        var result = await _workRepository.GetAuthorWorkByTaskAsync(taskUid, authorId);
+                        var works = _mapper.Map<Domain.Models.Work, WorkResource>(result);
                         return works;
                 }
 
