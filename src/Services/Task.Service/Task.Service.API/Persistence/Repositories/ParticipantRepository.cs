@@ -14,7 +14,7 @@ namespace Task.Service.API.Persistence.Repositories
 
                 public Participant GetByEmail(string email)
                 {
-                        return _context.Participants.Where(participant => participant.email == email).SingleOrDefault();
+                        return _context.Participants.Where(participant => participant.Email == email).SingleOrDefault();
                 }
         }
 }

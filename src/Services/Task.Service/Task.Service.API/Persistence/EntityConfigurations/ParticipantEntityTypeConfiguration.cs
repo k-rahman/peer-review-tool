@@ -17,11 +17,11 @@ namespace Task.Service.API.Persistence.EntityConfigurations
                         builder.Property(participant => participant.Id)
                               .HasColumnName("id");
 
-                        builder.Property(participant => participant.auth0Id)
+                        builder.Property(participant => participant.Auth0Id)
                               .HasColumnName("auth0_id")
                               .IsRequired();
 
-                        builder.Property(participant => participant.email)
+                        builder.Property(participant => participant.Email)
                               .HasColumnName("email")
                               .HasMaxLength(255)
                               .IsRequired();
