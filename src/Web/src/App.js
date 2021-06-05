@@ -17,18 +17,10 @@ import { useAuth0 } from "@auth0/auth0-react";
 import "./App.css";
 import Tasks from "./components/Tasks";
 import TaskDetails from "./components/TaskDetails";
+import NavBar from "./components/NavBar";
+import Loading from "./components/Loading";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    flexGrow: 1,
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  title: {
-    flexGrow: 1,
-  },
-}));
 const StyledBreadcrumb = withStyles(theme => ({
   root: {
     backgroundColor: theme.palette.grey[100],
@@ -46,37 +38,15 @@ const StyledBreadcrumb = withStyles(theme => ({
 }))(Chip);
 
 const App = _ => {
-  const history = useHistory();
-  const classes = useStyles();
-  const { user, loginWithRedirect, isAuthenticated, logout, getIdTokenClaims } =
-    useAuth0();
+  const { isLoading } = useAuth0();
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <Container maxWidth="lg" style={{ height: "100%" }}>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" className={classes.title}>
-            Peer Review Tool
-          </Typography>
-          {isAuthenticated ? (
-            <>
-              <Typography variant="h5">{user.nickname}</Typography>
-              <Button
-                color="inherit"
-                onClick={() =>
-                  logout({ returnTo: "http://localhost:3000/tasks" })
-                }
-              >
-                Logout
-              </Button>
-            </>
-          ) : (
-            <Button color="inherit" onClick={() => loginWithRedirect()}>
-              Login
-            </Button>
-          )}
-        </Toolbar>
-      </AppBar>
+      <NavBar />
       <Breadcrumbs
         aria-label="breadcrumb"
         style={{ marginTop: 18, marginLeft: 30 }}
@@ -96,9 +66,9 @@ const App = _ => {
       <div className="App">
         {/* <TaskAddEdit /> */}
         <Switch>
-          <Route path="/tasks/:uid" component={TaskDetails} />
-          <Route path="/tasks" component={Tasks} />
-          <Redirect to="/tasks" />
+          <ProtectedRoute path="/tasks/:uid" component={TaskDetails} />
+          <ProtectedRoute path="/tasks" component={Tasks} />
+          {/* <ProtectedRoute path="/" component={Home} /> */}
         </Switch>
       </div>
     </Container>
