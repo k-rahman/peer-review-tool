@@ -20,6 +20,7 @@ using Task.Service.API.Domain.Services;
 using Task.Service.API.Persistence.Contexts;
 using Task.Service.API.Persistence.Repositories;
 using Task.Service.API.Services;
+using Task.Service.API.Settings;
 
 namespace Task.Service.API
 {
@@ -37,6 +38,10 @@ namespace Task.Service.API
                 // This method gets called by the runtime. Use this method to add services to the container.
                 public void ConfigureServices(IServiceCollection services)
                 {
+                        services.AddSingleton<ManagementApiAccessTokenClient>();
+                        services.Configure<Auth0Options>(Configuration.GetSection(
+                                        Auth0Options.Auth0));
+
                         services.AddScoped<ITaskService, TaskService>();
                         services.AddScoped<ITaskRepository, TaskRepository>();
                         services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -77,8 +82,10 @@ namespace Task.Service.API
 
                         }).AddJwtBearer(options =>
                         {
-                                options.Authority = "https://peer-review-tool.eu.auth0.com/";
-                                options.Audience = "https://api.peer-review-tool.com";
+                                var auth0 = Configuration.GetSection(Auth0Options.Auth0).Get<Auth0Options>();
+
+                                options.Authority = auth0.Authority;
+                                options.Audience = auth0.Audience;
                                 options.TokenValidationParameters = new TokenValidationParameters
                                 {
                                         NameClaimType = ClaimTypes.NameIdentifier,

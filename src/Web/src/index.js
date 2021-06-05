@@ -1,24 +1,19 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter } from "react-router-dom";
-import { Auth0Provider } from "@auth0/auth0-react";
+import { BrowserRouter as Router } from "react-router-dom";
 
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+import Auth0ProviderWithHistory from "./components/auth/Auth0ProviderWithHisotry";
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <Auth0Provider
-        domain={process.env.REACT_APP_AUTH0_DOMAIN}
-        clientId={process.env.REACT_APP_AUTH0_CLIENTID}
-        audience={process.env.REACT_APP_AUTH0_AUDIENCE}
-        redirectUri="http://localhost:3000/tasks"
-      >
+    <Router>
+      <Auth0ProviderWithHistory>
         <App />
-      </Auth0Provider>
-    </BrowserRouter>
+      </Auth0ProviderWithHistory>
+    </Router>
   </React.StrictMode>,
   document.getElementById("root")
 );
