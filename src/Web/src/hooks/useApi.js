@@ -1,6 +1,18 @@
 import { useState } from "react";
+import { useAuth0 } from "@auth0/auth0-react";
+
+import api from "../api/api";
 
 const useApi = apiFunc => {
+  const { getAccessTokenSilently } = useAuth0();
+
+  // add token to every task api request
+  api.taskService.addAsyncRequestTransform(async request => {
+    const token = await getAccessTokenSilently();
+    if (!token) return;
+    request.headers["Authorization"] = "Bearer " + token;
+  });
+
   const [response, setResponse] = useState([]);
   const [data, setData] = useState([]);
   const [error, setError] = useState(false);
