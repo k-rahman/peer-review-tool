@@ -37,7 +37,7 @@ namespace Task.Service.API.Persistence.Repositories
                         return await _context.Tasks
                                         .Include(task => task.Criteria)
                                         .Include(task => task.Participants)
-                                        .Where(task => task.Participants.FirstOrDefault(p => p.auth0Id == id).auth0Id == id)
+                                        .Where(task => task.Participants.FirstOrDefault(p => p.Auth0Id == id).Auth0Id == id)
                                         .ToListAsync();
                 }
 
