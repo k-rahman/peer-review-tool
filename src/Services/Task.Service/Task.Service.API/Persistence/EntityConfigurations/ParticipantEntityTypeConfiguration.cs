@@ -19,6 +19,7 @@ namespace Task.Service.API.Persistence.EntityConfigurations
 
                         builder.Property(participant => participant.Auth0Id)
                               .HasColumnName("auth0_id")
+                              .HasMaxLength(255)
                               .IsRequired();
 
                         builder.Property(participant => participant.Email)
