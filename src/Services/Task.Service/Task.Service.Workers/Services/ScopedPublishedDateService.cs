@@ -52,7 +52,7 @@ namespace Task.Service.Workers.Services
                 }
                 private void CheckPublishedTasks()
                 {
-                        _logger.LogInformation(" -----[ Now at: {time} background task is checking for published tasks ]----- ", DateTimeOffset.Now);
+                        _logger.LogInformation(" -----[ Check for published workshops background task is checking for published tasks at: {time} ]----- ", DateTimeOffset.Now);
 
                         var workshops = GetPublishedWorkshops();
 
@@ -62,7 +62,7 @@ namespace Task.Service.Workers.Services
 
                                 _publishEndpoint.Publish<WorkshopPublished>(new
                                 {
-                                        workshop.id,
+                                        workshop.Id,
                                         workshop.Uid,
                                         workshop.InstructorId,
                                         workshop.Participants
@@ -72,22 +72,41 @@ namespace Task.Service.Workers.Services
 
                 private IEnumerable<Workshop> GetPublishedWorkshops()
                 {
-                        IEnumerable<Workshop> workshops = new List<Workshop>();
+                        var workshops = new Dictionary<int, Workshop>();
+                        var publishedWorkshops = new List<Workshop>();
 
                         using (var conn = new NpgsqlConnection(_connectionStrings.Default))
                         {
                                 try
                                 {
                                         conn.Open();
-                                        workshops = conn.Query<Workshop>(
-                                                @"SELECT t.id, uid, instructor_id, auth0_id, email FROM task_participants tp
+                                        publishedWorkshops = conn.Query<Workshop, Participant, Workshop>(
+                                                @"SELECT t.id, t.uid, t.instructor_id AS ""InstructorId"", p.auth0_id AS ""Auth0Id"", p.email FROM task_participants tp
                                                         INNER JOIN tasks t ON t.id = tp.task_id
                                                         INNER JOIN participants p ON p.id = tp.participant_id
-                                                        WHERE (EXTRACT(EPOCH FROM now()) - EXTRACT(EPOCH FROM published)) / 60 >= 0 AND 
-                                                        (EXTRACT(EPOCH FROM now()) - EXTRACT(EPOCH FROM published)) / 60 <= 1"
-                                        );
+                                                        WHERE(EXTRACT(EPOCH FROM now()) - EXTRACT(EPOCH FROM published)) / 60 >= 0 AND
+                                                        (EXTRACT(EPOCH FROM now()) - EXTRACT(EPOCH FROM published)) / 60 <= 1",
+                                                        (workshop, participant) =>
+                                                        {
+                                                                Workshop newWorkshop;
 
-                                        _logger.LogInformation(" ----[ Fetched {0} Published Workshops from database ] ----- ", workshops.Count());
+                                                                if (!workshops.TryGetValue(workshop.Id, out newWorkshop))
+                                                                {
+                                                                        newWorkshop = workshop;
+                                                                        newWorkshop.Participants = new List<Participant>();
+                                                                        workshops.Add(workshop.Id, newWorkshop);
+                                                                }
+
+                                                                newWorkshop.Participants.Add(participant);
+                                                                return newWorkshop;
+                                                        }, splitOn: "id, Auth0Id"
+                                        ).Distinct().ToList();
+
+                                        if (workshops.Count() > 0)
+                                                _logger.LogInformation(" ----[ Fetched {0} Published Workshops from database ] ----- ", workshops.Count());
+                                        else
+                                                _logger.LogInformation(" ----[ No Workshops are published yet! ] ----- ");
+
                                 }
                                 catch (SqlException exception)
                                 {
@@ -95,7 +114,7 @@ namespace Task.Service.Workers.Services
                                 }
                         }
 
-                        return workshops;
+                        return publishedWorkshops;
                 }
         }
 }
