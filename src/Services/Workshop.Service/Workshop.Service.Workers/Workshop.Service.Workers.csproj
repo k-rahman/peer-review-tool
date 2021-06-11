@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <UserSecretsId>dotnet-Workshop.Service.Workers-0FC757C3-6434-4269-A02E-C1407C5E94B8</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Common.EventBus.RabbitMQ" Version="1.0.2" />
+    <PackageReference Include="Dapper" Version="2.0.90" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
+    <PackageReference Include="Npgsql" Version="5.0.5" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Workshop.Service.Contracts\Workshop.Service.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>
