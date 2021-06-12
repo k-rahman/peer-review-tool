@@ -1,27 +1,28 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using MassTransit;
 using Review.Service.API.Domain.Models;
 using Review.Service.API.Domain.Repositories;
-using Task.Service.Contracts;
+using Workshop.Service.Contracts;
 
 namespace Review.Service.API.Events.EventHandlers
 {
-        public class TaskCreatedEventHandler : IConsumer<TaskCreated>
+        public class WorkshopCreatedEventHandler : IConsumer<WorkshopCreated>
         {
                 private readonly ICriterionRepository _criterionRepository;
                 private readonly IMapper _mapper;
                 private readonly IUnitOfWork _unitOfWork;
 
-                public TaskCreatedEventHandler(ICriterionRepository criterionRepository, IMapper mapper, IUnitOfWork unitOfWork)
+                public WorkshopCreatedEventHandler(ICriterionRepository criterionRepository, IMapper mapper, IUnitOfWork unitOfWork)
                 {
                         _criterionRepository = criterionRepository;
                         _mapper = mapper;
                         _unitOfWork = unitOfWork;
                 }
 
-                public async System.Threading.Tasks.Task Consume(ConsumeContext<TaskCreated> context)
+                public async Task Consume(ConsumeContext<WorkshopCreated> context)
                 {
                         var message = context.Message;
                         var criteria = _mapper.Map<IList<Criterion>>(message.Criteria);
