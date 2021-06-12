@@ -54,14 +54,14 @@ namespace Review.Service.API
                         });
 
                         services.AddCors(options =>
-{
-        options.AddPolicy(name: AllowSpecificOrigins,
-                builder => builder
-                        // .WithOrigins("http://localhost:3000")
-                        .AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader());
-});
+                        {
+                                options.AddPolicy(name: AllowSpecificOrigins,
+                                        builder => builder
+                                                // .WithOrigins("http://localhost:3000")
+                                                .AllowAnyOrigin()
+                                                .AllowAnyMethod()
+                                                .AllowAnyHeader());
+                        });
                 }
 
                 // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
