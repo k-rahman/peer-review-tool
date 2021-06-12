@@ -9,19 +9,19 @@ using Workshop.Service.Contracts;
 
 namespace Emailing.Service.API.Events.EventHandlers
 {
-	public class WorkshopPublishedEventHandler : IConsumer<WorkshopPublished>
+	public class SubmissionEndingEventHandler : IConsumer<SubmissionEnding>
 	{
 		private readonly IMapper _mapper;
 		private readonly ManagementApiClient _managementApiClient;
 		private readonly IMessagingService _messagingService;
-		public WorkshopPublishedEventHandler(IMapper mapper, ManagementApiClient managementApiClient, IMessagingService messagingService)
+		public SubmissionEndingEventHandler(IMapper mapper, ManagementApiClient managementApiClient, IMessagingService messagingService)
 		{
 			_mapper = mapper;
 			_managementApiClient = managementApiClient;
 			_messagingService = messagingService;
 		}
 
-		public async Task Consume(ConsumeContext<WorkshopPublished> context)
+		public async Task Consume(ConsumeContext<SubmissionEnding> context)
 		{
 			var message = context.Message;
 
@@ -35,7 +35,7 @@ namespace Emailing.Service.API.Events.EventHandlers
 				// if participant already has a verified account send email where is the task link
 				if (verified)
 				{
-					var emailSubject = "Published workshop on peer review";
+					var emailSubject = "Submission phase is ending soon on peer review";
 					await _messagingService.SendEmail(
 						participant.Email,
 						emailSubject,
@@ -47,11 +47,11 @@ namespace Emailing.Service.API.Events.EventHandlers
 				// create change password ticket and send email where is the ticket and result_url set to task link
 				else
 				{
-					var emailSubject = "Reset password and Published workshop on peer review";
+					var emailSubject = "Reset password and submission phase is ending soon on peer review";
 
 					var ticket = await _managementApiClient.CreateChangePasswordTicket(
 						participant.Auth0Id,
-						$"http://localhost:3000/workshop/{message.Uid}"
+						$"http://localhost:3000/workshops/{message.Uid}"
 					);
 
 					await _messagingService.SendEmail(
