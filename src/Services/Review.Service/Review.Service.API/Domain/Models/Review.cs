@@ -11,8 +11,8 @@ namespace Review.Service.API.Domain.Models
 
                 public int ReviewerId { get; set; }
 
-                public int WorkId { get; set; }
-                public Work Work { get; set; }
+                public int SubmissionId { get; set; }
+                public Submission Submission { get; set; }
 
                 public ICollection<Criterion> Criteria { get; set; } = new List<Criterion>();
                 public List<Grade> Grades { get; set; } = new List<Grade>();
