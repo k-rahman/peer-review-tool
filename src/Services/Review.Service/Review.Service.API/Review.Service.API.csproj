@@ -13,7 +13,7 @@
     </PackageReference>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.6" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
-    <PackageReference Include="Task.Service.Contracts" Version="1.0.2" />
+    <PackageReference Include="Workshop.Service.Contracts" Version="2.1.0" />
   </ItemGroup>
 
 </Project>
