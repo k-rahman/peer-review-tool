@@ -24,8 +24,8 @@ namespace Review.Service.API.Persistence.EntityConfigurations
                             .HasColumnName("max_points")
                             .IsRequired();
 
-                        builder.Property(criterion => criterion.TaskUid)
-                            .HasColumnName("task_uid")
+                        builder.Property(criterion => criterion.WorkshopUid)
+                            .HasColumnName("workshop_uid")
                             .IsRequired();
                 }
         }

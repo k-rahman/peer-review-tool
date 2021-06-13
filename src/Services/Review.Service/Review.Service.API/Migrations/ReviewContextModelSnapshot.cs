@@ -36,9 +36,9 @@ namespace Review.Service.API.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("max_points");
 
-                    b.Property<Guid>("TaskUid")
+                    b.Property<Guid>("WorkshopUid")
                         .HasColumnType("uuid")
-                        .HasColumnName("task_uid");
+                        .HasColumnName("workshop_uid");
 
                     b.HasKey("Id");
 
@@ -86,22 +86,24 @@ namespace Review.Service.API.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("modified");
 
-                    b.Property<int>("ReviewerId")
-                        .HasColumnType("integer")
+                    b.Property<string>("ReviewerId")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("reviewer_id");
 
-                    b.Property<int>("WorkId")
+                    b.Property<int>("SubmissionId")
                         .HasColumnType("integer")
-                        .HasColumnName("work_id");
+                        .HasColumnName("submission_id");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("WorkId");
+                    b.HasIndex("SubmissionId");
 
                     b.ToTable("reviews");
                 });
 
-            modelBuilder.Entity("Review.Service.API.Domain.Models.Work", b =>
+            modelBuilder.Entity("Review.Service.API.Domain.Models.Submission", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -109,21 +111,21 @@ namespace Review.Service.API.Migrations
                         .HasColumnName("id")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<int>("AuthorId")
-                        .HasColumnType("integer")
+                    b.Property<string>("AuthorId")
+                        .HasColumnType("text")
                         .HasColumnName("author_id");
 
                     b.Property<string>("Content")
                         .HasColumnType("text")
                         .HasColumnName("content");
 
-                    b.Property<Guid>("TaskUid")
+                    b.Property<Guid>("WorkshopUid")
                         .HasColumnType("uuid")
-                        .HasColumnName("task_uid");
+                        .HasColumnName("workshop_uid");
 
                     b.HasKey("Id");
 
-                    b.ToTable("works");
+                    b.ToTable("submissions");
                 });
 
             modelBuilder.Entity("Review.Service.API.Domain.Models.Grade", b =>
@@ -147,13 +149,13 @@ namespace Review.Service.API.Migrations
 
             modelBuilder.Entity("Review.Service.API.Domain.Models.Review", b =>
                 {
-                    b.HasOne("Review.Service.API.Domain.Models.Work", "Work")
+                    b.HasOne("Review.Service.API.Domain.Models.Submission", "Submission")
                         .WithMany()
-                        .HasForeignKey("WorkId")
+                        .HasForeignKey("SubmissionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Work");
+                    b.Navigation("Submission");
                 });
 
             modelBuilder.Entity("Review.Service.API.Domain.Models.Criterion", b =>

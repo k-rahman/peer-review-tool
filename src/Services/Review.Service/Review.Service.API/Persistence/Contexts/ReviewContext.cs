@@ -8,7 +8,7 @@ namespace Review.Service.API.Persistence.Contexts
         {
                 public DbSet<Domain.Models.Review> Reviews { get; set; }
                 public DbSet<Criterion> Criteria { get; set; }
-                public DbSet<Work> Works { get; set; }
+                public DbSet<Domain.Models.Submission> Submissions { get; set; }
                 public ReviewContext(DbContextOptions<ReviewContext> options) : base(options)
                 {
                 }
@@ -16,7 +16,7 @@ namespace Review.Service.API.Persistence.Contexts
                 protected override void OnModelCreating(ModelBuilder builder)
                 {
                         builder.ApplyConfiguration(new ReviewEntityTypeConfiguration());
-                        builder.ApplyConfiguration(new WorkEntityTypeConfiguration());
+                        builder.ApplyConfiguration(new SubmissionEntityTypeConfiguration());
                         builder.ApplyConfiguration(new CriterionEntityTypeConfiguration());
 
                 }
