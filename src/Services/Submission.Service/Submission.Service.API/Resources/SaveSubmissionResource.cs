@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Submission.Service.API.Resources
@@ -6,5 +7,8 @@ namespace Submission.Service.API.Resources
         {
                 [Required]
                 public string Content { get; set; }
+
+                [Required]
+                public int WorkshopId { get; set; }
         }
 }
