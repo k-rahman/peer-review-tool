@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Submission.Service.API.Domain.Services;
 using Submission.Service.API.Resources;
@@ -42,7 +43,22 @@ namespace Submission.Service.API.Controllers
                         return Ok(submission);
                 }
 
+                [HttpPost]
+                [Authorize(Roles = "Participant")]
+                public async Task<IActionResult> CreateSubmission(SaveSubmissionResource resource)
+                {
+                        var authorId = User.Identity.Name;
+
+                        var result = await _submissionService.InsertAsync(resource, authorId);
+
+                        if (!result.Success)
+                                return BadRequest(result.Message);
+
+                        return Ok(result.Submission);
+                }
+
                 [HttpPut]
+                [Authorize(Roles = "Participant")]
                 public async Task<IActionResult> UpdateSubmission(int id, SaveSubmissionResource resource)
                 {
                         var result = await _submissionService.UpdateAsync(id, resource);

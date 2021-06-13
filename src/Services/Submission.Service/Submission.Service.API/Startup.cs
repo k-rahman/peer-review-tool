@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Common.EventBus.RabbitMQ.MassTransit;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -11,12 +13,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Submission.Service.API.Domain.Repositories;
 using Submission.Service.API.Domain.Services;
 using Submission.Service.API.Persistence.Contexts;
 using Submission.Service.API.Persistence.Repositories;
 using Submission.Service.API.Services;
+using Submission.Service.API.Settings;
 
 namespace Submission.Service.API
 {
@@ -69,6 +73,23 @@ namespace Submission.Service.API
                                                 .AllowAnyHeader());
                         });
 
+                        services.AddAuthentication(options =>
+                        {
+                                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+                        }).AddJwtBearer(options =>
+                        {
+                                var auth0 = Configuration.GetSection(Auth0Options.Auth0).Get<Auth0Options>();
+
+                                options.Authority = auth0.Authority;
+                                options.Audience = auth0.Audience;
+                                options.TokenValidationParameters = new TokenValidationParameters
+                                {
+                                        NameClaimType = ClaimTypes.NameIdentifier,
+                                        RoleClaimType = "https://schemas.peer-review-tool/roles"
+                                };
+                        });
                 }
 
                 // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -88,6 +109,8 @@ namespace Submission.Service.API
                         app.UseRouting();
 
                         app.UseCors(AllowSpecificOrigins);
+
+                        app.UseAuthentication();
 
                         app.UseAuthorization();
 
