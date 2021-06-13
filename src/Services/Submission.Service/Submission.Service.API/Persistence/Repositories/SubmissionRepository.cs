@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +26,11 @@ namespace Submission.Service.API.Persistence.Repositories
                 {
                         return await _context.Submissions.Include(submission => submission.SubmissionDeadlines)
                                                 .SingleOrDefaultAsync(submission => submission.Id == id);
+                }
+
+                public async Task InsertAsync(Domain.Models.Submission submission)
+                {
+                        await _context.Submissions.AddAsync(submission);
                 }
         }
 }

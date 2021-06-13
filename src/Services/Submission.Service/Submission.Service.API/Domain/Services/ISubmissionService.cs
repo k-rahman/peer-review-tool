@@ -9,6 +9,7 @@ namespace Submission.Service.API.Domain.Services
         {
                 Task<SubmissionResource> GetAuthorSubmissionByWorkshopUidAsync(Guid workshopUid, string authorId);
                 Task<SubmissionResource> GetByIdAsync(int id);
+                Task<SubmissionResponse> InsertAsync(SaveSubmissionResource submission, string authorId);
                 Task<SubmissionResponse> UpdateAsync(int id, SaveSubmissionResource submission);
         }
 }
