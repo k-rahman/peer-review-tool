@@ -1,8 +1,6 @@
-using System.Collections.Generic;
-using System.Linq;
 using AutoMapper;
 using Review.Service.API.Domain.Models;
-using Task.Service.Contracts;
+using Submission.Service.Contracts;
 
 namespace Review.Service.API.Mappings
 {
@@ -10,7 +8,8 @@ namespace Review.Service.API.Mappings
         {
                 public EventToModelProfile()
                 {
-                        CreateMap<Task.Service.Contracts.Models.Criterion, Criterion>();
+                        CreateMap<Workshop.Service.Contracts.Models.Criterion, Criterion>();
+                        CreateMap<SubmissionCreated, Domain.Models.Submission>();
                 }
         }
 }
