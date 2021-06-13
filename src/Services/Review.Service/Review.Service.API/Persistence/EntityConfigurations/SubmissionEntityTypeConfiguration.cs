@@ -5,9 +5,9 @@ using Review.Service.API.Domain.Models;
 namespace Review.Service.API.Persistence.EntityConfigurations
 {
         public class SubmissionEntityTypeConfiguration :
-        IEntityTypeConfiguration<Submission>
+        IEntityTypeConfiguration<Domain.Models.Submission>
         {
-                public void Configure(EntityTypeBuilder<Submission> builder)
+                public void Configure(EntityTypeBuilder<Domain.Models.Submission> builder)
                 {
                         builder.ToTable("submissions");
 

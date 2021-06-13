@@ -31,7 +31,7 @@ namespace Review.Service.API.Events.EventHandlers
 
                         foreach (var criterion in criteria)
                         {
-                                criterion.TaskUid = message.Uid;
+                                criterion.WorkshopUid = message.Uid;
 
                                 // check if works deadline entry already created before
                                 var existingCriterion = await _criterionRepository.GetByIdAsync(criterion.Id);

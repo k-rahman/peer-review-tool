@@ -23,7 +23,9 @@ namespace Review.Service.API.Persistence.EntityConfigurations
                               .HasColumnName("modified");
 
                         builder.Property(review => review.ReviewerId)
-                              .HasColumnName("reviewer_id");
+                              .HasColumnName("reviewer_id")
+                              .HasMaxLength(255)
+                              .IsRequired();
 
                         builder.Property(review => review.SubmissionId)
                               .HasColumnName("submission_id");
