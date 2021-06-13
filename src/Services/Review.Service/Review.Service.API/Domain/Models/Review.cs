@@ -9,7 +9,7 @@ namespace Review.Service.API.Domain.Models
                 public DateTimeOffset? Created { get; set; }
                 public DateTimeOffset? Modified { get; set; }
 
-                public int ReviewerId { get; set; }
+                public string ReviewerId { get; set; }
 
                 public int SubmissionId { get; set; }
                 public Submission Submission { get; set; }

@@ -8,7 +8,7 @@ namespace Review.Service.API.Persistence.Contexts
         {
                 public DbSet<Domain.Models.Review> Reviews { get; set; }
                 public DbSet<Criterion> Criteria { get; set; }
-                public DbSet<Submission> Submissions { get; set; }
+                public DbSet<Domain.Models.Submission> Submissions { get; set; }
                 public ReviewContext(DbContextOptions<ReviewContext> options) : base(options)
                 {
                 }

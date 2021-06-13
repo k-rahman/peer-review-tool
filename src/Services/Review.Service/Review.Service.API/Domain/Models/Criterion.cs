@@ -9,7 +9,7 @@ namespace Review.Service.API.Domain.Models
                 public string Description { get; set; }
                 public int MaxPoints { get; set; }
 
-                public Guid TaskUid { get; set; }
+                public Guid WorkshopUid { get; set; }
 
                 public ICollection<Review> Reviews { get; set; } = new List<Review>();
                 public List<Grade> Grades { get; set; } = new List<Grade>();
