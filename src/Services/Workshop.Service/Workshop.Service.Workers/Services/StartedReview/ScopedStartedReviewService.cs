@@ -66,6 +66,7 @@ namespace Workshop.Service.Workers.Services
                                         workshop.Id,
                                         workshop.Uid,
                                         workshop.ReviewStart,
+                                        workshop.NumberOfReviews,
                                         workshop.InstructorId,
                                         workshop.Participants
                                 });
@@ -75,12 +76,12 @@ namespace Workshop.Service.Workers.Services
                 private IEnumerable<WorkshopModel> GetWorkshopsWithStartedReview()
                 {
                         // check for review started 1 min ago
-                        var sql = @"SELECT t.id, t.uid, t.review_start ""ReviewStart"", 
-                                        t.instructor_id AS ""InstructorId"", p.auth0_id AS ""Auth0Id"", p.email FROM workshop_participants tp
-                                        INNER JOIN workshops t ON t.id = tp.workshop_id
-                                        INNER JOIN participants p ON p.id = tp.participant_id
-                                        WHERE(EXTRACT(EPOCH FROM now()) - EXTRACT(EPOCH FROM submission_start)) / 60 >= 0 AND
-                                        (EXTRACT(EPOCH FROM now()) - EXTRACT(EPOCH FROM submission_start)) / 60 <= 1";
+                        var sql = @"SELECT w.id, w.uid, w.review_start ""ReviewStart"", w.number_of_reviews ""NumberOfReviews"", 
+                                        w.instructor_id ""InstructorId"", p.auth0_id ""Auth0Id"", p.email FROM workshop_participants wp
+                                        INNER JOIN workshops w ON w.id = wp.workshop_id
+                                        INNER JOIN participants p ON p.id = wp.participant_id
+                                        WHERE(EXTRACT(EPOCH FROM now()) - EXTRACT(EPOCH FROM review_start)) / 60 >= 0 AND
+                                        (EXTRACT(EPOCH FROM now()) - EXTRACT(EPOCH FROM review_start)) / 60 <= 1";
 
                         var workshops = new Dictionary<int, WorkshopModel>();
                         var workshopsWithStartedReview = new List<WorkshopModel>();

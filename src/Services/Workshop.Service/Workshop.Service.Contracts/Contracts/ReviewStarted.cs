@@ -9,6 +9,7 @@ namespace Workshop.Service.Contracts
                 int Id { get; }
                 Guid Uid { get; }
                 public DateTimeOffset ReviewStart { get; }
+                public int NumberOfReviews {get; }
                 string InstructorId { get; }
                 List<Participant> Participants { get; }
         }

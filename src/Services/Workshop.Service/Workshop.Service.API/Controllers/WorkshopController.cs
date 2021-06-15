@@ -32,7 +32,6 @@ namespace Workshop.Service.API.Controllers
                         if (User.IsInRole("Participant"))
                                 return Ok(await _workshopService.GetByParticipantIdAsync(userId));
 
-
                         // if for some reason server "Authorize" rule failed, return Forbidden "403"  
                         return Forbid();
                 }
@@ -53,9 +52,9 @@ namespace Workshop.Service.API.Controllers
                 [Authorize(Roles = "Instructor")]
                 public async Task<IActionResult> CreateWorkshop([FromForm] SaveWorkshopResource resource)
                 {
-                        var InstructorId = User.Identity.Name;
+                        var instructorId = User.Identity.Name;
 
-                        var result = await _workshopService.InsertAsync(resource, InstructorId);
+                        var result = await _workshopService.InsertAsync(resource, instructorId);
 
                         if (!result.Success)
                                 return BadRequest(result.Message);
