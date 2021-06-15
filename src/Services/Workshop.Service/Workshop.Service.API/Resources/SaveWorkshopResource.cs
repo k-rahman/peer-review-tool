@@ -16,6 +16,9 @@ namespace Workshop.Service.API.Resources
                 public string Description { get; set; }
 
                 [Required]
+                public int NumberOfReviews { get; set; }
+
+                [Required]
                 public DateTimeOffset SubmissionStart { get; set; }
 
                 [Required]
@@ -31,7 +34,8 @@ namespace Workshop.Service.API.Resources
                 public DateTimeOffset Published { get; set; }
 
                 [Required]
-                [ModelBinder(BinderType = typeof(FormDataJsonBinder))]
+                // serialize the criteria array of json objects, coming from form data, into an c# object
+                [ModelBinder(BinderType = typeof(FormDataJsonBinder))] 
                 public IEnumerable<SaveCriterionResource> Criteria { get; set; }
 
                 [Required]

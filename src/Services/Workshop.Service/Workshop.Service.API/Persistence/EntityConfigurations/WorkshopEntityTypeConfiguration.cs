@@ -32,6 +32,10 @@ namespace Workshop.Service.API.Persistence.EntityConfigurations
                               .HasColumnName("description")
                               .IsRequired();
 
+                        builder.Property(workshop => workshop.NumberOfReviews)
+                              .HasColumnName("number_of_reviews")
+                              .IsRequired();
+
                         builder.Property(workshop => workshop.SubmissionStart)
                               .HasColumnName("submission_start");
 
