@@ -1,7 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useFormikContext } from "formik";
 import { TextField } from "@material-ui/core";
 import _ from "lodash";
+
 import styles from "../../assets/styles/form-field.module.css";
 
 const FormField = ({ name, label, variant, isDisabled, cssClass }) => {
@@ -25,6 +26,7 @@ const FormField = ({ name, label, variant, isDisabled, cssClass }) => {
 			name={name}
 			value={_.get(values, name)}
 			variant={variant}
+			required
 		/>
 	);
 };
