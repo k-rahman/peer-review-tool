@@ -1,21 +1,30 @@
 import { create } from "apisauce";
 
-const taskServiceUrl = process.env.REACT_APP_TASK_SERVICE_URL;
-const workServiceUrl = process.env.REACT_APP_WORK_SERVICE_URL;
-
-const taskService = create({
-  baseURL: taskServiceUrl,
+export default create({
+  baseURL: process.env.REACT_APP_BACKEND_URL,
 });
 
-const workService = create({
-  baseURL: workServiceUrl,
-});
+// const workshopServiceUrl = process.env.REACT_APP_WORKSHOP_SERVICE_URL;
+// const submissionServiceUrl = process.env.REACT_APP_SUBMISSION_SERVICE_URL;
+// const reviewServiceUrl = process.env.REACT_APP_REVIEW_SERVICE_URL;
 
-// // add token to every task api request
-// taskService.addAsyncRequestTransform(async request => {
+// const workshopService = create({
+//   baseURL: workshopServiceUrl,
+// });
+
+// const submissionService = create({
+//   baseURL: submissionServiceUrl,
+// });
+
+// const reviewService = create({
+//   baseURL: reviewServiceUrl,
+// });
+
+// // add token to every workshop api request
+// workshopService.addAsyncRequestTransform(async request => {
 //   const token = await getAccessTokenSilently();
 //   if (!token) return;
 //   request.headers["Authorization"] = "Bearer " + token;
 // });
 
-export default { taskService, workService };
+// export default { api, workshopService, submissionService, reviewService };
