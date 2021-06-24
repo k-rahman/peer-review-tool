@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useFormikContext } from "formik";
 import DateFnsUtils from "@date-io/date-fns";
 import {
 	KeyboardDateTimePicker,
 	MuiPickersUtilsProvider,
 } from '@material-ui/pickers';
+
 import styles from "../../assets/styles/form-date-picker.module.css";
 
 const FormDatePicker = ({ name, label }) => {
@@ -22,6 +23,7 @@ const FormDatePicker = ({ name, label }) => {
 				onChange={date => setFieldValue(name, date)}
 				placeholder="dd.mm.yyyy"
 				value={values[name]}
+				required
 			/>
 		</MuiPickersUtilsProvider>
 	);
