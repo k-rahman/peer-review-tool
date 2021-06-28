@@ -1,50 +1,122 @@
 version: "3.8"
 
 services:
-  rabbitmq:
+  postgresql: # Database
+    image: postgres:13-alpine
+    environment: 
+      - POSTGRES_PASSWORD=mysecretpassword
+    ports:
+      - 5432:5432
+    volumes: 
+      - pgdata:/var/lib/postgresql/data
+
+  rabbitmq: # Bus borker
     image: rabbitmq:3-management-alpine
-		ports:
-			- "15672:15672"
-			- "5672:5672"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
 
-  taskserviceapi:
-    image: taskserviceapi:dev
+  webapigateway: # Envoy (Api Gateway)
+    image: envoyproxy/envoy:v1.11.1
+    volumes:
+      - ./ApiGateways/Envoy/config/web:/etc/envoy
+    ports:
+      - "5202:80"
+      - "15202:8001"
+  
+  # webaggregator:
+  #   image: webaggregator:dev
+  #   build:
+  #     context: .
+  #     dockerfile: ApiGateways/Web/Web.HttpAggregator/Dockerfile.dev
+  #   ports:
+
+  workshopserviceapi: # Workshop service API
+    image: workshopserviceapi:dev
     build:
       context: .
-      dockerfile: Services/Task.Service/Task.Service.API/Dockerfile.dev
+      dockerfile: Services/Workshop.Service/Workshop.Service.API/Dockerfile.dev
+    environment: 
+      - PATH_BASE=/workshop-api
     ports:
-      - 5000:5000
+      - 5000:80
+    depends_on: 
+      - rabbitmq
     volumes:
-      - ./Services/Task.Service/Task.Service.API:/app
+      - ./Services/Workshop.Service/Workshop.Service.API:/app
+      - ./Services/Workshop.Service/Workshop.Service.Contracts:/Workshop.Service.Contracts
+      - ./packages:/app/packages
 
-  workserviceapi:
-    image: workserviceapi:dev
+  workshopserviceworkers: # Workshop service workers
+    image: workshopserviceworkers:dev
     build:
       context: .
-      dockerfile: Services/Work.Service/Work.Service.API/Dockerfile.dev
-    ports:
-      - 5001:5001
+      dockerfile: Services/Workshop.Service/Workshop.Service.Workers/Dockerfile.dev
+    depends_on: 
+      - rabbitmq
     volumes:
-      - ./Services/Work.Service/Work.Service.API:/app
+      - ./Services/Workshop.Service/Workshop.Service.Workers:/app
+      - ./Services/Workshop.Service/Workshop.Service.Contracts:/Workshop.Service.Contracts
+      - ./packages:/app/packages
 
-  reviewserviceapi:
+  submissionserviceapi: # Submission service
+    image: submissionserviceapi:dev
+    build:
+      context: .
+      dockerfile: Services/Submission.Service/Submission.Service.API/Dockerfile.dev
+    ports:
+      - 5001:80
+    environment: 
+      - PATH_BASE=/submission-api
+    depends_on: 
+      - rabbitmq
+    volumes:
+      - ./Services/Submission.Service/Submission.Service.API:/app
+      - ./Services/Submission.Service/Submission.Service.Contracts:/Submission.Service.Contracts
+      - ./packages:/app/packages
+
+  reviewserviceapi: # Review service
     image: reviewserviceapi:dev
     build:
       context: .
       dockerfile: Services/Review.Service/Review.Service.API/Dockerfile.dev
     ports:
-      - 5002:5002
+      - 5002:80
+    environment: 
+      - PATH_BASE=/review-api
+    depends_on: 
+      - rabbitmq
     volumes:
       - ./Services/Review.Service/Review.Service.API:/app
+      - ./packages:/app/packages
 
-  webclient:
+  emailingservice: # Emailing service
+    image: emailingservice:dev
+    build:
+      context: .
+      dockerfile: Services/Emailing.Service/Emailing.Service.API/Dockerfile.dev
+    environment: 
+      - SENDGRID_API_KEY=${SENDGRID_API_KEY}
+    depends_on: 
+      - rabbitmq
+    volumes:
+      - ./Services/Emailing.Service/Emailing.Service.API:/app
+      - ./packages:/app/packages
+
+  webclient: # React app
     image: webclient:dev
     build:
       context: .
       dockerfile: Web/Dockerfile.dev
     ports:
-      - "3000:3000"
+      - 3000:3000
     stdin_open: true
     volumes:
       - ./Web:/app
-      - /app/node_modules
+      #the anonymous volume ('/app/node_modules') so the node_modules directory would not be overwritten by the mounting of the host directory at runtime.
+      # - /app/node_modules 
+
+
+volumes:
+  pgdata: # Database volume
+    external: true
