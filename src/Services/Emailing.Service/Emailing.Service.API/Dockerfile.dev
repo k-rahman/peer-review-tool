@@ -1,0 +1,6 @@
+FROM mcr.microsoft.com/dotnet/sdk:5.0
+ARG BUILD_CONFIGURATION=Debug
+ENV ASPNETCORE_ENVIRONMENT=Development
+
+WORKDIR /app
+ENTRYPOINT dotnet watch run --no-launch-profile -c Debug
