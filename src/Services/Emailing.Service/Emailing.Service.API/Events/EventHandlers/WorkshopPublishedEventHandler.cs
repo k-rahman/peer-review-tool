@@ -51,7 +51,7 @@ namespace Emailing.Service.API.Events.EventHandlers
 
 					var ticket = await _managementApiClient.CreateChangePasswordTicket(
 						participant.Auth0Id,
-						$"http://localhost:3000/workshop/{message.Uid}"
+						$"http://localhost:3000/workshops/{message.Uid}"
 					);
 
 					await _messagingService.SendEmail(
