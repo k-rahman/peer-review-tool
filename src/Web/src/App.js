@@ -1,43 +1,29 @@
-import React, { useEffect } from "react";
-import { useHistory, Route, Redirect, Switch } from "react-router-dom";
-import {
-  Container,
-  AppBar,
-  Toolbar,
-  Typography,
-  Button,
-  makeStyles,
-  Breadcrumbs,
-} from "@material-ui/core";
-import Chip from "@material-ui/core/Chip";
-import HomeIcon from "@material-ui/icons/Home";
-import { emphasize, withStyles } from "@material-ui/core/styles";
+import React from "react";
+import { Switch } from "react-router-dom";
+import { Container } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import { useAuth0 } from "@auth0/auth0-react";
 
-import "./App.css";
-import Tasks from "./components/Tasks";
-import TaskDetails from "./components/TaskDetails";
-import NavBar from "./components/NavBar";
-import Loading from "./components/Loading";
+import Workshops from "./components/Workshops";
+import WorkshopDetails from "./components/WorkshopDetails";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import Loading from "./components/Loading";
+import NavBar from "./components/common/NavBar";
+import Breadcrumbs from "./components/common/Breadcrumbs";
 
-const StyledBreadcrumb = withStyles(theme => ({
+const useStyles = makeStyles({
   root: {
-    backgroundColor: theme.palette.grey[100],
-    height: theme.spacing(3),
-    color: theme.palette.grey[800],
-    fontWeight: theme.typography.fontWeightRegular,
-    "&:hover, &:focus": {
-      backgroundColor: theme.palette.grey[300],
-    },
-    "&:active": {
-      boxShadow: theme.shadows[1],
-      backgroundColor: emphasize(theme.palette.grey[300], 0.12),
+    height: "100%",
+  },
+  "@global": {
+    "html, body, #root": {
+      height: "100%",
     },
   },
-}))(Chip);
+});
 
 const App = _ => {
+  const classes = useStyles();
   const { isLoading } = useAuth0();
 
   if (isLoading) {
@@ -45,32 +31,13 @@ const App = _ => {
   }
 
   return (
-    <Container maxWidth="lg" style={{ height: "100%" }}>
+    <Container maxWidth="lg" disableGutters className={classes.root}>
       <NavBar />
-      <Breadcrumbs
-        aria-label="breadcrumb"
-        style={{ marginTop: 18, marginLeft: 30 }}
-      >
-        <StyledBreadcrumb
-          component="a"
-          href="#"
-          label="Home"
-          icon={<HomeIcon fontSize="small" />}
-        />
-        {/* <StyledBreadcrumb component="a" href="#" label="Catalog" />
-          <StyledBreadcrumb
-            label="Accessories"
-            deleteIcon={<ExpandMoreIcon />}
-          /> */}
-      </Breadcrumbs>
-      <div className="App">
-        {/* <TaskAddEdit /> */}
-        <Switch>
-          <ProtectedRoute path="/tasks/:uid" component={TaskDetails} />
-          <ProtectedRoute path="/tasks" component={Tasks} />
-          {/* <ProtectedRoute path="/" component={Home} /> */}
-        </Switch>
-      </div>
+      <Breadcrumbs />
+      <Switch>
+        <ProtectedRoute path="/workshops/:uid" component={WorkshopDetails} />
+        <ProtectedRoute path="/workshops" component={Workshops} />
+      </Switch>
     </Container>
   );
 };
