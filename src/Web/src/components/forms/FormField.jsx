@@ -2,31 +2,42 @@ import React from "react";
 import { useFormikContext } from "formik";
 import { TextField } from "@material-ui/core";
 import _ from "lodash";
+import { makeStyles } from "@material-ui/core";
 
-import styles from "../../assets/styles/form-field.module.css";
+const withStyles = makeStyles({
+	root: props => ({
+		width: "100%",
+		marginTop: props.marginTop
+	}),
+});
 
-const FormField = ({ name, label, variant, isDisabled, cssClass }) => {
+const FormField = ({ name, label, isDisabled, isReadOnly = false, multiline = false, marginTop }) => {
+	const classes = withStyles({ marginTop });
 	const {
 		errors,
-		values,
-		touched,
 		handleChange,
 		handleBlur,
+		touched,
+		values,
 	} = useFormikContext();
 
 	return (
 		<TextField
-			className={`${styles["form-field"]} ${styles[cssClass]}`}
-			error={_.get(errors, name) && _.get(touched, name)}
+			className={classes.root}
 			disabled={isDisabled}
-			helperText={_.get(touched, name) && _.get(errors, name)}
+			error={_.get(errors, name) && !isReadOnly && _.get(touched, name)}
+			helperText={_.get(touched, name) && !isReadOnly && _.get(errors, name)}
+			InputProps={{ readOnly: isReadOnly, }}
+			InputLabelProps={{ shrink: _.get(values, name)?.name, }}
 			label={label}
-			onChange={handleChange}
-			onBlur={handleBlur}
+			multiline={multiline}
 			name={name}
-			value={_.get(values, name)}
-			variant={variant}
+			onBlur={handleBlur}
+			onChange={handleChange}
+			value={_.get(values, name)?.name || _.get(values, name)}
+			variant="outlined"
 			required
+			rows={5}
 		/>
 	);
 };
