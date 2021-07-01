@@ -6,8 +6,11 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles(theme => ({
 	formControl: {
-		margin: theme.spacing(1),
-		minWidth: 120
+		marginLeft: theme.spacing(1),
+		minWidth: 92,
+	},
+	label: {
+		position: "relative"
 	},
 	selectEmpty: {
 		marginTop: theme.spacing(2)
@@ -17,27 +20,27 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
-const FormSelect = ({ menuItems, name, label }) => {
+const FormSelect = ({ menuItems, name, label, isDisabled, isReadOnly }) => {
 	const classes = useStyles();
 	const { errors, touched, values, handleChange } = useFormikContext();
 
 	return (
-		<FormControl required >
-			<InputLabel>{label}</InputLabel>
+		<FormControl required className={classes.formControl} variant="outlined">
+			<InputLabel className={classes.label}>{label}</InputLabel>
 			<Select
+				readOnly={isReadOnly}
+				disabled={isDisabled}
 				name={name}
 				value={_.get(values, name)}
 				onChange={handleChange}
 				error={_.get(errors, name) && _.get(touched, name)}
 				MenuProps={{ classes: { paper: classes.menuPaper } }}
 			>
-
 				{menuItems.map((item, index) => (
 					<MenuItem key={index} value={item}>{item}</MenuItem>
 				))}
-
 			</Select>
-			{ _.get(touched, name) && <FormHelperText>{_.get(errors, name)}</FormHelperText>}
+			{_.get(touched, name) && <FormHelperText>{_.get(errors, name)}</FormHelperText>}
 		</FormControl >
 	);
 }
