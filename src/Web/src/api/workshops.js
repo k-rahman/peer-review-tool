@@ -7,22 +7,21 @@ const endpoint = "w/api/v1/workshops";
 const getWorkshops = _ => api.get(endpoint);
 // const getWorkshops = _ => api.workshopService.get(endpoint);
 const getWorkshopByUid = workshopUid => api.get(`${endpoint}/${workshopUid}`);
-const addWorkshop = workshop => {
+const addWorkshop = newWorkshop => {
   const data = new FormData();
 
-  data.append("name", workshop.name);
-  data.append("description", workshop.description);
-  data.append("numberOfReviews", workshop.numberOfReviews);
-  data.append("participantsEmails", workshop.participantsEmails);
-  data.append("submissionStart", formatISO(workshop.submissionStart));
-  data.append("submissionEnd", formatISO(workshop.submissionEnd));
-  data.append("reviewStart", formatISO(workshop.reviewStart));
-  data.append("reviewEnd", formatISO(workshop.reviewEnd));
-  data.append("published", formatISO(workshop.published));
-  data.append("criteria", JSON.stringify(workshop.criteria));
+  data.append("name", newWorkshop.name);
+  data.append("description", newWorkshop.description);
+  data.append("published", formatISO(newWorkshop.published));
+  data.append("participantsEmails", newWorkshop.participants);
+  data.append("criteria", JSON.stringify(newWorkshop.criteria));
+  data.append("submissionStart", formatISO(newWorkshop.submissionStart));
+  data.append("submissionEnd", formatISO(newWorkshop.submissionEnd));
+  data.append("numberOfReviews", newWorkshop.numberOfReviews);
+  data.append("reviewStart", formatISO(newWorkshop.reviewStart));
+  data.append("reviewEnd", formatISO(newWorkshop.reviewEnd));
 
-  // return api.workshopService.post(endpoint, data);
-  return api.api.post(endpoint, data);
+  return api.post(endpoint, data);
 };
 
 const updateWorkshop = (workshopId, workshop) =>
