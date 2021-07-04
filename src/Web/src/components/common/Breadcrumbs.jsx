@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Chip, emphasize, Breadcrumbs as MaterialBreadcrumbs, withStyles, makeStyles } from "@material-ui/core";
-import { Home as HomeIcon } from "@material-ui/icons";
+import { HammerWrench as WorkshopIcon, } from "mdi-material-ui";
 
 // Styles
 const StyledBreadcrumb = withStyles(theme => ({
@@ -30,15 +30,15 @@ const useStyles = makeStyles({
 const Breadcrumbs = _ => {
 	const classes = useStyles();
 	const location = useLocation();
-	const pathnames = location.pathname.split("/").filter(x => x);
+	const pathnames = location.pathname.split("/").filter(x => x).slice(1);
 
 	return (
 		<MaterialBreadcrumbs aria-label="breadcrumb" className={classes.root}>
 			<StyledBreadcrumb
 				component={Link}
-				to="/"
-				label="Home"
-				icon={<HomeIcon fontSize="small" />}
+				to="/workshops"
+				label="Workshops"
+				icon={<WorkshopIcon />}
 			/>
 			{pathnames.map((value, index) => {
 				const last = index === pathnames.length - 1;
@@ -49,8 +49,9 @@ const Breadcrumbs = _ => {
 				) : (
 					<StyledBreadcrumb key={to} component={Link} to={to} label={value} />
 				);
-			})}
-		</MaterialBreadcrumbs>
+			})
+			}
+		</MaterialBreadcrumbs >
 	);
 }
 
