@@ -19,7 +19,7 @@ import "../assets/styles/workshops-table.css";
 
 const useStyles = makeStyles({
 	root: {
-		padding: [[18, 38]]
+		padding: [[18, 28]]
 	},
 	editColumn: {
 		padding: [0, '!important'],
@@ -47,7 +47,7 @@ const WorkshopsTable = ({ data, onWorkshopEdit, isInstructor, gridRef }) => {
 		}
 	}, [isInstructor]);
 
-	const EditButton = params => {
+	const editColTemplate = params => {
 		return (
 			<Button
 				className={classes.editBtn}
@@ -63,7 +63,7 @@ const WorkshopsTable = ({ data, onWorkshopEdit, isInstructor, gridRef }) => {
 		history.push(`/workshops/${props.uid}`);
 	}
 
-	const nameColumnTemplate = props => {
+	const nameColTemplate = props => {
 		return (
 			<Button
 				color="primary"
@@ -99,8 +99,8 @@ const WorkshopsTable = ({ data, onWorkshopEdit, isInstructor, gridRef }) => {
 			>
 
 				<ColumnsDirective>
-					<ColumnDirective headerText=' ' template={EditButton} textAlign="center" customAttributes={{ class: classes.editColumn }} allowReordering={false} allowFiltering={false} allowResizing={false} showInColumnChooser={false} visible={false} minWidth="30" width="30" />
-					<ColumnDirective field="name" headerText='Name' template={nameColumnTemplate} headerTextAlign="center" showInColumnChooser={false} minWidth="350" width="350" />
+					<ColumnDirective headerText=' ' template={editColTemplate} textAlign="center" customAttributes={{ class: classes.editColumn }} allowReordering={false} allowFiltering={false} allowResizing={false} showInColumnChooser={false} visible={false} minWidth="30" width="30" />
+					<ColumnDirective field="name" headerText='Name' template={nameColTemplate} headerTextAlign="center" showInColumnChooser={false} minWidth="350" width="350" />
 					<ColumnDirective field='published' headerText='Publish Date' type='dateTime' format='dd.MM.yyyy hh:mm a' headerTextAlign='center' textAlign='center' minWidth="170" width="170" />
 					<ColumnDirective field='uid' headerText='Link' valueAccessor={linkValue} headerTextAlign="center" textAlign="center" showInColumnChooser={isInstructor} visible={false} minWidth="450" width="450" />
 					<ColumnDirective field='submissionStart' headerText='Submission Start' type='dateTime' format='dd.MM.yyyy hh:mm a' headerTextAlign='center' textAlign='center' minWidth="175" width="175" />
