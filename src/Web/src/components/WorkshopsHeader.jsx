@@ -8,7 +8,7 @@ const useStyles = makeStyles({
 		justifyContent: "space-between",
 		alignItems: "flex-end",
 		textAlign: "left",
-		padding: [[18, 38]]
+		padding: [[18, 28]]
 
 	}
 });
