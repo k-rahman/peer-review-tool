@@ -1,6 +1,6 @@
 import React from 'react';
 import { Paper, List, ListItem, ListItemText, ListItemIcon, Accordion, AccordionSummary, AccordionDetails, Typography, makeStyles } from '@material-ui/core';
-import { ExpandMore as ExpandMoreIcon, LabelImportantTwoTone as ListIcon, Folder as FolderIcon } from '@material-ui/icons';
+import { ExpandMore as ExpandMoreIcon, LabelImportantTwoTone as ListIcon } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -12,21 +12,32 @@ const useStyles = makeStyles((theme) => ({
 		overflow: "auto",
 		padding: 20,
 		margin: 0
-		// padding: 20
 	},
 	wrapper: {
 		padding: [[6, 16]],
 	},
+	details: {
+		padding: [[0, 16]],
+	},
 	title: {
 		fontWeight: [500, "!important"],
+		padding: [[6, 16]],
 	},
 	list: {
 		width: "100%",
+		paddingTop: 0,
+	},
+	listItem: {
+		paddingLeft: 0,
+		paddingRight: 20
 	},
 	listItemText: {
 		display: "flex",
 		justifyContent: "space-between",
 		width: "100%",
+	},
+	icon: {
+		marginRight: 5,
 	},
 	maxPoints: {
 		textAlign: "right",
@@ -44,9 +55,7 @@ const WorkshopDetails = ({ workshop }) => {
 	return (
 		<div className={classes.root}>
 			<div className={classes.wrapper}>
-				<Paper className={classes.wrapper}>
-					<Typography variant="h5" className={classes.title}>{workshop.name}</Typography>
-				</Paper>
+				<Typography variant="h5" className={classes.title}>{workshop.name}</Typography>
 			</div>
 			<div className={classes.wrapper}>
 				<Accordion expanded={expanded === 'description'} onChange={handleChange('description')}>
@@ -58,7 +67,7 @@ const WorkshopDetails = ({ workshop }) => {
 					>
 						<Typography variant="h6">Description</Typography>
 					</AccordionSummary>
-					<AccordionDetails className={classes.details}>
+					<AccordionDetails>
 						<Typography variant="body2">{workshop.description}</Typography>
 					</AccordionDetails>
 				</Accordion>
@@ -77,10 +86,8 @@ const WorkshopDetails = ({ workshop }) => {
 						<List dense className={classes.list}>
 							<Typography variant="subtitle2" align="right">Max Points</Typography>
 							{workshop.criteria?.map((c, i) => (
-								<ListItem key={i} >
-									<ListItemIcon>
-										<ListIcon />
-									</ListItemIcon>
+								<ListItem key={i} className={classes.listItem}>
+									<ListIcon color="primary" className={classes.icon} />
 									<div className={classes.listItemText}>
 										<ListItemText>{c.description}</ListItemText>
 										<ListItemText className={classes.maxPoints}>{c.maxPoints}</ListItemText>
