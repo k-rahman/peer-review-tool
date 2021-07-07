@@ -44,7 +44,7 @@ namespace Submission.Service.API.Controllers
                 }
 
                 [HttpPost]
-                [Authorize(Roles = "Participant")]
+                [Authorize(Roles = "Participant, Instructor")]
                 public async Task<IActionResult> CreateSubmission(SaveSubmissionResource resource)
                 {
                         var authorId = User.Identity.Name;
@@ -58,7 +58,7 @@ namespace Submission.Service.API.Controllers
                 }
 
                 [HttpPut]
-                [Authorize(Roles = "Participant")]
+                [Authorize(Roles = "Participant, Instructor")]
                 public async Task<IActionResult> UpdateSubmission(int id, SaveSubmissionResource resource)
                 {
                         var result = await _submissionService.UpdateAsync(id, resource);

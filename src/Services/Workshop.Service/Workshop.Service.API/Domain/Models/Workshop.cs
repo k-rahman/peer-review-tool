@@ -10,6 +10,7 @@ namespace Workshop.Service.API.Domain.Models
                 public Guid Uid { get; set; }
                 public string Name { get; set; }
                 public string Description { get; set; }
+                public int NumberOfReviews { get; set; }
                 public DateTimeOffset SubmissionStart { get; set; }
                 public DateTimeOffset SubmissionEnd { get; set; }
                 public DateTimeOffset ReviewStart { get; set; }

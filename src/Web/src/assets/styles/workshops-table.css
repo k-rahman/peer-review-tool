@@ -1,0 +1,39 @@
+.e-grid {
+  border-radius: 5px !important;
+}
+
+.e-toolbar {
+  border-radius: 5px !important;
+}
+
+.e-toolbar .e-toolbar-items {
+  background-color: #ffffff !important;
+  border-radius: 5px !important;
+}
+
+.e-grid .e-gridheader {
+  background-color: #ffffff !important;
+  border-radius: 5px !important;
+}
+
+.e-grid .e-rowcell {
+  height: 60px !important;
+}
+
+.e-grid .e-pager {
+  border-radius: 5px !important;
+}
+
+.e-grid .e-gridpager .e-currentitem {
+  background-color: #005577 !important;
+}
+
+/* customize the column menu icon */
+.e-grid .e-columnheader .e-icons.e-columnmenu::before {
+  content: "\e903";
+}
+
+/*items per page*/
+.e-pagerdropdown {
+  width: 50px !important;
+}

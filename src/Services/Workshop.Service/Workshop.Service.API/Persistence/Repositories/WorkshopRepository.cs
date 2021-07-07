@@ -58,7 +58,7 @@ namespace Workshop.Service.API.Persistence.Repositories
                                         .SingleOrDefaultAsync(workshop => workshop.Uid == uid);
                 }
 
-                public async System.Threading.Tasks.Task InsertAsync(Domain.Models.Workshop workshop)
+                public async Task InsertAsync(Domain.Models.Workshop workshop)
                 {
                         await _context.Workshops.AddAsync(workshop);
                 }

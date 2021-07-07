@@ -1,27 +1,45 @@
-import React, { useEffect } from "react";
+import React from "react";
+import _ from "lodash";
 import { useFormikContext } from "formik";
 import DateFnsUtils from "@date-io/date-fns";
-import {
-	KeyboardDateTimePicker,
-	MuiPickersUtilsProvider,
-} from '@material-ui/pickers';
-import styles from "../../assets/styles/form-date-picker.module.css";
+import { KeyboardDateTimePicker, MuiPickersUtilsProvider, DateTimePicker } from '@material-ui/pickers';
+import { makeStyles } from "@material-ui/core";
+
+const useStyles = makeStyles({
+	root: {
+		width: "100%",
+		marginTop: 38
+
+	},
+});
+
 
 const FormDatePicker = ({ name, label }) => {
-	const { errors, touched, setFieldValue, values } = useFormikContext();
+	const classes = useStyles();
+
+	const { setFieldTouched, errors, touched, setFieldValue, values } = useFormikContext();
+
+	const validateOnBlur = () => {
+		setFieldTouched(name, true)
+	}
 
 	return (
-		<MuiPickersUtilsProvider utils={DateFnsUtils}>
+		<MuiPickersUtilsProvider utils={DateFnsUtils} >
 			<KeyboardDateTimePicker
-				className={styles['date-time-picker']}
-				error={errors[name] && touched[name]}
-				format="dd.MM.yyyy"
-				helperText={touched[name] && errors[name]}
+				className={classes.root}
+				disablePast
+				error={_.get(errors, name) && _.get(touched, name)}
+				format="dd.MM.yyyy    hh:mm a"
+				helperText={_.get(touched, name) && _.get(errors, name)}
+				hideTabs
+				inputVariant="outlined"
 				label={label}
-				// minDate={new Date()}
-				onChange={date => setFieldValue(name, date)}
-				placeholder="dd.mm.yyyy"
-				value={values[name]}
+				name={name}
+				onBlur={input => input.target.onblur = validateOnBlur()}
+				onChange={date => setFieldValue(name, date, true)}
+				placeholder="dd.mm.yyyy hh:mm"
+				value={_.get(values, name)}
+				required
 			/>
 		</MuiPickersUtilsProvider>
 	);

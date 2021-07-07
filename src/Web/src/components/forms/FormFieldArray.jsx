@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useFormikContext, FieldArray } from "formik";
 import { Button, IconButton } from "@material-ui/core";
 import { Close } from "@material-ui/icons";

@@ -1,9 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router } from "react-router-dom";
+import { ThemeProvider, CssBaseline } from "@material-ui/core";
 
-import "./index.css";
 import App from "./App";
+import theme from "./theme";
+import "./assets/styles/material.css";
 import reportWebVitals from "./reportWebVitals";
 import Auth0ProviderWithHistory from "./components/auth/Auth0ProviderWithHisotry";
 
@@ -11,7 +13,10 @@ ReactDOM.render(
   <React.StrictMode>
     <Router>
       <Auth0ProviderWithHistory>
-        <App />
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <App />
+        </ThemeProvider>
       </Auth0ProviderWithHistory>
     </Router>
   </React.StrictMode>,

@@ -1,25 +1,20 @@
-import React, { useEffect } from 'react';
-import { Typography } from "@material-ui/core";
-import { useRouteMatch } from "react-router-dom";
-import { useAuth0 } from '@auth0/auth0-react';
-import useApi from '../hooks/useApi';
-import submissions from '../api/submissions';
+import React from 'react';
+import { makeStyles, Typography } from "@material-ui/core";
 
-const AfterSubmission = () => {
-	const match = useRouteMatch();
-	const { user } = useAuth0();
-	const { request: getSubmission, data: submission } = useApi(submissions.getSubmission)
+const useStyles = makeStyles({
+	content: {
+		padding: [[6, 16]],
+	}
+});
 
 
-	useEffect(_ => {
-		getSubmission(match.params.uid, user.sub);
-	}, []);
+const AfterSubmission = ({ data: submission }) => {
+	const classes = useStyles();
 
 	return (
 		<>
-			<Typography variant="h4">Your submitted submission</Typography>
-			<Typography variant="body">
-				{submission?.content ? submission.content : "You have not submitted your work! please contact your teacher, thank you."}
+			<Typography variant="body1" className={classes.content}>
+				{submission ? submission : "You have not submitted your work! please contact your teacher, thank you."}
 			</Typography>
 		</>
 	);

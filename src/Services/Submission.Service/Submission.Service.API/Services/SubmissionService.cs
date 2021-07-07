@@ -55,6 +55,7 @@ namespace Submission.Service.API.Services
                                 await _submissionRepository.InsertAsync(newSubmission);
                                 await _unitOfWork.CompleteAsync();
 
+                                // get workshopUid from instered submission to pass it in the submission created event
                                 var insertedSubmission = await _submissionRepository.GetByIdAsync(newSubmission.Id);
                                 var workshopUid = insertedSubmission.SubmissionDeadlines.Uid;
 
