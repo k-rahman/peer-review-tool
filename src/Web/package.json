@@ -18,6 +18,7 @@
     "date-fns": "^2.21.3",
     "formik": "^2.2.6",
     "lodash": "^4.17.21",
+    "mdi-material-ui": "^6.22.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-lottie": "^1.2.3",
