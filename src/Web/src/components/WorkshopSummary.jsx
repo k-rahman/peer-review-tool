@@ -23,24 +23,33 @@ import reviewService from "../api/reviews";
 import Dialog from "./common/Dialog";
 import Submission from "./AfterSubmission";
 import Review from "./ReviewView";
-import TeacherReview from "./Review";
+import TeacherReview from "./DuringReview";
+import SubmitButton from './forms/SubmitButton';
 
 import "../assets/styles/workshops-table.css";
+import AppBar from './common/AppBar';
 
 const useStyles = makeStyles({
 	root: {
-		padding: 20,
+		padding: 18,
 	},
 	wrapper: {
 		width: "100%",
 		padding: [[6, 16]],
 	},
-	header: {
+	title: {
 		fontWeight: [500, "!important"],
-		padding: [[6, 16]],
+		marginBottom: 12,
 	},
 	content: {
 		padding: [[6, 16]],
+	},
+	contentWrapper: {
+		width: "100%",
+		padding: [[0, 8]],
+	},
+	contentPaper: {
+		marginBottom: 12,
 	},
 	editColumn: {
 		padding: [0, '!important'],
@@ -49,7 +58,7 @@ const useStyles = makeStyles({
 	openBtnText: {
 		height: "100%",
 		textTransform: "none",
-		paddingLeft: 5,
+		minWidth: 55,
 		"&:disabled": {
 			color: "#ff1744"
 		}
@@ -76,9 +85,7 @@ const WorkshopSummary = () => {
 	const params = useParams();
 
 	const [openDialog, setOpenDialog] = useState(false);
-	const [title, setTitle] = useState();
 	const [content, setContent] = useState();
-	const [dialogData, setDialogData] = useState([]);
 
 	const { request: getReviewsSummary, data: summary } = useApi(reviewService.getReviews);
 
@@ -87,9 +94,8 @@ const WorkshopSummary = () => {
 	}, [params.uid]);
 
 
-	const handleOpen = (participant, content) => {
+	const handleOpen = _ => {
 		setOpenDialog(true);
-		// setDialogData({ participant, content });
 	}
 
 	const handleClose = _ => {
@@ -99,32 +105,26 @@ const WorkshopSummary = () => {
 	const teacherReviewColTemplate = props => {
 		const { teacherReview: { grades }, maxPointsSum } = props;
 		const total = grades?.reduce((acc, g) => { return acc + g.points; }, 0);
+		const noReview = grades?.every(g => g.points === null);
 
-		// return (
-		// 	<Button
-		// 		fullWidth
-		// 		size="small"
-		// 		color="primary"
-		// 		onClick={() => {
-		// 			handleOpen()
-		// 			renderReviewAddEdit(props.teacherReview);
-		// 		}}>
-		// 		{grades ? <EditIcon /> : <AddIcon />}
-		// 		<Typography variant="body2" className={classes.openBtnText}>
-		// 			{grades ? `${total}/${maxPointsSum}` : "Review"}
-		// 		</Typography>
-		// 	</Button >
-		// );
-
-
-		return <TeacherReview
-			data={props?.teacherReview}
-			title="Teacher Review"
-			btnContent={<>{grades ? <EditIcon /> : <AddIcon />}
-				<Typography variant="body2" className={classes.openBtnText}>
-					{grades ? `${total}/${maxPointsSum}` : "Review"}
-				</Typography></>
-			} />
+		return (
+			<Paper>
+				<Button
+					fullWidth
+					size="small"
+					color="primary"
+					onClick={() => {
+						handleOpen();
+						renderTeacherReview(props.teacherReview);
+					}}
+				>
+					{noReview ? <AddIcon /> : <EditIcon />}
+					<Typography variant="body2" className={classes.openBtnText}>
+						{noReview ? "Review" : `${total}/${maxPointsSum}`}
+					</Typography>
+				</Button>
+			</Paper>
+		);
 	};
 
 	const peerReviewsColTemplate = props => {
@@ -135,6 +135,7 @@ const WorkshopSummary = () => {
 				{peerReviews.map((review, i) => {
 					const { grades, reviewer } = review;
 					const total = grades?.reduce((acc, g) => { return acc + g.points; }, 0);
+					const noReview = grades.every(g => g.points === null);
 
 					return (
 						<ListItem key={i} className={classes.listItem}>
@@ -148,15 +149,15 @@ const WorkshopSummary = () => {
 										size="small"
 										onClick={() => {
 											handleOpen();
-											renderReview(participant, reviewer, grades);
+											renderParticipantReview(participant, reviewer, grades);
 										}}
-										disabled={!grades}
-										color={!grades ? "secondary" : "primary"}
+										disabled={noReview}
+										color={noReview ? "secondary" : "primary"}
 										className={classes.openBtnText}
 									>
-										{grades && <OpenIcon />}
+										{!noReview && <OpenIcon />}
 										<Typography variant="body2" className={classes.openBtnText}>
-											{!grades ? "No review" : `${total}/${maxPointsSum}`}
+											{noReview ? "No review" : `${total}/${maxPointsSum}`}
 										</Typography>
 									</Button>
 								</ListItemText>
@@ -170,15 +171,15 @@ const WorkshopSummary = () => {
 
 	const selfReviewColTemplate = props => {
 		const { selfReview: { grades, reviewer }, maxPointsSum, participant } = props;
+		const total = grades?.reduce((acc, g) => { return acc + g.points; }, 0);
 
-		if (grades === null)
+		if (grades?.every(g => g.points === null))
 			return (
 				<Typography color="secondary" variant="body2" >
 					No review
 				</Typography >
 			);
 
-		const total = grades.reduce((acc, g) => { return acc + g.points; }, 0);
 
 		return (
 			<Button
@@ -187,7 +188,7 @@ const WorkshopSummary = () => {
 				color="primary"
 				onClick={() => {
 					handleOpen();
-					renderReview(participant, reviewer, grades);
+					renderParticipantReview(participant, reviewer, grades);
 				}}>
 				{/* <ReviewIcon /> */}
 				<OpenIcon />
@@ -217,62 +218,75 @@ const WorkshopSummary = () => {
 	};
 
 	const renderSubmission = (participant, content) => {
-		setTitle("Submission");
 		setContent(
 			<>
-				<div className={classes.wrapper}>
-					<Typography variant="h6" className={classes.header}>
-						Author
-					</Typography>
+				<AppBar title="Submission" close={handleClose} />
+				<div className={classes.root}>
 					<div className={classes.wrapper}>
-						<Paper variant="outlined" className={classes.content}>
-							<Typography>
-								{participant}
-							</Typography>
-						</Paper>
-					</div>
-					<Typography variant="h6" className={classes.header}>
-						Content
-					</Typography>
-					<div className={classes.wrapper}>
-						<Paper variant="outlined" className={classes.content}>
-							<Submission data={content} />
-						</Paper>
+						<Typography variant="h6" className={classes.title}>
+							Author
+						</Typography>
+						<div className={classes.contentWrapper}>
+							<Paper variant="outlined" className={classes.contentPaper}>
+								<Typography className={classes.content}>
+									{participant}
+								</Typography>
+							</Paper>
+						</div>
+						<Typography variant="h6" className={classes.title}>
+							Content
+						</Typography>
+						<div className={classes.contentWrapper}>
+							<Paper variant="outlined" className={classes.contentPaper}>
+								<div className={classes.content}>
+									<Submission data={content} />
+								</div>
+							</Paper>
+						</div>
 					</div>
 				</div>
 			</>
 		);
 	}
 
-	const renderReview = (participant, reviewer, grades) => {
-		if (participant === reviewer)
-			setTitle("Self Review")
-		else
-			setTitle("Peer Review");
-
-		setContent(<Review data={{ reviewer, grades }} />);
+	const renderParticipantReview = (participant, reviewer, grades) => {
+		setContent(
+			<>
+				<AppBar title={participant === reviewer ? "Self Review" : "Peer Review"} close={handleClose} />
+				<Review data={{ reviewer, grades }} />
+			</>
+		);
 	}
 
-	// const renderReviewAddEdit = review => {
-	// 	setTitle("Teacher Review");
-	// 	setContent()
+	const renderTeacherReview = review => {
+		setContent(
+			<TeacherReview
+				data={review}
+				refreshForm={getReviewsSummary}
+				AppBar={
+					<AppBar
+						position="relative"
+						button={<SubmitButton variant="contained" color="secondary" title="Save" />}
+						close={handleClose}
+						title="Teacher Review"
+					/>
+				}
+				showSubmit={false}
+			/>
+		);
+	}
 
-	// };
-
-	// const toolbarOptions = ['ColumnChooser'];
 	const filterSettings = { type: "CheckBox" };
 	const pageOptions = { pageSizes: ["10", "20", "30", "40"], pageSize: "20" };
 
 	return (
 		<>
-			{/* <SubmissionSummary open={openDialog} close={handleCloseDialog} data={dialogData} /> */}
-			<Dialog open={openDialog} close={handleClose} title={title} styles={{ display: "flex" }}>
-				{/* <Submission /> */}
+			<Dialog open={openDialog} close={handleClose}>
 				{content}
 			</Dialog>
 			<div className={classes.root}>
 				<div className={classes.wrapper}>
-					<Typography variant="h5" className={classes.header}>Workshop Summary</Typography>
+					<Typography variant="h5" className={classes.title}>Workshop Summary</Typography>
 				</div>
 				<div className={classes.wrapper}>
 					<GridComponent
@@ -282,12 +296,10 @@ const WorkshopSummary = () => {
 						allowReordering={true}
 						allowResizing={true}
 						allowSorting={true}
-						// allowTextWrap={true}
 						filterSettings={filterSettings}
 						pageSettings={pageOptions}
 						showColumnChooser={true}
 						showColumnMenu={true}
-					// toolbar={toolbarOptions}
 					>
 						<ColumnsDirective>
 							<ColumnDirective field="participant" headerText='Participants' headerTextAlign="center" showInColumnChooser={false} minWidth="245" width="245" />
