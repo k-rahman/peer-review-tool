@@ -6,25 +6,6 @@ import api from "../api/api";
 const useApi = apiFunc => {
   const { getAccessTokenSilently } = useAuth0();
 
-  // add token to every workshop api request
-  // api.workshopService.addAsyncRequestTransform(async request => {
-  //   const token = await getAccessTokenSilently();
-  //   if (!token) return;
-  //   request.headers["Authorization"] = "Bearer " + token;
-  // });
-
-  // api.submissionService.addAsyncRequestTransform(async request => {
-  //   const token = await getAccessTokenSilently();
-  //   if (!token) return;
-  //   request.headers["Authorization"] = "Bearer " + token;
-  // });
-
-  // api.reviewService.addAsyncRequestTransform(async request => {
-  //   const token = await getAccessTokenSilently();
-  //   if (!token) return;
-  //   request.headers["Authorization"] = "Bearer " + token;
-  // });
-
   // add token to every api request
   api.addAsyncRequestTransform(async request => {
     const token = await getAccessTokenSilently();
