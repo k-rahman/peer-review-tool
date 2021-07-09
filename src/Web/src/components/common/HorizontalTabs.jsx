@@ -6,6 +6,11 @@ const useStyles = makeStyles((theme) => ({
 		flexGrow: 1,
 		backgroundColor: theme.palette.background.paper,
 	},
+	appbar: {
+		backgroundColor: theme.palette.background.default,
+		color: theme.palette.primary.main,
+		boxShadow: "0px 1px 4px -1px rgb(0 0 0 / 20%), 0px 2px 0px 0px rgb(0 0 0 / 14%), 0px 0px 0px 0px rgb(0 0 0 / 12%)"
+	}
 }));
 
 const HorizontalTabs = ({ handleChange, tabs, value }) => {
@@ -20,7 +25,7 @@ const HorizontalTabs = ({ handleChange, tabs, value }) => {
 
 	return (
 		<div className={classes.root}>
-			<AppBar position="static" color="default">
+			<AppBar position="static" className={classes.appbar}>
 				<Tabs
 					aria-label="hotizontal tabs"
 					onChange={handleChange}

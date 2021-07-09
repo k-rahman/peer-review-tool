@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
 		flexDirection: "column",
 		justifyContent: "start",
 		overflow: "auto",
-		padding: 20,
+		padding: [[12, 18]],
 		margin: 0
 	},
 	wrapper: {
@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	title: {
 		fontWeight: [500, "!important"],
-		padding: [[6, 16]],
+		padding: [[6, 0]],
 	},
 	list: {
 		width: "100%",

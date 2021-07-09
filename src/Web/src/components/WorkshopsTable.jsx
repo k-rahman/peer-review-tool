@@ -18,8 +18,8 @@ import { Edit as EditIcon } from "@material-ui/icons";
 import "../assets/styles/workshops-table.css";
 
 const useStyles = makeStyles({
-	root: {
-		padding: [[18, 28]]
+	wrapper: {
+		padding: 8,
 	},
 	editColumn: {
 		padding: [0, '!important'],
@@ -82,8 +82,7 @@ const WorkshopsTable = ({ data, onWorkshopEdit, isInstructor, gridRef }) => {
 
 	return (
 
-		<div className={classes.root}>
-			{/* {isInstructor ? */}
+		<div className={classes.wrapper}>
 			<GridComponent
 				allowFiltering={true}
 				allowPaging={true}
