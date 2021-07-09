@@ -18,24 +18,72 @@ import TabPanel from "./common/TabPanel";
 const useStyles = makeStyles((theme) => ({
 	main: {
 		display: "flex",
-		minHeight: 610
+		minHeight: 490
 	},
 	appBar: {
 		position: 'relative',
 	},
-	title: {
+	dialogTitle: {
 		marginLeft: theme.spacing(2),
 		flex: 1,
 	},
 	divider: {
-		margin: [[38, 0]]
+		margin: [[6, 0]]
 	},
-	numberOfReviews: {
+	wrapper: {
+		width: "100%",
+		padding: 8,
+	},
+	title: {
+		width: "100%",
+		fontWeight: [500, "!important"],
+		marginBottom: 12,
+	},
+	subtitle: {
+		width: "100%",
+		padding: [[6, 0]],
+	},
+	content: {
+		padding: [[6, 16]],
+	},
+	contentWrapper: {
 		display: "flex",
-		justifyContent: "space-between",
-		alignItems: "center"
+		flexGrow: 1,
+		marginBottom: 12
+	},
+	details: {
+		padding: [[0, 16]],
+	},
+	list: {
+		width: "100%",
+		paddingTop: 0,
+	},
+	listItem: {
+		padding: 0,
+		flexWrap: "wrap",
+	},
+	listItemText: {
+		marginTop: 0,
+	},
+	criteriaWrapper: {
+		display: "flex",
+		width: "100%",
+	},
+	maxPointsWrapper: {
+		display: "flex",
+		flexDirection: "column",
+		justifyContent: "center",
+	},
+	icon: {
+		marginRight: 5,
+	},
+	uploadBtn: {
+		width: "100%",
+		padding: [[6, 16]],
+		textAlign: "right"
 	},
 }));
+
 
 const Transition = React.forwardRef((props, ref) => {
 	return <Slide direction="up" ref={ref} {...props} />;
@@ -104,7 +152,7 @@ const WorkshopAddEdit = ({ open, close, data, tabValue, handleTabChange, handleV
 							<IconButton edge="start" color="inherit" onClick={close} aria-label="close">
 								<CloseIcon />
 							</IconButton>
-							<Typography variant="h6" className={classes.title}>
+							<Typography variant="h6" className={classes.dialogTitle}>
 								Your new workshop
 							</Typography>
 							<SubmitButton variant="contained" color="secondary" title="Create" onValidationError={handleValidationError} />
@@ -126,98 +174,149 @@ const WorkshopAddEdit = ({ open, close, data, tabValue, handleTabChange, handleV
 
 						{/*Workshop*/}
 						<TabPanel value={tabValue} index={0} >
-							<div>
-								<Typography variant="h6" component="h2">
+							<div className={classes.wrapper}>
+								<Typography variant="h6" component="h3" className={classes.title}>
 									Your workshop needs a name and description
 								</Typography>
-								<FormField name="name" label="Name" marginTop={38} />
-								<FormField name="description" label="Description" multiline={true} marginTop={38} />
+								<div className={classes.wrapper}>
+									<div className={classes.contentWrapper}>
+										<FormField name="name" label="Name" />
+									</div>
+									<div className={classes.contentWrapper}>
+										<FormField name="description" label="Description" multiline={true} />
+									</div>
+								</div>
 							</div>
 							<Divider variant="middle" className={classes.divider} />
-							<div>
-								<Typography variant="h6" component="h2">
-									Choose when participants will see your workshop
-								</Typography>
-								<Typography variant="body2">
-									Remember to choose date and time
-								</Typography>
-								<FormDatePicker name="published" label="Publish On" />
+							<div className={classes.wrapper}>
+								<div className={classes.title}>
+									<Typography variant="h6" component="h3" >
+										Choose when participants will see your workshop
+									</Typography>
+									<Typography variant="body2" >
+										Remember to choose date and time
+									</Typography>
+								</div>
+								<div className={classes.wrapper}>
+									<div className={classes.contentWrapper}>
+										<FormDatePicker name="published" label="Publish On" />
+									</div>
+								</div>
 							</div>
 						</TabPanel>
 
 						{/*Participants*/}
 						<TabPanel value={tabValue} index={1} >
-							<Typography variant="h6" component="h2">
-								Select a CSV file that contains workshop participants' emails
-							</Typography>
-							<Typography variant="body2">
-								CVS file must be in the following format: email, email, email
-							</Typography>
-							<FormUpload
-								name="participants"
-								title="Select CSV file"
-							/>
+							<div className={classes.wrapper}>
+								<div className={classes.title}>
+									<Typography variant="h6" component="h3" >
+										Select a CSV file that contains workshop participants' emails
+									</Typography>
+									<Typography variant="body2" >
+										CVS file must be in the following format: email, email, email
+									</Typography>
+								</div>
+								<div className={classes.wrapper}>
+									<FormUpload
+										name="participants"
+										title="Select CSV file"
+									/>
+								</div>
+							</div>
 						</TabPanel>
 
 						{/*Criteria*/}
 						<TabPanel value={tabValue} index={2} >
-							<Typography variant="h6" component="h2">
-								Criteria used in evaluating the participant's submission
-							</Typography>
-							<Typography variant="body2">
-								Provide at least 1 criterion
-							</Typography>
-							<FormFieldArray name="criteria" value={{ description: "", maxPoints: 0 }} addButtonText="Add more criteria">
-								{(index) => (
-									<>
-										<FormField
-											name={`criteria.${index}.description`}
-											label="Description"
-											marginTop={15}
-										/>
-										<FormSelect
-											label={'Max Points'}
-											menuItems={_.range(0, 101)}
-											name={`criteria.${index}.maxPoints`}
-											styles={{ marginLeft: 8 }}
-										/>
-									</>
-								)}
-							</FormFieldArray>
+							<div className={classes.wrapper}>
+								<div className={classes.title}>
+									<Typography variant="h6" component="h3" >
+										Criteria used in evaluating the participant's submission
+									</Typography>
+									<Typography variant="body2">
+										Provide at least 1 criterion
+									</Typography>
+								</div>
+								<div className={classes.wrapper}>
+									<FormFieldArray name="criteria" value={{ description: "", maxPoints: 0 }} addButtonText="Add more criteria">
+										{(index) => (
+											<div className={classes.contentWrapper}>
+												<FormField
+													name={`criteria.${index}.description`}
+													label="Description"
+												/>
+												<FormSelect
+													label={'Max Points'}
+													menuItems={_.range(0, 101)}
+													name={`criteria.${index}.maxPoints`}
+												/>
+											</div>
+										)}
+									</FormFieldArray>
+								</div>
+							</div>
 						</TabPanel>
 
 						{/*Submission*/}
 						<TabPanel value={tabValue} index={3} >
-							<Typography variant="h6" component="h2">
-								Choose when participants are allowed to submit their work
-							</Typography>
-							<Typography variant="body2">
-								Remember to choose date and time
-							</Typography>
-							<FormDatePicker name="submissionStart" label="Submission Start" />
-							<FormDatePicker name="submissionEnd" label="Submission End" />
+							<div className={classes.wrapper}>
+								<div className={classes.title}>
+									<Typography variant="h6" component="h3">
+										Choose when participants are allowed to submit their work
+									</Typography>
+									<Typography variant="body2" >
+										Remember to choose date and time
+									</Typography>
+								</div>
+								<div className={classes.wrapper}>
+									<div className={classes.contentWrapper}>
+										<FormDatePicker name="submissionStart" label="Submission Start" />
+									</div>
+								</div>
+								<div className={classes.wrapper}>
+									<div className={classes.contentWrapper}>
+										<FormDatePicker name="submissionEnd" label="Submission End" />
+									</div>
+								</div>
+							</div>
 						</TabPanel>
 
 						{/*Review*/}
 						<TabPanel value={tabValue} index={4}>
-							<Typography variant="h6" component="h2">
-								Choose how many reviews each participant must carry out
-							</Typography>
-							<FormSelect
-								label="Number of reviews"
-								menuItems={_.range(1, 6)}
-								name="numberOfReviews"
-								styles={{ marginTop: 38, width: "100%" }}
-							/>
-							<Divider variant="middle" className={classes.divider} />
-							<Typography variant="h6" component="h2">
-								Choose when participants can review own works and peers' works
-							</Typography>
-							<Typography variant="body2">
-								Remember to choose date and time
-							</Typography>
-							<FormDatePicker name="reviewStart" label="Review Start" />
-							<FormDatePicker name="reviewEnd" label="Review End" />
+							<div className={classes.wrapper}>
+								<Typography variant="h6" component="h3" className={classes.title}>
+									Choose how many reviews each participant must carry out
+								</Typography>
+								<div className={classes.wrapper}>
+									<div className={classes.contentWrapper}>
+										<FormSelect
+											label="Number of reviews"
+											menuItems={_.range(1, 6)}
+											name="numberOfReviews"
+										/>
+									</div>
+								</div>
+								<Divider variant="middle" className={classes.divider} />
+								<div className={classes.wrapper}>
+									<div className={classes.title}>
+										<Typography variant="h6" component="h3">
+											Choose when participants can review own works and peers' works
+										</Typography>
+										<Typography variant="body2">
+											Remember to choose date and time
+										</Typography>
+									</div>
+									<div className={classes.wrapper}>
+										<div className={classes.contentWrapper}>
+											<FormDatePicker name="reviewStart" label="Review Start" />
+										</div>
+									</div>
+									<div className={classes.wrapper}>
+										<div className={classes.contentWrapper}>
+											<FormDatePicker name="reviewEnd" label="Review End" />
+										</div>
+									</div>
+								</div>
+							</div>
 						</TabPanel>
 					</div>
 				</Form>

@@ -22,7 +22,7 @@ const StyledBreadcrumb = withStyles(theme => ({
 
 const useStyles = makeStyles({
 	root: {
-		margin: [[18, 38]]
+		margin: [[18, 28]]
 	},
 });
 
