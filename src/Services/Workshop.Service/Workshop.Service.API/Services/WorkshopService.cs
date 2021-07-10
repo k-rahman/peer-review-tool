@@ -54,7 +54,7 @@ namespace Workshop.Service.API.Services
 		public async Task<IEnumerable<WorkshopResource>> GetByInstructorIdAsync(string id)
 		{
 			var result = await _workshopRepository.GetByInstructorIdAsync(id);
-			var workshops = _mapper.Map<IEnumerable<Domain.Models.Workshop>, IEnumerable<WorkshopResource>>(result);
+			var workshops = _mapper.Map<IEnumerable<Domain.Models.Workshop>, IEnumerable<InstructorWorkshopResource>>(result);
 			return workshops;
 		}
 		public async Task<IEnumerable<WorkshopResource>> GetByParticipantIdAsync(string id)
@@ -135,7 +135,7 @@ namespace Workshop.Service.API.Services
 					// Create user account
 					request.AddJsonBody(user);
 					IRestResponse response = client.Execute(request);
-					request.Parameters.RemoveAt(2);
+					request.Parameters.RemoveAt(2); // remove the previous email from request parameters
 
 					if (response.IsSuccessful)
 					{
