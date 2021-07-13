@@ -11,13 +11,13 @@ import SuccessDialog from './common/SuccessDialog';
 
 const useStyles = makeStyles({
 	root: {
-		minHeight: "100vh"
+		minHeight: "100vh",
+		padding: 18,
 	},
 	link: {
 		flexBasis: "100%",
 		textAlign: "center"
 	}
-
 });
 
 const Workshops = _ => {
@@ -27,7 +27,7 @@ const Workshops = _ => {
 	const [role, setRole] = useState([]);
 	const [tabValue, setTabValue] = useState(0);
 	const [workshopLink, setWorkshopLink] = useState("");
-	const { user } = useAuth0();
+	const { user, getIdTokenClaims } = useAuth0();
 	const { request: getWorkshops, data: workshops } = useApi(workshopService.getWorkshops);
 	const { error: addError, request: addWorkshop } = useApi(workshopService.addWorkshop);
 	const { request: updateWorkshop } = useApi(workshopService.updateWorkshop);
@@ -39,7 +39,9 @@ const Workshops = _ => {
 	useEffect(_ => {
 		setRole(user['https://schemas.peer-review-tool/roles']);
 		getWorkshops();
-	}, []);
+	}, [user]);
+
+	console.log(user, getIdTokenClaims())
 
 	const handleDialogOpen = () => {
 		setOpenAdd(true);

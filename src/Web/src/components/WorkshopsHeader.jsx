@@ -3,13 +3,16 @@ import { Typography, Fab, makeStyles } from "@material-ui/core";
 import { Add as PlusIcon } from "@material-ui/icons";
 
 const useStyles = makeStyles({
-	root: {
+	wrapper: {
+		width: "100%",
+		padding: 8,
+	},
+	title: {
 		display: "flex",
 		justifyContent: "space-between",
 		alignItems: "flex-end",
 		textAlign: "left",
-		padding: [[18, 28]]
-
+		marginBottom: 12,
 	}
 });
 
@@ -17,16 +20,18 @@ const WorkshopsHeader = ({ handleAddClick, isInstructor }) => {
 	const classes = useStyles();
 
 	return (
-		<Typography variant="h4" className={classes.root} component="h1">
-			Workshops
-			{isInstructor &&
-				<span>
-					<Fab color="secondary" aria-label="add" onClick={handleAddClick}>
-						<PlusIcon />
-					</Fab>
-				</span>
-			}
-		</Typography>
+		<div className={classes.wrapper}>
+			<Typography variant="h4" component="h1" className={classes.title}>
+				Workshops
+				{isInstructor &&
+					<span>
+						<Fab color="secondary" aria-label="add" onClick={handleAddClick}>
+							<PlusIcon />
+						</Fab>
+					</span>
+				}
+			</Typography>
+		</div>
 	);
 }
 

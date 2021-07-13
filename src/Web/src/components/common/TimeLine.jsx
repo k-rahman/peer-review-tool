@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
 	timeLine: {
 		height: "100%",
 		margin: 0,
-		padding: 20,
+		padding: 18,
 		justifyContent: "center",
 	},
 	timeLineOpposite: {

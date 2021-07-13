@@ -1,0 +1,25 @@
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+
+namespace Workshop.Service.API.Migrations
+{
+    public partial class AddInstructorColumnToWorkshopTable : Migration
+    {
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.AddColumn<string>(
+                name: "instructor",
+                table: "workshops",
+                type: "character varying(255)",
+                maxLength: 255,
+                nullable: false,
+                defaultValue: "");
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropColumn(
+                name: "instructor",
+                table: "workshops");
+        }
+    }
+}
