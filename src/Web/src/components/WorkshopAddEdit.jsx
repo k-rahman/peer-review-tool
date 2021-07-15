@@ -92,7 +92,7 @@ const Transition = React.forwardRef((props, ref) => {
 const WorkshopAddEdit = ({ open, close, data, tabValue, handleTabChange, handleValidationError, handleSubmit }) => {
 	const classes = useStyles();
 
-	{/*form validation*/ }
+	// form validation 
 	const validationSchema = Yup.object({
 		name: Yup.string().required("Required*").min(5, "Must be at least 5 characters"),
 		description: Yup.string().required("Required*").min(5, "Must be at least 5 characters"),
@@ -111,7 +111,7 @@ const WorkshopAddEdit = ({ open, close, data, tabValue, handleTabChange, handleV
 		numberOfReviews: Yup.number().required("Required*"),
 	});
 
-	{/*form initialvalues*/ }
+	// form initialvalues
 	const initialValues = {
 		name: "",
 		description: "",

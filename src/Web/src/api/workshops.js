@@ -20,6 +20,7 @@ const addWorkshop = newWorkshop => {
   data.append("numberOfReviews", newWorkshop.numberOfReviews);
   data.append("reviewStart", formatISO(newWorkshop.reviewStart));
   data.append("reviewEnd", formatISO(newWorkshop.reviewEnd));
+  data.append("instructor", newWorkshop.instructor);
 
   return api.post(endpoint, data);
 };
