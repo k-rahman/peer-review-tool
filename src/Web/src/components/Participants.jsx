@@ -1,5 +1,5 @@
 import React from 'react';
-import { List, ListItem, ListItemText, Typography, makeStyles } from '@material-ui/core';
+import { Typography, makeStyles } from '@material-ui/core';
 import { EmailOutlined as EmailIcon } from "@material-ui/icons";
 import { CardAccountDetailsOutline as NameIcon } from "mdi-material-ui";
 import {
@@ -52,18 +52,6 @@ const useStyles = makeStyles((theme) => ({
 
 const Participants = ({ data: participants }) => {
 	const classes = useStyles();
-	console.log(participants)
-
-	const handlePageChanged = props => {
-		console.log(props)
-	}
-
-	// const participantColValueAccessor = (field, data) => {
-	// 	if (!data[field] && data[field].length === 0)
-	// 		return "User has not provide a name yet.";
-
-	// 	return data[field];
-	// };
 
 	const nameColTemplate = props => {
 		const { name } = props;
@@ -115,16 +103,6 @@ const Participants = ({ data: participants }) => {
 
 	return (
 		<div className={classes.root}>
-			{/* <List dense className={classes.list}>
-					{participants?.map((p, i) => (
-						<ListItem key={i} className={classes.listItem}>
-							<ListIcon color="primary" className={classes.icon} />
-							<div className={classes.listItemText}>
-								<ListItemText>{p}</ListItemText>
-							</div>
-						</ListItem>
-					))}
-				</List> */}
 			<GridComponent
 				dataSource={participants}
 				allowFiltering={true}

@@ -49,7 +49,7 @@ const WorkshopSummary = ({ data: workshop, startDate, EndDate }) => {
 	const {
 		request: getReviewsSummary,
 		data: reviewsSummary
-	} = useApi(reviewService.getReviews);
+	} = useApi(reviewService.getReviewsSummary);
 
 	const [tabValue, setTabValue] = useState(0);
 	const [expanded, setExpanded] = useState("workshop summary");

@@ -5,7 +5,6 @@ import { ThemeProvider, CssBaseline } from "@material-ui/core";
 
 import App from "./App";
 import theme from "./theme";
-import "./assets/styles/material.css";
 import reportWebVitals from "./reportWebVitals";
 import Auth0ProviderWithHistory from "./components/auth/Auth0ProviderWithHisotry";
 

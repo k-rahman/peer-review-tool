@@ -6,7 +6,6 @@ import api from "../api/api";
 const useApi = apiFunc => {
   const { getAccessTokenSilently } = useAuth0();
 
-  // add token to every api request
   api.addAsyncRequestTransform(async request => {
     const token = await getAccessTokenSilently();
     if (!token) return;
@@ -23,10 +22,11 @@ const useApi = apiFunc => {
     const response = await apiFunc(...args);
     setLoading(false);
 
-    setError(!response.ok);
     setResponse(response);
-    setData(response.data);
 
+    if (!response.ok) return setError(true);
+
+    setData(response.data);
     return response;
   };
 

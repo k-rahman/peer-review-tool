@@ -1,4 +1,8 @@
 import React, { useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
+import { isBefore } from "date-fns";
+import { Button, makeStyles } from "@material-ui/core";
+import { Edit as EditIcon } from "@material-ui/icons";
 import {
 	GridComponent,
 	ColumnDirective,
@@ -11,9 +15,6 @@ import {
 	Sort,
 	Inject
 } from "@syncfusion/ej2-react-grids";
-import { Button, makeStyles } from "@material-ui/core";
-import { useHistory } from 'react-router-dom';
-import { Edit as EditIcon } from "@material-ui/icons";
 
 import "../assets/styles/workshops-table.css";
 
@@ -36,7 +37,7 @@ const useStyles = makeStyles({
 	}
 })
 
-const WorkshopsTable = ({ data, onWorkshopEdit, isInstructor, gridRef }) => {
+const WorkshopsTable = ({ data: workshops, onWorkshopEdit, isInstructor, gridRef }) => {
 	const classes = useStyles();
 	const history = useHistory();
 
@@ -45,22 +46,25 @@ const WorkshopsTable = ({ data, onWorkshopEdit, isInstructor, gridRef }) => {
 			gridRef?.current.showColumns([' ', 'Link']);
 			gridRef?.current.hideColumns(['Instructor', 'Submission Start', 'Review Start']);
 		}
-	}, [isInstructor]);
+	}, [isInstructor, gridRef]);
 
-	const editColTemplate = params => {
+	const handleWorkshopClicked = props => {
+		history.push(`/workshops/${props.uid}`);
+	}
+
+	const editColTemplate = props => {
+		// const { published } = props;
 		return (
 			<Button
 				className={classes.editBtn}
 				size="small"
 				color="secondary"
-				onClick={() => onWorkshopEdit(params)}>
+				// disabled={isBefore(new Date(published), new Date())}
+				disabled={true} // to be decided
+				onClick={() => onWorkshopEdit(props)}>
 				<EditIcon />
 			</Button>
 		);
-	}
-
-	const handleWorkshopClicked = props => {
-		history.push(`/workshops/${props.uid}`);
 	}
 
 	const nameColTemplate = props => {
@@ -68,7 +72,8 @@ const WorkshopsTable = ({ data, onWorkshopEdit, isInstructor, gridRef }) => {
 			<Button
 				color="primary"
 				className={classes.nameBtn}
-				onClick={() => handleWorkshopClicked(props)}>{props.name}
+				onClick={() => handleWorkshopClicked(props)}>
+				{props.name}
 			</Button>
 		);
 	}
@@ -90,7 +95,7 @@ const WorkshopsTable = ({ data, onWorkshopEdit, isInstructor, gridRef }) => {
 				allowResizing={true}
 				allowSorting={true}
 				allowTextWrap={true}
-				dataSource={data}
+				dataSource={workshops}
 				filterSettings={filterOptions}
 				pageSettings={pageOptions}
 				ref={gridRef}
@@ -106,7 +111,7 @@ const WorkshopsTable = ({ data, onWorkshopEdit, isInstructor, gridRef }) => {
 					<ColumnDirective field='submissionEnd' headerText='Submission Deadline' type='dateTime' format='dd.MM.yyyy hh:mm a' headerTextAlign='center' textAlign='center' visible={false} minWidth="170" width="175" />
 					<ColumnDirective field='reviewStart' headerText='Review Start' type='dateTime' format='dd.MM.yyyy hh:mm a' headerTextAlign='center' textAlign='center' minWidth="170" width="170" />
 					<ColumnDirective field='reviewEnd' headerText='Review Deadline' type='dateTime' format='dd.MM.yyyy hh:mm a' headerTextAlign='center' textAlign='center' visible={false} minWidth="170" width="170" />
-					<ColumnDirective field='instructorId' headerText='Instructor' headerTextAlign="center" textAlign="center" showInColumnChooser={!isInstructor} />
+					<ColumnDirective field='instructor' headerText='Instructor' headerTextAlign="center" textAlign="center" showInColumnChooser={!isInstructor} />
 				</ColumnsDirective>
 
 				<Inject services={[ColumnMenu, Filter, Reorder, Resize, Page, Sort]} />

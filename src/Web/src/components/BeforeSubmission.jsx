@@ -4,8 +4,8 @@ import { Typography } from "@material-ui/core";
 
 const BeforeSubmission = ({ startDate }) => {
 	return (
-		<Typography variant="h3">
-			You can submit {formatDistanceToNow(new Date(startDate), { addSuffix: true })}
+		<Typography variant="h5">
+			You can submit your work {formatDistanceToNow(new Date(startDate), { addSuffix: true })}
 		</Typography>
 	);
 }

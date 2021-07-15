@@ -1,5 +1,5 @@
 import React from 'react';
-import { Paper, List, ListItem, ListItemText, ListItemIcon, Accordion, AccordionSummary, AccordionDetails, Typography, makeStyles } from '@material-ui/core';
+import { List, ListItem, ListItemText, Accordion, AccordionSummary, AccordionDetails, Typography, makeStyles } from '@material-ui/core';
 import { ExpandMore as ExpandMoreIcon, LabelImportantTwoTone as ListIcon } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const WorkshopDetails = ({ workshop }) => {
+const WorkshopDetails = ({ data: workshop }) => {
 	const classes = useStyles();
 	const [expanded, setExpanded] = React.useState("description");
 

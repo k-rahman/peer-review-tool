@@ -1,16 +1,5 @@
 import React from 'react';
-import { makeStyles, Slide, Dialog as MaterialDialog } from "@material-ui/core";
-
-const useStyles = makeStyles(theme => ({
-	root: styles => ({
-		minHeight: styles.minHeight,
-		minWidth: styles.minWidth,
-		display: styles.display,
-		justifyContent: styles.justifyContent,
-		padding: 20,
-		paddingTop: 0,
-	}),
-}));
+import { Slide, Dialog as MaterialDialog } from "@material-ui/core";
 
 const Transition = React.forwardRef((props, ref) => {
 	return <Slide direction="up" ref={ref} {...props} />;

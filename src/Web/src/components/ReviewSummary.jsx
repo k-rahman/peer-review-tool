@@ -84,7 +84,6 @@ const useStyles = makeStyles({
 
 const ReviewSummary = ({ data: summary, handleRefreshForm }) => {
 	const classes = useStyles();
-	const params = useParams();
 
 	const [openDialog, setOpenDialog] = useState(false);
 	const [content, setContent] = useState();
