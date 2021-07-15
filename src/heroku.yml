@@ -1,0 +1,3 @@
+build:
+  docker:
+    peerreviewtool-client: Web/Dockerfile
