@@ -1,5 +1,5 @@
 import React from "react";
-import { AppBar, Popover, Toolbar, Typography, makeStyles, Divider, IconButton } from "@material-ui/core";
+import { AppBar, Popover, Toolbar, Typography, makeStyles, IconButton } from "@material-ui/core";
 import { AccountCircle } from "@material-ui/icons";
 import AuthenticationButton from "../AuthenticationButton";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -107,7 +107,7 @@ const NavBar = () => {
 						}}
 					>
 						<div className={classes.body}>
-							<img src={user?.picture} className={classes.image} />
+							<img src={user?.picture} className={classes.image} alt="user avatar" />
 							<Typography variant="h5" className={classes.name}>{user?.name}</Typography>
 							<Typography variant="subtitle2" className={classes.email}>{user?.email}</Typography>
 						</div>

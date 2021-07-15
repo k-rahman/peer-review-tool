@@ -17,7 +17,7 @@
 }
 
 .e-grid .e-rowcell {
-  height: 60px !important;
+  min-height: 60px !important;
 }
 
 .e-grid .e-pager {
