@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom"
 import _ from "lodash";
-import { isAfter, isBefore, isValid } from "date-fns";
+import { isAfter } from "date-fns";
 import { makeStyles, Typography, Accordion, AccordionSummary, AccordionDetails } from "@material-ui/core";
 import { ExpandMore as ExpandMoreIcon } from "@material-ui/icons";
 
 import useApi from "../hooks/useApi";
 import reviewService from "../api/reviews";
+import submissionService from "../api/submissions";
 import HorizontalTabs from './common/HorizontalTabs';
 import TabPanel from "./common/TabPanel";
 import Participants from "./Participants";
@@ -40,11 +41,16 @@ const useStyles = makeStyles({
 });
 
 
-const WorkshopSummary = ({ data: workshop, startDate, EndDate }) => {
+const WorkshopSummary = ({ data: workshop, submissionStartDate, reviewStartDate }) => {
 	const { participants } = workshop;
 
 	const classes = useStyles();
 	const params = useParams();
+
+	const {
+		request: getSubmissions,
+		data: submissions
+	} = useApi(submissionService.getSubmissions);
 
 	const {
 		request: getReviewsSummary,
@@ -60,10 +66,16 @@ const WorkshopSummary = ({ data: workshop, startDate, EndDate }) => {
 	}, [params.uid]);
 
 	useEffect(_ => {
+		getSubmissions(params.uid);
+	}, [params.uid]);
+
+	useEffect(_ => {
 		const withoutSubmissions = getParticipantsWithoutSubmissions();
 
+		console.log(withoutSubmissions);
+
 		setParticipantsWithoutSubmission(withoutSubmissions);
-	}, [reviewsSummary])
+	}, [submissions])
 
 	const handleChange = (panel) => (e, isExpanded) => {
 		setExpanded(isExpanded ? panel : false);
@@ -74,7 +86,7 @@ const WorkshopSummary = ({ data: workshop, startDate, EndDate }) => {
 	};
 
 	const getParticipantsWithoutSubmissions = _ => {
-		const withSubmissions = reviewsSummary?.reviewsSummary?.map(r => r.participantAuth0Id);
+		const withSubmissions = submissions?.map(r => r.authorId);
 		const withoutSubmissions = participants?.filter(p => withSubmissions?.indexOf(p.auth0Id) === -1);
 
 		return withoutSubmissions;
@@ -106,8 +118,8 @@ const WorkshopSummary = ({ data: workshop, startDate, EndDate }) => {
 					value={tabValue}
 					tabs={[
 						{ name: "Participants", disabled: false },
-						{ name: "non-submitters", disabled: isAfter(new Date(workshop?.submissionStart), new Date()) },
-						{ name: "Review Summary", disabled: isAfter(new Date(workshop?.reviewStart), new Date()) }
+						{ name: "No Submissions", disabled: isAfter(submissionStartDate, new Date()) },
+						{ name: "Review Summary", disabled: isAfter(reviewStartDate, new Date()) }
 					]}
 				/>
 
@@ -125,8 +137,11 @@ const WorkshopSummary = ({ data: workshop, startDate, EndDate }) => {
 						handleRefreshForm={getReviewsSummary} />
 				</TabPanel>
 
-				<Typography variant="body2" color="textSecondary" style={{ marginTop: "10px" }}>
-					*Review Summary will open when review phase starts
+				<Typography variant="caption" color="textSecondary" style={{ marginTop: "10px" }} component="div">
+					*Students, who did not submit their work, will be available on "No Submissions" tab when submission phase starts
+				</Typography>
+				<Typography variant="caption" color="textSecondary" component="div">
+					*Review Summary will be available when review phase starts
 				</Typography>
 			</AccordionDetails>
 		</Accordion>

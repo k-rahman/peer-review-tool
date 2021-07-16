@@ -151,15 +151,14 @@ const Workshop = ({ match, history }) => {
 					</>
 				}
 
-
 				{/*teacher workshop results summary*/}
 				{role.indexOf("Instructor") !== -1 &&
 					<Grid item sm={12}>
 						<Paper variant="outlined" className={classes.workshopSummaryPaper}>
 							<WorkshopSummary
 								data={workshop}
-								startDate={new Date(reviewDeadlines?.reviewStart)}
-								endDate={new Date(reviewDeadlines?.reviewEnd)}
+								submissionStartDate={new Date(submissionDeadlines?.startDate)}
+								reviewStartDate={new Date(reviewDeadlines?.startDate)}
 							/>
 						</Paper>
 					</Grid>
