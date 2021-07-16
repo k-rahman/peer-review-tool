@@ -56,9 +56,8 @@ const WorkshopSummary = ({ data: workshop, startDate, EndDate }) => {
 	const [participantsWithoutSubmission, setParticipantsWithoutSubmission] = useState([]);
 
 	useEffect(_ => {
-		if (isValid(startDate) && isBefore(startDate, new Date()))
-			getReviewsSummary(params.uid);
-	}, [params.uid, startDate]);
+		getReviewsSummary(params.uid);
+	}, [params.uid]);
 
 	useEffect(_ => {
 		const withoutSubmissions = getParticipantsWithoutSubmissions();
