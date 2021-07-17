@@ -55,7 +55,8 @@ const useStyles = makeStyles({
 	openBtnText: {
 		height: "100%",
 		textTransform: "none",
-		minWidth: 55,
+		marginLeft: 5,
+		// minWidth: 55,
 		"&:disabled": {
 			color: "#ff1744"
 		},
