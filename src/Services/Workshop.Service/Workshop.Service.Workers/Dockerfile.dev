@@ -1,6 +1,6 @@
 FROM mcr.microsoft.com/dotnet/sdk:5.0
 ARG BUILD_CONFIGURATION=Debug
-ENV ASPNETCORE_ENVIRONMENT=Development
+ENV DOTNET_ENVIRONMENT=Development
 
-WORKDIR /src/Services/Emailing.Service/Emailing.Service.API
+WORKDIR /src/Services/Workshop.Service/Workshop.Service.Workers
 ENTRYPOINT dotnet watch run --no-launch-profile -c Debug

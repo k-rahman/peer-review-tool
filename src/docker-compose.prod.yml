@@ -1,6 +1,6 @@
 version: "3.4"
 
-# this file will build images locally and tag them
+# this file will download images from docker registery
 
 services:
   postgresql: # Database
@@ -25,18 +25,12 @@ services:
 
   webapi-gateway: # Envoy (Api Gateway)
     image: ${REGISTRY:-k0rahman}/webapi-gateway:${PLATFORM:-linux}-${TAG:-latest}
-    build:
-      context: .
-      dockerfile: ApiGateways/Envoy/Dockerfile
     ports:
       - 5202:80
       - 15202:8001
 
   workshop-api:
     image: ${REGISTRY:-k0rahman}/workshop-api:${PLATFORM:-linux}-${TAG:-latest}
-    build:
-      context: .
-      dockerfile: Services/Workshop.Service/Workshop.Service.API/Dockerfile
     environment:
       - ConnectionStrings__Workshop
       - Auth0__Authority
@@ -49,9 +43,6 @@ services:
 
   submission-api:
     image: ${REGISTRY:-k0rahman}/submission-api:${PLATFORM:-linux}-${TAG:-latest}
-    build:
-      context: .
-      dockerfile: Services/Submission.Service/Submission.Service.API/Dockerfile
     environment:
       - ConnectionStrings__Submission
       - Auth0__Authority
@@ -64,9 +55,6 @@ services:
 
   review-api:
     image: ${REGISTRY:-k0rahman}/review-api:${PLATFORM:-linux}-${TAG:-latest}
-    build:
-      context: .
-      dockerfile: Services/Review.Service/Review.Service.API/Dockerfile
     environment:
       - ConnectionStrings__Review
       - Auth0__Authority
@@ -77,27 +65,8 @@ services:
     ports:
       - 80
 
-  peerreviewtool-client:
-    image: ${REGISTRY:-k0rahman}/peerreviewtool-client:${PLATFORM:-linux}-${TAG:-latest}
-    build:
-      context: .
-      dockerfile: Web/Dockerfile
-    ports:
-      - 80:80
-
-  # peerreviewtool-client-heroku:
-  #   image: registry.heroku.com/peerreviewtool/web
-  #   build:
-  #     context: .
-  #     dockerfile: Web/Dockerfile.heroku
-  #   ports:
-  #     - 80:80
-
   workshop-workers:
     image: ${REGISTRY:-k0rahman}/workshop-workers:${PLATFORM:-linux}-${TAG:-latest}
-    build:
-      context: .
-      dockerfile: Services/Workshop.Service/Workshop.Service.Workers/Dockerfile
     environment:
       - ConnectionStrings__WorkshopWorkers
       - CheckTimes__CheckTime
@@ -107,9 +76,6 @@ services:
 
   emailing-api:
     image: ${REGISTRY:-k0rahman}/emailing-api:${PLATFORM:-linux}-${TAG:-latest}
-    build:
-      context: .
-      dockerfile: Services/Emailing.Service/Emailing.Service.API/Dockerfile
     environment:
       - HOSTNAME
       - SENDGRID_API_KEY
@@ -118,6 +84,11 @@ services:
     depends_on:
       - postgresql
       - rabbitmq
+
+  peerreviewtool-client:
+    image: ${REGISTRY:-k0rahman}/peerreviewtool-client:${PLATFORM:-linux}-${TAG:-latest}
+    ports:
+      - 5000:80
 
 volumes:
   pgdata:
