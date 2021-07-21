@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { isBefore } from "date-fns";
 import { Button, makeStyles } from "@material-ui/core";
 import { Edit as EditIcon } from "@material-ui/icons";
 import {
@@ -43,7 +42,7 @@ const WorkshopsTable = ({ data: workshops, onWorkshopEdit, isInstructor, gridRef
 
 	useEffect(() => {
 		if (isInstructor) {
-			gridRef?.current.showColumns([' ', 'Link']);
+			gridRef?.current.showColumns(['Link']);
 			gridRef?.current.hideColumns(['Instructor', 'Submission Start', 'Review Start']);
 		}
 	}, [isInstructor, gridRef]);
@@ -78,8 +77,8 @@ const WorkshopsTable = ({ data: workshops, onWorkshopEdit, isInstructor, gridRef
 		);
 	}
 
-	const linkValue = (field, data, column) => {
-		return `http://${window.location.host}/${data[field]}`;
+	const linkValue = (field, data) => {
+		return `${window.location}/${data[field]}`;
 	}
 
 	const filterOptions = { type: "CheckBox" };
@@ -103,7 +102,7 @@ const WorkshopsTable = ({ data: workshops, onWorkshopEdit, isInstructor, gridRef
 			>
 
 				<ColumnsDirective>
-					<ColumnDirective headerText=' ' template={editColTemplate} textAlign="center" customAttributes={{ class: classes.editColumn }} allowReordering={false} allowFiltering={false} allowResizing={false} showInColumnChooser={false} visible={false} minWidth="30" width="30" />
+					{/* <ColumnDirective headerText=' ' template={editColTemplate} textAlign="center" customAttributes={{ class: classes.editColumn }} allowReordering={false} allowFiltering={false} allowResizing={false} showInColumnChooser={false} visible={false} minWidth="30" width="30" /> */}
 					<ColumnDirective field="name" headerText='Name' template={nameColTemplate} headerTextAlign="center" showInColumnChooser={false} minWidth="350" width="350" />
 					<ColumnDirective field='published' headerText='Publish Date' type='dateTime' format='dd.MM.yyyy hh:mm a' headerTextAlign='center' textAlign='center' minWidth="180" width="180" />
 					<ColumnDirective field='uid' headerText='Link' valueAccessor={linkValue} headerTextAlign="center" textAlign="center" showInColumnChooser={isInstructor} visible={false} minWidth="450" width="450" />

@@ -74,7 +74,7 @@ const Workshops = _ => {
 		if (ok) {
 			setOpenAdd(false);
 			setOpenSuccess(true);
-			setWorkshopLink(`http://${window.location.host}/${newWorkshop.uid}`);
+			setWorkshopLink(`${window.location}/${newWorkshop.uid}`);
 			refreshWorkshopsTable(newWorkshop);
 		}
 	};
