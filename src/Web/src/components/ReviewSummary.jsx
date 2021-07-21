@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState } from 'react';
+import { differenceInMinutes } from "date-fns";
 import { Paper, List, ListItem, ListItemText, Button, makeStyles, Typography } from "@material-ui/core";
 import { Add as AddIcon, Edit as EditIcon, Visibility as OpenIcon } from '@material-ui/icons';
 import {
@@ -20,9 +20,12 @@ import {
 import Dialog from "./common/Dialog";
 import Submission from "./AfterSubmission";
 import Review from "./ReviewView";
-import TeacherReview from "./ReviewAddEdit";
+import InstructorReview from "./ReviewAddEdit";
 import SubmitButton from './forms/SubmitButton';
 import AppBar from './common/AppBar';
+import Wait from "./common/Wait";
+
+import animationData from "../assets/lottie-files/waiting.json";
 
 import "../assets/styles/workshops-table.css";
 
@@ -83,12 +86,11 @@ const useStyles = makeStyles({
 	},
 })
 
-const ReviewSummary = ({ data: summary, handleRefreshForm }) => {
+const ReviewSummary = ({ data: summary, handleRefreshForm, reviewStartDate }) => {
 	const classes = useStyles();
 
 	const [openDialog, setOpenDialog] = useState(false);
 	const [content, setContent] = useState();
-
 
 	const handleOpen = _ => {
 		setOpenDialog(true);
@@ -98,11 +100,11 @@ const ReviewSummary = ({ data: summary, handleRefreshForm }) => {
 		setOpenDialog(false);
 	}
 
-	const teacherReviewColTemplate = props => {
-		if (props.teacherReview == null)
+	const instructorReviewColTemplate = props => {
+		if (props.instructorReview == null)
 			return <Typography variant="caption"> no value</Typography>;
 
-		const { teacherReview: { grades }, maxPointsSum } = props;
+		const { instructorReview: { grades }, maxPointsSum } = props;
 		const total = grades?.reduce((acc, g) => { return acc + g.points; }, 0);
 		const noReview = grades?.every(g => g.points === null);
 
@@ -114,7 +116,7 @@ const ReviewSummary = ({ data: summary, handleRefreshForm }) => {
 					color="primary"
 					onClick={() => {
 						handleOpen();
-						renderTeacherReview(props.teacherReview);
+						renderInstructorReview(props.instructorReview);
 					}}
 				>
 					{noReview ? <AddIcon /> : <EditIcon />}
@@ -263,9 +265,9 @@ const ReviewSummary = ({ data: summary, handleRefreshForm }) => {
 		);
 	}
 
-	const renderTeacherReview = review => {
+	const renderInstructorReview = review => {
 		setContent(
-			<TeacherReview
+			<InstructorReview
 				data={review}
 				refreshForm={handleRefreshForm}
 				AppBar={
@@ -273,12 +275,21 @@ const ReviewSummary = ({ data: summary, handleRefreshForm }) => {
 						position="relative"
 						button={<SubmitButton variant="contained" color="secondary" title="Save" />}
 						close={handleClose}
-						title="Teacher Review"
+						title="Instructor Review"
 					/>
 				}
 				showSubmit={false}
 			/>
 		);
+	}
+
+	if (summary?.length === 0 && differenceInMinutes(reviewStartDate, new Date()) <= 0) {
+		return <Wait
+			label="Please wait, putting some data together"
+			animationData={animationData}
+			height={100}
+			width={100}
+		/>
 	}
 
 	const filterSettings = { type: "CheckBox" };
@@ -294,7 +305,6 @@ const ReviewSummary = ({ data: summary, handleRefreshForm }) => {
 					dataSource={summary?.reviewsSummary}
 					allowFiltering={true}
 					allowPaging={true}
-					allowReordering={true}
 					allowResizing={true}
 					allowSorting={true}
 					filterSettings={filterSettings}
@@ -307,10 +317,10 @@ const ReviewSummary = ({ data: summary, handleRefreshForm }) => {
 						<ColumnDirective headerText='Submission' headerTextAlign="center" template={submissionColTemplate} minWidth="180" width="180" />
 						<ColumnDirective headerText='Self Review' textAlign="center" headerTextAlign="center" template={selfReviewColTemplate} minWidth="151" width="151" />
 						<ColumnDirective headerText='Peer Reviews' textAlign="center" headerTextAlign="center" template={peerReviewsColTemplate} minWidth="300" maxWidth="340" width="300" />
-						<ColumnDirective field="average" headerText="Average" textAlign="center" headerTextAlign="center" minWidth="140" width="140" />
-						<ColumnDirective headerText='Teacher Review' textAlign="center" headerTextAlign="center" template={teacherReviewColTemplate} />
+						<ColumnDirective field="average" headerText="Average" textAlign="center" headerTextAlign="center" format="N1" minWidth="140" width="140" />
+						<ColumnDirective headerText='Instructor Review' textAlign="center" headerTextAlign="center" template={instructorReviewColTemplate} />
 					</ColumnsDirective>
-					<Inject services={[ColumnChooser, ColumnMenu, Filter, Reorder, Resize, Page, Sort, Toolbar]} />
+					<Inject services={[ColumnChooser, ColumnMenu, Filter, Resize, Page, Sort, Toolbar]} />
 				</GridComponent>
 			</div>
 		</>

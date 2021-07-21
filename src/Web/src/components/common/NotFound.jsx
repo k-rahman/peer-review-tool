@@ -14,7 +14,7 @@ const useStyles = makeStyles({
 	},
 });
 
-const ErrorPage = () => {
+const NotFound = () => {
 	const classes = useStyles();
 	const defaultOptions = {
 		loop: true,
@@ -40,4 +40,4 @@ const ErrorPage = () => {
 	);
 }
 
-export default ErrorPage;
+export default NotFound;
