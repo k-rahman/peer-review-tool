@@ -64,7 +64,6 @@ const Workshops = _ => {
 	const handleWorkshopEdit = params => {
 		setOpenAdd(true);
 		setRow(params);
-		// alert(JSON.stringify(params));
 	}
 
 	const handleSubmit = async (values, { setSubmitting }) => {
