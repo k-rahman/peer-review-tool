@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useParams } from 'react-router';
-import { isBefore, isAfter, isValid } from "date-fns";
+import { isBefore, isAfter } from "date-fns";
 import { makeStyles, Typography, Accordion, AccordionSummary, AccordionDetails } from "@material-ui/core";
 import { ExpandMore as ExpandMoreIcon } from "@material-ui/icons";
 import { useAuth0 } from '@auth0/auth0-react';
@@ -36,21 +36,20 @@ const useStyles = makeStyles({
 });
 
 
-const Submission = ({ startDate, endDate }) => {
+const Submission = ({ submission, startDate, endDate }) => {
 	const classes = useStyles();
 	const params = useParams();
 	const { user } = useAuth0();
 
-	const { request: getSubmission, error, data: submission } = useApi(submissions.getSubmission)
+	// const { request: getSubmission, error, data: submission } = useApi(submissions.getSubmission)
 	const { request: createSubmission } = useApi(submissions.createSubmission)
 	const { request: updateSubmission } = useApi(submissions.updateSubmission)
 
 	const [expanded, setExpanded] = React.useState("submission");
 
-	useEffect(_ => {
-		getSubmission(params.uid);
-
-	}, [params.uid]);
+	// useEffect(_ => {
+	// 	getSubmission(params.uid);
+	// }, [isBefore(startDate, new Date()) && isAfter(endDate, new Date())]);
 
 	const handleChange = (panel) => (e, isExpanded) => {
 		setExpanded(isExpanded ? panel : false);
@@ -58,7 +57,7 @@ const Submission = ({ startDate, endDate }) => {
 
 	const handleSubmit = async values => {
 		let response;
-		if (error === true || submission === null) {
+		if (submission === null || submission?.length === 0) {
 			response = await createSubmission(params.uid, { ...values, author: user.name });
 		}
 		else {
