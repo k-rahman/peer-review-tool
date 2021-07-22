@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from "react-router-dom";
-import { isBefore, isAfter, isValid } from "date-fns";
+import { isBefore, isAfter, addMinutes } from "date-fns";
 import { makeStyles, Accordion, AccordionDetails, AccordionSummary, Typography } from "@material-ui/core";
 import { ExpandMore as ExpandMoreIcon } from "@material-ui/icons";
 
@@ -9,6 +9,7 @@ import reviewService from "../api/reviews";
 import BeforeReview from './BeforeReview';
 import DuringReview from "./DuringReview";
 import AfterReview from "./AfterReview";
+
 
 const useStyles = makeStyles({
 	root: {
@@ -37,12 +38,12 @@ const useStyles = makeStyles({
 });
 
 
-const Review = ({ startDate, endDate }) => {
+const Review = ({ reviewsSummary, startDate, endDate }) => {
 	const classes = useStyles();
 	const params = useParams();
 
 	const { request: getReviews, data: reviews } = useApi(reviewService.getReviews);
-	const { request: getReviewsSummary, data: reviewsSummary } = useApi(reviewService.getReviewsSummary);
+	// const { request: getReviewsSummary, data: reviewsSummary } = useApi(reviewService.getReviewsSummary);
 
 	const [tabValue, setTabValue] = useState(0);
 	const [formValueChanged, setFormValueChanged] = useState();
@@ -51,16 +52,14 @@ const Review = ({ startDate, endDate }) => {
 	const [expanded, setExpanded] = React.useState("review");
 
 	useEffect(() => {
-		// // no need to try and fetch reviews during review phase
-		// if (isValid(startDate) && isBefore(startDate, new Date()) && isAfter(endDate, new Date())) {
-		getReviews(params.uid);
-	}, [params.uid]);
+		if (isBefore(addMinutes(startDate, 1), new Date()))
+			getReviews(params.uid);
+	}, [isBefore(addMinutes(startDate, 1), new Date())]); // fetch after a min of review phase start 
 
-	useEffect(() => {
-		// // fetch reviews summary when review phase is over
-		// if (isValid(endDate) && isBefore(endDate, new Date())) {
-		getReviewsSummary(params.uid);
-	}, [params.uid]);
+	// useEffect(() => {
+	// 	if (isBefore(endDate, new Date()))
+	// 		getReviewsSummary(params.uid);
+	// }, [isBefore(endDate, new Date())]); // fetch when review phase end
 
 	const handleChange = (panel) => (e, isExpanded) => {
 		setExpanded(isExpanded ? panel : false);
@@ -104,14 +103,14 @@ const Review = ({ startDate, endDate }) => {
 				handleTabChange={handleTabChange}
 				handleFormValueChanged={handleFormValueChanged}
 				handleDiscard={handleDiscard}
+				startDate={startDate}
 			/>;
-
 
 		// review ended
 		if (isBefore(endDate, new Date()))
 			return <AfterReview data={reviewsSummary} />
-
 	}
+
 
 	return (
 
