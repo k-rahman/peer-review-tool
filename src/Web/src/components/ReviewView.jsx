@@ -48,6 +48,7 @@ const useStyles = makeStyles({
 		flexWrap: "wrap",
 	},
 	listItemText: {
+		marginRight: 5,
 		marginTop: 0,
 	},
 	criteriaWrapper: {
@@ -89,24 +90,30 @@ const ReviewView = ({ data }) => {
 								<ListIcon color="primary" className={classes.icon} />
 								<ListItemText className={classes.listItemText}>{g.description}</ListItemText>
 							</div>
-							<div className={classes.subContentWrapper} >
-								<Typography variant="body2" className={classes.subtitle}>
-									Points
+							{g.points === null ?
+								<Typography variant="body2" color="secondary" component="div">
+									This criterion was not reviewed.
 								</Typography>
-								<Paper variant="outlined" className={classes.contentPaper}>
-									<Typography variant="body1" className={classes.content}>
-										{g.points}<b>/{g.maxPoints}</b>
+								:
+								<div className={classes.subContentWrapper} >
+									<Typography variant="body2" className={classes.subtitle}>
+										Points
 									</Typography>
-								</Paper>
-								<Typography variant="body2" className={classes.subtitle}>
-									Feedback
-								</Typography>
-								<Paper variant="outlined" className={classes.contentPaper}>
-									<Typography variant="body1" className={classes.content}>
-										{g.feedback}
+									<Paper variant="outlined" className={classes.contentPaper}>
+										<Typography variant="body1" className={classes.content}>
+											{g.points}<b>/{g.maxPoints}</b>
+										</Typography>
+									</Paper>
+									<Typography variant="body2" className={classes.subtitle}>
+										Feedback
 									</Typography>
-								</Paper>
-							</div>
+									<Paper variant="outlined" className={classes.contentPaper}>
+										<Typography variant="body1" className={classes.content}>
+											{g.feedback}
+										</Typography>
+									</Paper>
+								</div>
+							}
 						</ListItem>
 					))}
 				</List>
