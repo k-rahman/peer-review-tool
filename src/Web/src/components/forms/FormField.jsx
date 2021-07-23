@@ -6,13 +6,14 @@ import { makeStyles } from "@material-ui/core";
 
 const withStyles = makeStyles({
 	root: props => ({
+		flexGrow: 1,
 		width: "100%",
-		marginTop: props.marginTop
+		marginBottom: props.marginBottom
 	}),
 });
 
-const FormField = ({ name, label, isDisabled, isReadOnly = false, multiline = false, marginTop }) => {
-	const classes = withStyles({ marginTop });
+const FormField = ({ name, label, isDisabled, multiline = false, marginBottom, inputProps }) => {
+	const classes = withStyles({ marginBottom });
 	const {
 		errors,
 		handleChange,
@@ -25,19 +26,19 @@ const FormField = ({ name, label, isDisabled, isReadOnly = false, multiline = fa
 		<TextField
 			className={classes.root}
 			disabled={isDisabled}
-			error={_.get(errors, name) && !isReadOnly && _.get(touched, name)}
-			helperText={_.get(touched, name) && !isReadOnly && _.get(errors, name)}
-			InputProps={{ readOnly: isReadOnly, }}
+			error={_.get(errors, name) && _.get(touched, name)}
+			helperText={_.get(touched, name) && _.get(errors, name)}
+			InputProps={{ ...inputProps }}
 			InputLabelProps={{ shrink: _.get(values, name)?.name, }}
 			label={label}
 			multiline={multiline}
 			name={name}
 			onBlur={handleBlur}
 			onChange={handleChange}
-			value={_.get(values, name)?.name || _.get(values, name)}
+			value={_.get(values, name)?.name || _.get(values, name) || ""}
 			variant="outlined"
 			required
-			rows={5}
+			rows={10}
 		/>
 	);
 };
