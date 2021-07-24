@@ -30,10 +30,12 @@ const updateWorkshop = (workshopId, workshop) =>
 
 const deleteWorkshop = workshopId => api.delete(`${endpoint}/${workshopId}`);
 
-export default {
+const workshopOperations = {
   getWorkshops,
   getWorkshopByUid,
   addWorkshop,
   updateWorkshop,
   deleteWorkshop,
 };
+
+export default workshopOperations;
