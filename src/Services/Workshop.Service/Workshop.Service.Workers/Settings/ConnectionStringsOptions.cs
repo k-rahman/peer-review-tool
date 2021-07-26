@@ -6,6 +6,7 @@ namespace Workshop.Service.Workers.Settings
                 public const string ConnectionStrings = "ConnectionStrings";
 
                 public string Default { get; set; }
+                public string WorkshopWorkers { get; set; }
 
         }
 }

@@ -83,7 +83,7 @@ namespace Workshop.Service.Workers.Services
 
                         var workshops = new Dictionary<int, WorkshopModel>();
                         var publishedWorkshops = new List<WorkshopModel>();
-                        using (var conn = new NpgsqlConnection(_connectionStrings.Default))
+                        using (var conn = new NpgsqlConnection(_connectionStrings.WorkshopWorkers))
                         {
                                 try
                                 {
