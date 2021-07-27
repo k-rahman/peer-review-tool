@@ -10,8 +10,10 @@ namespace Submission.Service.API.Domain.Models
                 public DateTimeOffset? Modified { get; set; }
 
                 public string AuthorId { get; set; }
+                public string Author { get; set; }
 
-                public int SubmissionDeadlinesId { get; set; }
-                public SubmissionDeadlines SubmissionDeadlines { get; set; }
+                public Guid WorkshopUid { get; set; }
+                // public int SubmissionDeadlinesId { get; set; }
+                // public SubmissionDeadlines SubmissionDeadlines { get; set; }
         }
 }
