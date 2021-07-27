@@ -30,7 +30,7 @@ namespace Workshop.Service.API.Controllers
                                 return Ok(await _workshopService.GetByInstructorIdAsync(userId));
 
                         if (User.IsInRole("Participant"))
-                                return Ok(await _workshopService.GetByParticipantIdAsync(userId));
+                                return Ok(_workshopService.GetByParticipantId(userId));
 
                         // if for some reason server "Authorize" rule failed, return Forbidden "403"  
                         return Forbid();

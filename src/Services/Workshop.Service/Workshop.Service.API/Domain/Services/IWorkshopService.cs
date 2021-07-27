@@ -10,7 +10,7 @@ namespace Workshop.Service.API.Domain.Services
         {
                 Task<IEnumerable<WorkshopResource>> GetAsync();
                 Task<IEnumerable<WorkshopResource>> GetByInstructorIdAsync(string id);
-                Task<IEnumerable<WorkshopResource>> GetByParticipantIdAsync(string id);
+                IEnumerable<WorkshopResource> GetByParticipantId(string id);
                 Task<WorkshopResource> GetByIdAsync(int id);
                 Task<WorkshopResource> GetByUidAsync(Guid uid);
                 Task<WorkshopResponse> InsertAsync(SaveWorkshopResource workshop, string instructorId);

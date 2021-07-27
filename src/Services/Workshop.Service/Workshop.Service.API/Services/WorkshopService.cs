@@ -21,8 +21,8 @@ namespace Workshop.Service.API.Services
 	{
 		private readonly IMapper _mapper;
 		private readonly IWorkshopRepository _workshopRepository;
-		private readonly IParticipantRepository _participantRepository;
 		private readonly IUnitOfWork _unitOfWork;
+		private readonly IParticipantService _participantService;
 		private readonly IPublishEndpoint _publishEndpoint;
 		private readonly ManagementApiAccessTokenClient _apiAccessTokenClient;
 		private record _participant(string user_id);
@@ -31,15 +31,15 @@ namespace Workshop.Service.API.Services
 		public WorkshopService(
 			IMapper mapper,
 			IWorkshopRepository workshopRepository,
-			IParticipantRepository participantRepository,
 			IUnitOfWork unitOfWork,
+			IParticipantService participantService,
 			IPublishEndpoint publishEndpoint,
 			ManagementApiAccessTokenClient apiAccessTokenClient
 			)
 		{
 			_mapper = mapper;
 			_workshopRepository = workshopRepository;
-			_participantRepository = participantRepository;
+			_participantService = participantService;
 			_unitOfWork = unitOfWork;
 			_publishEndpoint = publishEndpoint;
 			_apiAccessTokenClient = apiAccessTokenClient;
@@ -57,9 +57,9 @@ namespace Workshop.Service.API.Services
 			var workshops = _mapper.Map<IEnumerable<Domain.Models.Workshop>, IEnumerable<InstructorWorkshopResource>>(result);
 			return workshops;
 		}
-		public async Task<IEnumerable<WorkshopResource>> GetByParticipantIdAsync(string id)
+		public IEnumerable<WorkshopResource> GetByParticipantId(string id)
 		{
-			var result = await _workshopRepository.GetByParticipantIdAsync(id);
+			var result = _workshopRepository.GetByParticipantId(id);
 			var workshops = _mapper.Map<IEnumerable<Domain.Models.Workshop>, IEnumerable<WorkshopResource>>(result);
 			return workshops;
 		}
@@ -73,7 +73,8 @@ namespace Workshop.Service.API.Services
 		public async Task<WorkshopResource> GetByUidAsync(Guid uid)
 		{
 			var result = await _workshopRepository.GetByUidAsync(uid);
-			return _mapper.Map<Domain.Models.Workshop, WorkshopResource>(result);
+
+			return _mapper.Map<Domain.Models.Workshop, InstructorWorkshopResource>(result);
 		}
 
 		public async Task<WorkshopResponse> InsertAsync(SaveWorkshopResource resource, string instructorId)
@@ -111,7 +112,7 @@ namespace Workshop.Service.API.Services
 			emails.ForEach(email =>
 			{
 				// use email to check if participant already exists in our database
-				var existingParticipant = _participantRepository.GetByEmail(email);
+				var existingParticipant = _participantService.GetByEmail(email);
 
 				// if it exists, add to workshop participants
 				if (existingParticipant != null)
