@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Submission.Service.API.Persistence.Contexts;
@@ -9,9 +10,10 @@ using Submission.Service.API.Persistence.Contexts;
 namespace Submission.Service.API.Migrations
 {
     [DbContext(typeof(SubmissionContext))]
-    partial class SubmissionContextModelSnapshot : ModelSnapshot
+    [Migration("20210712141053_AddWorkshopUidColumnToSubmissions")]
+    partial class AddWorkshopUidColumnToSubmissions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

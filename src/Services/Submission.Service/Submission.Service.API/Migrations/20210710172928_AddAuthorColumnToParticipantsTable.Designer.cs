@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Submission.Service.API.Persistence.Contexts;
@@ -9,9 +10,10 @@ using Submission.Service.API.Persistence.Contexts;
 namespace Submission.Service.API.Migrations
 {
     [DbContext(typeof(SubmissionContext))]
-    partial class SubmissionContextModelSnapshot : ModelSnapshot
+    [Migration("20210710172928_AddAuthorColumnToParticipantsTable")]
+    partial class AddAuthorColumnToParticipantsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,15 +47,17 @@ namespace Submission.Service.API.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("modified");
 
+                    b.Property<int>("SubmissionDeadlinesId")
+                        .HasColumnType("integer")
+                        .HasColumnName("submission_deadlines_id");
+
                     b.Property<DateTimeOffset?>("Submitted")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("submitted");
 
-                    b.Property<Guid>("WorkshopUid")
-                        .HasColumnType("uuid")
-                        .HasColumnName("workshop_uid");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("SubmissionDeadlinesId");
 
                     b.ToTable("submissions");
                 });
@@ -87,6 +91,22 @@ namespace Submission.Service.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("submission_deadlines");
+                });
+
+            modelBuilder.Entity("Submission.Service.API.Domain.Models.Submission", b =>
+                {
+                    b.HasOne("Submission.Service.API.Domain.Models.SubmissionDeadlines", "SubmissionDeadlines")
+                        .WithMany("Submissions")
+                        .HasForeignKey("SubmissionDeadlinesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("SubmissionDeadlines");
+                });
+
+            modelBuilder.Entity("Submission.Service.API.Domain.Models.SubmissionDeadlines", b =>
+                {
+                    b.Navigation("Submissions");
                 });
 #pragma warning restore 612, 618
         }
