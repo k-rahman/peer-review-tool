@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Submission.Service.API.Presistence.EntityConfigurations
+namespace Submission.Service.API.Persistence.EntityConfigurations
 {
         public class SubmissionEntityTypeConfiguration :
         IEntityTypeConfiguration<Domain.Models.Submission>
@@ -27,8 +27,18 @@ namespace Submission.Service.API.Presistence.EntityConfigurations
                         builder.Property(submission => submission.AuthorId)
                                 .HasColumnName("author_id");
 
-                        builder.Property(submission => submission.SubmissionDeadlinesId)
-                                .HasColumnName("submission_deadlines_id");
+                        builder.Property(submission => submission.Author)
+                                                        .HasColumnName("author")
+                                                        .HasMaxLength(255)
+                                                        .IsRequired();
+
+                        builder.Property(submission => submission.WorkshopUid)
+                                                        .HasColumnName("workshop_uid")
+                                                        .HasColumnType("uuid")
+                                                        .IsRequired();
+
+                        // builder.Property(submission => submission.SubmissionDeadlinesId)
+                        // 				.HasColumnName("submission_deadlines_id");
                 }
         }
 }
