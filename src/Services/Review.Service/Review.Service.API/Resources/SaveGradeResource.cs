@@ -5,9 +5,6 @@ namespace Review.Service.API.Resources
         public record SaveGradeResource
         {
                 [Required]
-                public int ReviewId { get; set; }
-
-                [Required]
                 public int CriterionId { get; set; }
 
                 [Required]
