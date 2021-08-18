@@ -1,0 +1,93 @@
+admin:
+  access_log_path: "/dev/null"
+  name: admin_portal
+  address:
+    socket_address:
+      address: 0.0.0.0
+      port_value: 8001
+static_resources:
+  listeners:
+    - name: envoy_http_listener
+      address:
+        socket_address:
+          address: 0.0.0.0
+          port_value: 80
+      filter_chains:
+        - filters:
+            - name: envoy.http_connection_manager
+              config:
+                codec_type: auto
+                stat_prefix: ingress_http
+                route_config:
+                  name: peerReviewTool-backend-route
+                  virtual_hosts:
+                    - name: peerReviewTool_backend
+                      domains:
+                        - "*"
+                      routes:
+                        - name: "workshop api"
+                          match:
+                            prefix: "/w/"
+                          route:
+                            auto_host_rewrite: true
+                            prefix_rewrite: "/"
+                            cluster: workshop
+                        - name: "submission api"
+                          match:
+                            prefix: "/s/"
+                          route:
+                            auto_host_rewrite: true
+                            prefix_rewrite: "/"
+                            cluster: submission
+                        - name: "review api"
+                          match:
+                            prefix: "/r/"
+                          route:
+                            auto_host_rewrite: true
+                            prefix_rewrite: "/"
+                            cluster: review
+                http_filters:
+                  - name: envoy.router
+                access_log:
+                  - name: envoy.file_access_log
+                    filter:
+                      not_health_check_filter: {}
+                    config:
+                      json_format:
+                        time: "%START_TIME%"
+                        protocol: "%PROTOCOL%"
+                        duration: "%DURATION%"
+                        request_method: "%REQ(:METHOD)%"
+                        request_host: "%REQ(HOST)%"
+                        path: "%REQ(X-ENVOY-ORIGINAL-PATH?:PATH)%"
+                        response_flags: "%RESPONSE_FLAGS%"
+                        route_name: "%ROUTE_NAME%"
+                        upstream_host: "%UPSTREAM_HOST%"
+                        upstream_cluster: "%UPSTREAM_CLUSTER%"
+                        upstream_local_address: "%UPSTREAM_LOCAL_ADDRESS%"
+                      path: "/tmp/access.log"
+  clusters:
+    - name: workshop
+      connect_timeout: 0.25s
+      type: strict_dns
+      lb_policy: round_robin # load_balancing_policy
+      hosts:
+        - socket_address:
+            address: workshop-api
+            port_value: 80
+    - name: submission
+      connect_timeout: 0.25s
+      type: strict_dns
+      lb_policy: round_robin
+      hosts:
+        - socket_address:
+            address: submission-api
+            port_value: 80
+    - name: review
+      connect_timeout: 0.25s
+      type: strict_dns
+      lb_policy: round_robin
+      hosts:
+        - socket_address:
+            address: review-api
+            port_value: 80

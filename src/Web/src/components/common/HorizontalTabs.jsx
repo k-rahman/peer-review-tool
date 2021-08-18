@@ -35,8 +35,9 @@ const HorizontalTabs = ({ handleChange, tabs, value }) => {
 					{tabs?.map((tab, index) => (
 						<Tab
 							key={index}
-							label={tab}
+							label={tab?.name || tab}
 							{...a11yProps(index)}
+							disabled={tab?.disabled || false}
 						/>
 					))}
 				</Tabs>

@@ -9,6 +9,7 @@ const useStyles = makeStyles({
 		alignItems: "center",
 		justifyContent: "start",
 		flexGrow: 1,
+		minHeight: "calc(100vh - 64px - 48px - 61px - 18px)",
 	},
 });
 

@@ -10,6 +10,8 @@ namespace Review.Service.API.Persistence.Contexts
                 public DbSet<Grade> Grades { get; set; }
                 public DbSet<Criterion> Criteria { get; set; }
                 public DbSet<Domain.Models.Submission> Submissions { get; set; }
+                public DbSet<ReviewDeadlines> ReviewsDeadlines { get; set; }
+
                 public ReviewContext(DbContextOptions<ReviewContext> options) : base(options)
                 {
                 }
@@ -19,6 +21,7 @@ namespace Review.Service.API.Persistence.Contexts
                         builder.ApplyConfiguration(new ReviewEntityTypeConfiguration());
                         builder.ApplyConfiguration(new SubmissionEntityTypeConfiguration());
                         builder.ApplyConfiguration(new CriterionEntityTypeConfiguration());
+                        builder.ApplyConfiguration(new ReviewDeadlinesEntityTypeConfiguration());
 
                 }
         }

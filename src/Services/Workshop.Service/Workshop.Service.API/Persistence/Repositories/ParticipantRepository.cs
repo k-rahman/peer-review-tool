@@ -12,6 +12,11 @@ namespace Workshop.Service.API.Persistence.Repositories
                 {
                 }
 
+                public Participant GetById(string id)
+                {
+                        return _context.Participants.Where(participant => participant.Auth0Id == id).SingleOrDefault();
+                }
+
                 public Participant GetByEmail(string email)
                 {
                         return _context.Participants.Where(participant => participant.Email == email).SingleOrDefault();

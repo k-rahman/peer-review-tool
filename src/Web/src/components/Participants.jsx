@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, makeStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 import { EmailOutlined as EmailIcon } from "@material-ui/icons";
 import { CardAccountDetailsOutline as NameIcon } from "mdi-material-ui";
 import {
@@ -15,69 +15,19 @@ import {
 
 import "../assets/styles/pager.css";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
 	root: {
 		padding: [[8, 8]],
 	},
-	wrapper: {
-		padding: [[6, 16]],
-	},
-	details: {
-		padding: [[0, 16]],
-	},
-	title: {
-		fontWeight: [500, "!important"],
-		padding: [[6, 0]],
-	},
-	list: {
-		width: "100%",
-		paddingTop: 0,
-	},
-	listItem: {
-		paddingLeft: 0,
-		paddingRight: 20
-	},
-	listItemText: {
-		display: "flex",
-		justifyContent: "space-between",
-		width: "100%",
-	},
-	icon: {
-		marginRight: 5,
-	},
-	maxPoints: {
-		textAlign: "right",
-	},
-}));
+});
 
 const Participants = ({ data: participants }) => {
 	const classes = useStyles();
 
-	const nameColTemplate = props => {
-		const { name } = props;
-
-		if (!name && name.length === 0)
-			return (
-				<Typography color="secondary" variant="caption">User has not provide a name yet</Typography>
-			);
-
-		return (
-			<div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-				<div style={{ flexGrow: 1, flexBasis: "40%" }}></div>
-				<div style={{ textAlign: "left", flexGrow: 1, flexBasis: "70%" }}>{name}</div>
-			</div>
-		);
-
-	}
-
-	const emailColTemplate = props => {
-		const { email } = props;
-		return (
-			<div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-				<div style={{ flexGrow: 1, flexBasis: "40%" }}></div>
-				<div style={{ textAlign: "left", flexGrow: 1, flexBasis: "100%" }}>{email}</div>
-			</div>
-		)
+	const nameValueAccessor = (field, data) => {
+		if (!data[field] || data[field].length === 0)
+			return "(no name)";
+		return data[field];
 	}
 
 	const nameHeaderTemplate = _ => {
@@ -113,8 +63,8 @@ const Participants = ({ data: participants }) => {
 				pageSettings={pageOptions}
 			>
 				<ColumnsDirective>
-					<ColumnDirective field="name" headerText='Name' headerTextAlign="center" textAlign="center" headerTemplate={nameHeaderTemplate} template={nameColTemplate} />
-					<ColumnDirective field="email" headerText='Email' headerTextAlign="center" textAlign="center" headerTemplate={emailHeaderTemplate} template={emailColTemplate} />
+					<ColumnDirective field="name" headerTextAlign="center" textAlign="center" headerTemplate={nameHeaderTemplate} valueAccessor={nameValueAccessor} />
+					<ColumnDirective field="email" headerTextAlign="center" textAlign="center" headerTemplate={emailHeaderTemplate} />
 				</ColumnsDirective>
 				<Inject services={[Filter, Resize, Page, Sort]} />
 			</GridComponent>

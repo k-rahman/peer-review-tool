@@ -4,7 +4,7 @@ import { Typography } from "@material-ui/core";
 
 const BeforeReview = ({ startDate }) => {
 	return (
-		<Typography variant="h5">
+		<Typography variant="body1">
 			You can review your work and your peers works {formatDistanceToNow(new Date(startDate), { addSuffix: true })}
 		</Typography>
 	);

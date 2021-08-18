@@ -86,6 +86,12 @@ namespace Review.Service.API.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("modified");
 
+                    b.Property<string>("Reviewer")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("reviewer");
+
                     b.Property<string>("ReviewerId")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -103,6 +109,37 @@ namespace Review.Service.API.Migrations
                     b.ToTable("reviews");
                 });
 
+            modelBuilder.Entity("Review.Service.API.Domain.Models.ReviewDeadlines", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("InstructorId")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("instructor_id");
+
+                    b.Property<DateTimeOffset>("ReviewEnd")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("review_end");
+
+                    b.Property<DateTimeOffset>("ReviewStart")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("review_start");
+
+                    b.Property<Guid>("Uid")
+                        .HasColumnType("uuid")
+                        .HasColumnName("uid");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("review_deadlines");
+                });
+
             modelBuilder.Entity("Review.Service.API.Domain.Models.Submission", b =>
                 {
                     b.Property<int>("Id")
@@ -110,6 +147,12 @@ namespace Review.Service.API.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("id")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Author")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("author");
 
                     b.Property<string>("AuthorId")
                         .HasColumnType("text")

@@ -2,9 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Submission.Service.API.Domain.Models;
 
-namespace Submission.Service.API.Presistence.EntityConfigurations
+namespace Submission.Service.API.Persistence.EntityConfigurations
 {
-        public class SubmissionsDeadlineEntityTypeConfiguration :
+        public class SubmissionDeadlinesEntityTypeConfiguration :
         IEntityTypeConfiguration<SubmissionDeadlines>
         {
                 public void Configure(EntityTypeBuilder<SubmissionDeadlines> builder)

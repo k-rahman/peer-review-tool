@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -11,6 +12,8 @@ namespace Emailing.Service.API.Events.EventHandlers
 {
 	public class SubmissionEndingEventHandler : IConsumer<SubmissionEnding>
 	{
+		private static string hostname => Environment.GetEnvironmentVariable("HOSTNAME");
+
 		private readonly IMapper _mapper;
 		private readonly ManagementApiClient _managementApiClient;
 		private readonly IMessagingService _messagingService;
@@ -39,7 +42,7 @@ namespace Emailing.Service.API.Events.EventHandlers
 					await _messagingService.SendEmail(
 						participant.Email,
 						emailSubject,
-						$"<a>http://localhost:3000/workshops/{message.Uid}</a>"
+						$"<a>{hostname}/workshops/{message.Uid}</a>"
 					);
 				}
 
@@ -51,7 +54,7 @@ namespace Emailing.Service.API.Events.EventHandlers
 
 					var ticket = await _managementApiClient.CreateChangePasswordTicket(
 						participant.Auth0Id,
-						$"http://localhost:3000/workshops/{message.Uid}"
+						$"{hostname}/workshops/{message.Uid}"
 					);
 
 					await _messagingService.SendEmail(

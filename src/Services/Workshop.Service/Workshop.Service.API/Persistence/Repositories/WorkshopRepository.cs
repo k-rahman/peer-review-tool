@@ -30,16 +30,20 @@ namespace Workshop.Service.API.Persistence.Repositories
                                         .Include(workshop => workshop.Criteria)
                                         .Include(workshop => workshop.Participants)
                                         .Where(workshop => workshop.InstructorId == id)
+                                        .OrderByDescending(workshop => workshop.Id)
                                         .ToListAsync();
                 }
 
-                public async Task<IEnumerable<Domain.Models.Workshop>> GetByParticipantIdAsync(string id)
+                public IEnumerable<Domain.Models.Workshop> GetByParticipantId(string id)
                 {
-                        return await _context.Workshops
+                        return _context.Workshops
                                         .Include(workshop => workshop.Criteria)
                                         .Include(workshop => workshop.Participants)
                                         .Where(workshop => workshop.Participants.FirstOrDefault(p => p.Auth0Id == id).Auth0Id == id)
-                                        .ToListAsync();
+                                        .OrderBy(workshop => workshop.SubmissionStart)
+                                        .AsEnumerable()
+                                        .Where(workshop => workshop.Published < DateTimeOffset.Now) // DateTimeOffset.Now can't be evalutated to a query, use AsEnumerable() to load it from server then evaluate on client side
+                                        .ToList();
                 }
 
                 public async Task<Domain.Models.Workshop> GetByIdAsync(int id)

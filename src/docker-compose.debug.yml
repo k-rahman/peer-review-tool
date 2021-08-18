@@ -10,27 +10,25 @@ services:
       - 15672:15672
       - 5672:5672
 
-  taskserviceapi:
-    image: taskserviceapi
+  workshopserviceapi:
+    image: workshopserviceapi:debug
     build:
       context: .
-      dockerfile: Services/Task.Service/Task.Service.API/Dockerfile
+      dockerfile: Services/Workshop.Service/Workshop.Service.API/Dockerfile.dev
     ports:
-      - 5000:5000
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - 5000:80
     volumes:
+      - ./Services/Workshop.Service/Workshop.Service.API:/app
+      - ./Services/Workshop.Service/Workshop.Service.Contracts:/Workshop.Service.Contracts
       - ~/.vsdbg:/remote_debugger:rw
 
-  workserviceapi:
-    image: workserviceapi
+  submissionserviceapi:
+    image: submissionserviceapi:debug
     build:
       context: .
-      dockerfile: Services/Work.Service/Work.Service.API/Dockerfile
+      dockerfile: Services/Submission.Service/Submission.Service.API/Dockerfile.dev
     ports:
-      - 5001:5001
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - 5001:80
     volumes:
       - ~/.vsdbg:/remote_debugger:rw
 
@@ -38,10 +36,8 @@ services:
     image: reviewserviceapi
     build:
       context: .
-      dockerfile: Services/Review.Service/Review.Service.API/Dockerfile
+      dockerfile: Services/Review.Service/Review.Service.API/Dockerfile.dev
     ports:
-      - 5002:5002
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - 5002:80
     volumes:
       - ~/.vsdbg:/remote_debugger:rw

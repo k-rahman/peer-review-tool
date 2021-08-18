@@ -7,8 +7,7 @@ namespace Submission.Service.API.Mappings
         {
                 public ResourceToModelProfile()
                 {
-                        CreateMap<SaveSubmissionResource, Domain.Models.Submission>()
-                        .ForMember(s => s.SubmissionDeadlinesId, opt => opt.MapFrom(s => s.WorkshopId));
+                        CreateMap<SaveSubmissionResource, Domain.Models.Submission>();
                 }
         }
 }

@@ -16,17 +16,17 @@ namespace Submission.Service.API.Persistence.Repositories
 
                 public async Task<SubmissionDeadlines> GetByIdAsync(int id)
                 {
-                        return await _context.SubmissionsDealines.FindAsync(id);
+                        return await _context.SubmissionsDeadlines.FindAsync(id);
                 }
 
                 public async Task InsertAsync(SubmissionDeadlines submissionDeadline)
                 {
-                        await _context.SubmissionsDealines.AddAsync(submissionDeadline);
+                        await _context.SubmissionsDeadlines.AddAsync(submissionDeadline);
                 }
 
                 public SubmissionDeadlines GetByWorkshopUid(Guid workshopUid)
                 {
-                        return _context.SubmissionsDealines.SingleOrDefault(submissionDeadline => submissionDeadline.Uid == workshopUid);
+                        return _context.SubmissionsDeadlines.SingleOrDefault(submissionDeadline => submissionDeadline.Uid == workshopUid);
                 }
         }
 }

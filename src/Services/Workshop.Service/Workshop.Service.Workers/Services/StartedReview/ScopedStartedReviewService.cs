@@ -68,6 +68,7 @@ namespace Workshop.Service.Workers.Services
                                         workshop.ReviewStart,
                                         workshop.NumberOfReviews,
                                         workshop.InstructorId,
+                                        workshop.Instructor,
                                         workshop.Participants
                                 });
                         }
@@ -77,7 +78,7 @@ namespace Workshop.Service.Workers.Services
                 {
                         // check for review started 1 min ago
                         var sql = @"SELECT w.id, w.uid, w.review_start ""ReviewStart"", w.number_of_reviews ""NumberOfReviews"", 
-                                        w.instructor_id ""InstructorId"", p.auth0_id ""Auth0Id"", p.email FROM workshop_participants wp
+                                        w.instructor_id ""InstructorId"", w.instructor, p.auth0_id ""Auth0Id"", p.email FROM workshop_participants wp
                                         INNER JOIN workshops w ON w.id = wp.workshop_id
                                         INNER JOIN participants p ON p.id = wp.participant_id
                                         WHERE(EXTRACT(EPOCH FROM now()) - EXTRACT(EPOCH FROM review_start)) / 60 >= 0 AND
@@ -86,7 +87,7 @@ namespace Workshop.Service.Workers.Services
                         var workshops = new Dictionary<int, WorkshopModel>();
                         var workshopsWithStartedReview = new List<WorkshopModel>();
 
-                        using (var conn = new NpgsqlConnection(_connectionStrings.Default))
+                        using (var conn = new NpgsqlConnection(_connectionStrings.WorkshopWorkers))
                         {
                                 try
                                 {

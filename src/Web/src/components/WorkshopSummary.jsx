@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom"
-import _ from "lodash";
-import { isAfter, isBefore, isValid } from "date-fns";
+import { isAfter } from "date-fns";
 import { makeStyles, Typography, Accordion, AccordionSummary, AccordionDetails } from "@material-ui/core";
 import { ExpandMore as ExpandMoreIcon } from "@material-ui/icons";
 
@@ -39,32 +38,48 @@ const useStyles = makeStyles({
 	}
 });
 
+const WorkshopSummary = ({
+	data: workshop,
+	submissionStartDate,
+	submissionEndDate,
+	reviewStartDate,
+	reviewEndDate,
+	reviewsSummary,
+	submissions
+}) => {
 
-const WorkshopSummary = ({ data: workshop, startDate, EndDate }) => {
 	const { participants } = workshop;
 
 	const classes = useStyles();
-	const params = useParams();
+
+	// const {
+	// 	request: getSubmissions,
+	// 	data: submissions
+	// } = useApi(submissionService.getSubmissions);
 
 	const {
 		request: getReviewsSummary,
-		data: reviewsSummary
+		// data: reviewsSummary
 	} = useApi(reviewService.getReviewsSummary);
 
 	const [tabValue, setTabValue] = useState(0);
 	const [expanded, setExpanded] = useState("workshop summary");
 	const [participantsWithoutSubmission, setParticipantsWithoutSubmission] = useState([]);
 
-	useEffect(_ => {
-		if (isValid(startDate) && isBefore(startDate, new Date()))
-			getReviewsSummary(params.uid);
-	}, [params.uid, startDate]);
+	// useEffect(_ => {
+	// 	if (isBefore(submissionEndDate, new Date())) // call it if submission phase ended
+	// 		getSubmissions(params.uid);
+	// }, [submissionEndDate]); // call it on submission phase end
 
 	useEffect(_ => {
 		const withoutSubmissions = getParticipantsWithoutSubmissions();
-
 		setParticipantsWithoutSubmission(withoutSubmissions);
-	}, [reviewsSummary])
+	}, [submissions])
+
+	// useEffect(_ => {
+	// 	if (isBefore(addMinutes(reviewStartDate, 1), new Date())) // call it after 1 min from review start
+	// 		getReviewsSummary(params.uid);
+	// }, [reviewStartDate]);
 
 	const handleChange = (panel) => (e, isExpanded) => {
 		setExpanded(isExpanded ? panel : false);
@@ -75,7 +90,7 @@ const WorkshopSummary = ({ data: workshop, startDate, EndDate }) => {
 	};
 
 	const getParticipantsWithoutSubmissions = _ => {
-		const withSubmissions = reviewsSummary?.reviewsSummary?.map(r => r.participantAuth0Id);
+		const withSubmissions = submissions?.map(r => r.authorId);
 		const withoutSubmissions = participants?.filter(p => withSubmissions?.indexOf(p.auth0Id) === -1);
 
 		return withoutSubmissions;
@@ -107,8 +122,8 @@ const WorkshopSummary = ({ data: workshop, startDate, EndDate }) => {
 					value={tabValue}
 					tabs={[
 						{ name: "Participants", disabled: false },
-						{ name: "non-submitters", disabled: isAfter(new Date(workshop?.submissionStart), new Date()) },
-						{ name: "Review Summary", disabled: isAfter(new Date(workshop?.reviewStart), new Date()) }
+						{ name: "No Submissions", disabled: isAfter(submissionEndDate, new Date()) },
+						{ name: "Review Summary", disabled: isAfter(reviewStartDate, new Date()) }
 					]}
 				/>
 
@@ -123,11 +138,19 @@ const WorkshopSummary = ({ data: workshop, startDate, EndDate }) => {
 				<TabPanel value={tabValue} index={2}>
 					<ReviewSummary
 						data={reviewsSummary}
-						handleRefreshForm={getReviewsSummary} />
+						handleRefreshForm={getReviewsSummary}
+						reviewStartDate={reviewStartDate}
+					/>
 				</TabPanel>
 
-				<Typography variant="body2" color="textSecondary" style={{ marginTop: "10px" }}>
-					*Review Summary will open when review phase starts
+				<Typography variant="caption" color="textSecondary" style={{ marginTop: "10px" }} component="div">
+					*Participants tab will show "(no name)" for participants, who have not recalim their account yet
+				</Typography>
+				<Typography variant="caption" color="textSecondary" component="div">
+					*No Submissions tab will show students, who did not submit their work at the end of submission phase
+				</Typography>
+				<Typography variant="caption" color="textSecondary" component="div">
+					*Review Summary tab will be available at the start of review phase
 				</Typography>
 			</AccordionDetails>
 		</Accordion>

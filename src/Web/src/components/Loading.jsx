@@ -13,11 +13,13 @@ const Loading = _ => {
 	};
 
 	return (
-		<Lottie
-			options={defaultOptions}
-			height={400}
-			width={400}
-		/>
+		<div style={{ minHeight: "calc(100vh - 64px - 48px - 61px - 18px)" }}>
+			<Lottie
+				options={defaultOptions}
+				height={400}
+				width={400}
+			/>
+		</div>
 	);
 }
 

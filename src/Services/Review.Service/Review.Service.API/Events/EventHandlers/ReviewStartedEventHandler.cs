@@ -40,7 +40,6 @@ namespace Review.Service.API.Events.EventHandlers
 		{
 			var message = context.Message;
 
-
 			// TODO: need to have some good checks on values in here .... 
 
 			// criteria list
@@ -49,49 +48,58 @@ namespace Review.Service.API.Events.EventHandlers
 			// submission list
 			var submissions = _submissionRepository.GetByWorkshopUid(message.Uid).ToList();
 
+			// get a copy of submissions list
+			var submissionsCopy = submissions.ToList();
+
 			// quit if there is no submissions in the workshop
 			if (submissions.Count() < 1)
 				return;
 
-			// reviewers list
+			// reviewers ids list
 			var reviewers = submissions.Select(s => s.AuthorId).ToList();
 
 			// number of reviews each student has to do
 			var numberOfReviews = message.NumberOfReviews;
 
+			//TODO: check the number of reviews vs the number of submissions
+			if (numberOfReviews >= submissions.Count()) numberOfReviews = submissions.Count() - 1;
 
-			for (int i = 0; i < numberOfReviews; i++)//teacher_chosen_number; 
+			if (submissions.Count() > 1) // only self-review can happen if submissions count are equal to one
 			{
-				// get the first element in sumbissions list
-				var submission = submissions.FirstOrDefault();
-				// remove that element
-				submissions.Remove(submission);
-				// add it to the end
-				submissions.Add(submission);
-
-				for (int j = 0; j < submissions.Count(); j++)
+				for (int i = 0; i < numberOfReviews; i++)//instructor_chosen_number; 
 				{
+					// get the first element in sumbissions list
+					var submission = submissionsCopy.FirstOrDefault();
+					// remove that element
+					submissionsCopy.Remove(submission);
+					// add it to the end
+					submissionsCopy.Add(submission);
 
-					var newReview = new Domain.Models.Review()
+					for (int j = 0; j < submissions.Count(); j++)
 					{
-						Created = DateTimeOffset.Now,
-						ReviewerId = reviewers[j],
-						SubmissionId = submissions[j].Id,
-					};
-					await _reviewRepository.InsertAsync(newReview);
-					await _unitOfWork.CompleteAsync();
 
-					// get workshop criteria from criteria table using workshop_uid. // this should happen in the frontend
-					// insert into grades table created review for each workshop criteria retrived from criteria table.
-					foreach (var criterion in criteria)
-					{
-						var newGrade = new Grade()
+						var newReview = new Domain.Models.Review()
 						{
-							ReviewId = newReview.Id,
-							CriterionId = criterion.Id,
+							Created = DateTimeOffset.Now,
+							ReviewerId = reviewers[j],
+							Reviewer = submissions[j].Author,
+							SubmissionId = submissionsCopy[j].Id,
 						};
-						await _gradeRepository.InsertAsync(newGrade);
+						await _reviewRepository.InsertAsync(newReview);
 						await _unitOfWork.CompleteAsync();
+
+						// get workshop criteria from criteria table using workshop_uid. // this should happen in the frontend
+						// insert into grades table created review for each workshop criteria retrived from criteria table.
+						foreach (var criterion in criteria)
+						{
+							var newGrade = new Grade()
+							{
+								ReviewId = newReview.Id,
+								CriterionId = criterion.Id,
+							};
+							await _gradeRepository.InsertAsync(newGrade);
+							await _unitOfWork.CompleteAsync();
+						}
 					}
 				}
 			}
@@ -102,36 +110,49 @@ namespace Review.Service.API.Events.EventHandlers
 			{
 				foreach (var submission in submissions)
 				{
-					var newReview = new Domain.Models.Review()
+					var selfReview = new Domain.Models.Review()
 					{
 						Created = DateTimeOffset.Now,
 						ReviewerId = submission.AuthorId, // set self review, reviewId = authorId
+						Reviewer = submission.Author,
 						SubmissionId = submission.Id
 					};
 
-					await _reviewRepository.InsertAsync(newReview);
+					var instructorReview = new Domain.Models.Review()
+					{
+						Created = DateTimeOffset.Now,
+						ReviewerId = message.InstructorId, // instructor review
+						Reviewer = message.Instructor,
+						SubmissionId = submission.Id
+					};
+
+					await _reviewRepository.InsertAsync(selfReview);
+					await _reviewRepository.InsertAsync(instructorReview);
 					await _unitOfWork.CompleteAsync();
 
 					// get workshop criteria from criteria table using workshop_uid. // this should happen in the frontend
 					// insert into grades table created review for each workshop criteria retrived from criteria table.
 					foreach (var criterion in criteria)
 					{
-						var newGrade = new Grade()
+						var selfGrade = new Grade()
 						{
-							ReviewId = newReview.Id,
+							ReviewId = selfReview.Id,
 							CriterionId = criterion.Id,
 						};
-						await _gradeRepository.InsertAsync(newGrade);
+
+						var instructorGrade = new Grade()
+						{
+							ReviewId = instructorReview.Id,
+							CriterionId = criterion.Id
+						};
+
+						await _gradeRepository.InsertAsync(selfGrade);
+						await _gradeRepository.InsertAsync(instructorGrade);
 						await _unitOfWork.CompleteAsync();
 					}
 				}
 			}
 
-			// TODO
-			// create reviews for each submission denpending on the number of reviews the teacher has choosen during workshop creation phase
-
-
-			//// this will happen on the frontend, for each review created, use the workshop_uid from submission to insert review for each criterion that has the same workshop_uid into grades table
 		}
 	}
 }

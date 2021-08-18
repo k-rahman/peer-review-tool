@@ -11,6 +11,6 @@ namespace Submission.Service.API.Domain.Models
                 public DateTimeOffset SubmissionEnd { get; set; }
                 public string InstructorId { get; set; }
 
-                public ICollection<Submission> Submissions { get; set; }
+                // public ICollection<Submission> Submissions { get; set; }
         }
 }

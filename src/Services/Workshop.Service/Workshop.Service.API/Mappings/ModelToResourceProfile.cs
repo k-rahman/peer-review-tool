@@ -11,8 +11,9 @@ namespace Workshop.Service.API.Mappings
 		{
 			CreateMap<Domain.Models.Workshop, WorkshopResource>();
 
-			CreateMap<Domain.Models.Workshop, InstructorWorkshopResource>()
-			.ForMember(r => r.Participants, opt => opt.MapFrom(t => t.Participants.Select(participant => participant.Auth0Id)));
+			CreateMap<Domain.Models.Workshop, InstructorWorkshopResource>();
+			CreateMap<Domain.Models.Participant, ParticipantResource>();
+			// .ForMember(r => r.Participants, opt => opt.MapFrom(t => t.Participants.Select(participant => new { id = participant.Auth0Id, name = participant.Name })));
 
 
 			CreateMap<Criterion, CriterionResource>();

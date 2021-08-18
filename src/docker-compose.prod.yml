@@ -1,0 +1,97 @@
+version: "3.4"
+
+# this file will download images from docker registery
+
+services:
+  postgresql: # Database
+    image: postgres:13-alpine
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    ports:
+      - 15672:15672 # admin portal port
+      - 5672 # services portal port (in production only internal ports specified)
+    volumes:
+      - rabbitmqdata:/var/lib/rabbitmq # save data into an external volume, in case container went down, so we won't lose data
+    hostname: rabbitmq # this is important to specify as rabbitmq will use it to store data (https://hub.docker.com/_/rabbitmq #Running the Daemon)
+
+  webapi-gateway: # Envoy (Api Gateway)
+    image: ${REGISTRY:-k0rahman}/webapi-gateway:${PLATFORM:-linux}-${TAG:-latest}
+    ports:
+      - 5202:80
+      - 15202:8001
+
+  workshop-api:
+    image: ${REGISTRY:-k0rahman}/workshop-api:${PLATFORM:-linux}-${TAG:-latest}
+    environment:
+      - ConnectionStrings__Workshop
+      - Auth0__Authority
+      - Auth0__Audience
+    depends_on:
+      - postgresql
+      - rabbitmq
+    ports:
+      - 80
+
+  submission-api:
+    image: ${REGISTRY:-k0rahman}/submission-api:${PLATFORM:-linux}-${TAG:-latest}
+    environment:
+      - ConnectionStrings__Submission
+      - Auth0__Authority
+      - Auth0__Audience
+    depends_on:
+      - postgresql
+      - rabbitmq
+    ports:
+      - 80
+
+  review-api:
+    image: ${REGISTRY:-k0rahman}/review-api:${PLATFORM:-linux}-${TAG:-latest}
+    environment:
+      - ConnectionStrings__Review
+      - Auth0__Authority
+      - Auth0__Audience
+    depends_on:
+      - postgresql
+      - rabbitmq
+    ports:
+      - 80
+
+  workshop-workers:
+    image: ${REGISTRY:-k0rahman}/workshop-workers:${PLATFORM:-linux}-${TAG:-latest}
+    environment:
+      - ConnectionStrings__WorkshopWorkers
+      - CheckTimes__CheckTime
+    depends_on:
+      - postgresql
+      - rabbitmq
+
+  emailing-api:
+    image: ${REGISTRY:-k0rahman}/emailing-api:${PLATFORM:-linux}-${TAG:-latest}
+    environment:
+      - HOSTNAME
+      - SENDGRID_API_KEY
+      - AUTH0_CLIENT_ID
+      - AUTH0_CLIENT_SECRET
+    depends_on:
+      - postgresql
+      - rabbitmq
+
+  peerreviewtool-client:
+    image: ${REGISTRY:-k0rahman}/peerreviewtool-client:${PLATFORM:-linux}-${TAG:-latest}
+    ports:
+      - 5000:80
+
+volumes:
+  pgdata:
+    external: true
+  rabbitmqdata:
+    external: true

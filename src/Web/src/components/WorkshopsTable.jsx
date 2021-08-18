@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { isBefore } from "date-fns";
 import { Button, makeStyles } from "@material-ui/core";
 import { Edit as EditIcon } from "@material-ui/icons";
 import {
@@ -43,7 +42,7 @@ const WorkshopsTable = ({ data: workshops, onWorkshopEdit, isInstructor, gridRef
 
 	useEffect(() => {
 		if (isInstructor) {
-			gridRef?.current.showColumns([' ', 'Link']);
+			gridRef?.current.showColumns(['Link']);
 			gridRef?.current.hideColumns(['Instructor', 'Submission Start', 'Review Start']);
 		}
 	}, [isInstructor, gridRef]);
@@ -78,8 +77,8 @@ const WorkshopsTable = ({ data: workshops, onWorkshopEdit, isInstructor, gridRef
 		);
 	}
 
-	const linkValue = (field, data, column) => {
-		return `http://${window.location.host}/${data[field]}`;
+	const linkValue = (field, data) => {
+		return `${window.location}/${data[field]}`;
 	}
 
 	const filterOptions = { type: "CheckBox" };
@@ -103,14 +102,14 @@ const WorkshopsTable = ({ data: workshops, onWorkshopEdit, isInstructor, gridRef
 			>
 
 				<ColumnsDirective>
-					<ColumnDirective headerText=' ' template={editColTemplate} textAlign="center" customAttributes={{ class: classes.editColumn }} allowReordering={false} allowFiltering={false} allowResizing={false} showInColumnChooser={false} visible={false} minWidth="30" width="30" />
+					{/* <ColumnDirective headerText=' ' template={editColTemplate} textAlign="center" customAttributes={{ class: classes.editColumn }} allowReordering={false} allowFiltering={false} allowResizing={false} showInColumnChooser={false} visible={false} minWidth="30" width="30" /> */}
 					<ColumnDirective field="name" headerText='Name' template={nameColTemplate} headerTextAlign="center" showInColumnChooser={false} minWidth="350" width="350" />
-					<ColumnDirective field='published' headerText='Publish Date' type='dateTime' format='dd.MM.yyyy hh:mm a' headerTextAlign='center' textAlign='center' minWidth="170" width="170" />
+					<ColumnDirective field='published' headerText='Publish Date' type='dateTime' format='dd.MM.yyyy hh:mm a' headerTextAlign='center' textAlign='center' minWidth="180" width="180" />
 					<ColumnDirective field='uid' headerText='Link' valueAccessor={linkValue} headerTextAlign="center" textAlign="center" showInColumnChooser={isInstructor} visible={false} minWidth="450" width="450" />
-					<ColumnDirective field='submissionStart' headerText='Submission Start' type='dateTime' format='dd.MM.yyyy hh:mm a' headerTextAlign='center' textAlign='center' minWidth="175" width="175" />
-					<ColumnDirective field='submissionEnd' headerText='Submission Deadline' type='dateTime' format='dd.MM.yyyy hh:mm a' headerTextAlign='center' textAlign='center' visible={false} minWidth="170" width="175" />
-					<ColumnDirective field='reviewStart' headerText='Review Start' type='dateTime' format='dd.MM.yyyy hh:mm a' headerTextAlign='center' textAlign='center' minWidth="170" width="170" />
-					<ColumnDirective field='reviewEnd' headerText='Review Deadline' type='dateTime' format='dd.MM.yyyy hh:mm a' headerTextAlign='center' textAlign='center' visible={false} minWidth="170" width="170" />
+					<ColumnDirective field='submissionStart' headerText='Submission Start' type='dateTime' format='dd.MM.yyyy hh:mm a' headerTextAlign='center' textAlign='center' minWidth="185" width="185" />
+					<ColumnDirective field='submissionEnd' headerText='Submission Deadline' type='dateTime' format='dd.MM.yyyy hh:mm a' headerTextAlign='center' textAlign='center' visible={false} minWidth="178" width="185" />
+					<ColumnDirective field='reviewStart' headerText='Review Start' type='dateTime' format='dd.MM.yyyy hh:mm a' headerTextAlign='center' textAlign='center' minWidth="180" width="180" />
+					<ColumnDirective field='reviewEnd' headerText='Review Deadline' type='dateTime' format='dd.MM.yyyy hh:mm a' headerTextAlign='center' textAlign='center' visible={false} minWidth="180" width="180" />
 					<ColumnDirective field='instructor' headerText='Instructor' headerTextAlign="center" textAlign="center" showInColumnChooser={!isInstructor} />
 				</ColumnsDirective>
 

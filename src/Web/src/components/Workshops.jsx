@@ -8,10 +8,16 @@ import WorkshopAddEdit from './WorkshopAddEdit';
 import WorkshopsTable from './WorkshopsTable';
 import WorkshopsHeader from './WorkshopsHeader';
 import SuccessDialog from './common/SuccessDialog';
+import Loading from "./Loading";
 
 const useStyles = makeStyles({
+	container: {
+		minHeight: "calc(100vh - 64px - 48px - 61px - 18px)",
+		height: "100%",
+	},
 	root: {
-		minHeight: "100vh",
+		minHeight: "calc(100vh - 64px - 48px - 61px - 18px)",
+		height: "100%",
 		padding: 18,
 	},
 	link: {
@@ -27,10 +33,10 @@ const Workshops = _ => {
 	const [role, setRole] = useState([]);
 	const [tabValue, setTabValue] = useState(0);
 	const [workshopLink, setWorkshopLink] = useState("");
-	const { user, getIdTokenClaims } = useAuth0();
-	const { request: getWorkshops, data: workshops } = useApi(workshopService.getWorkshops);
-	const { error: addError, request: addWorkshop } = useApi(workshopService.addWorkshop);
-	const { request: updateWorkshop } = useApi(workshopService.updateWorkshop);
+	const { user } = useAuth0();
+	const { request: getWorkshops, data: workshops, error: workshopsError, response: workshopsResponse } = useApi(workshopService.getWorkshops);
+	const { request: addWorkshop, loading: addWorkshopLoading } = useApi(workshopService.addWorkshop);
+	// const { request: updateWorkshop } = useApi(workshopService.updateWorkshop);
 
 	const [openAdd, setOpenAdd] = React.useState(false);
 	const [openSuccess, setOpenSuccess] = React.useState(false);
@@ -38,10 +44,11 @@ const Workshops = _ => {
 
 	useEffect(_ => {
 		setRole(user['https://schemas.peer-review-tool/roles']);
-		getWorkshops();
 	}, [user]);
 
-	console.log(user, getIdTokenClaims())
+	useEffect(_ => {
+		getWorkshops();
+	}, []);
 
 	const handleDialogOpen = () => {
 		setOpenAdd(true);
@@ -57,16 +64,18 @@ const Workshops = _ => {
 	const handleWorkshopEdit = params => {
 		setOpenAdd(true);
 		setRow(params);
-		// alert(JSON.stringify(params));
 	}
 
 	const handleSubmit = async (values, { setSubmitting }) => {
-		const { data: newWorkshop } = await addWorkshop(values);
-		refreshWorkshopsTable(newWorkshop);
+		const { data: newWorkshop, ok } = await addWorkshop({ ...values, instructor: user.name });
 		setSubmitting(false);
-		setOpenAdd(false);
-		setOpenSuccess(true);
-		setWorkshopLink(`http://${window.location.host}/${newWorkshop.uid}`);
+
+		if (ok) {
+			setOpenAdd(false);
+			setOpenSuccess(true);
+			setWorkshopLink(`${window.location}/${newWorkshop.uid}`);
+			refreshWorkshopsTable(newWorkshop);
+		}
 	};
 
 	const refreshWorkshopsTable = workshop => {
@@ -78,41 +87,54 @@ const Workshops = _ => {
 		setTabValue(newValue);
 	};
 
+	if (addWorkshopLoading)
+		return <Loading />
+
 	return (
-		<Paper variant="outlined" className={classes.root}>
-			<WorkshopAddEdit
-				close={handleClose}
-				data={row}
-				handleTabChange={handleTabChange}
-				handleSubmit={handleSubmit}
-				open={openAdd}
-				tabValue={tabValue}
-			/>
-			<WorkshopsHeader
-				handleAddClick={handleDialogOpen}
-				isInstructor={role.indexOf("Instructor") !== -1}
-			/>
-			<WorkshopsTable
-				data={workshops}
-				onWorkshopEdit={handleWorkshopEdit}
-				gridRef={workshopsGrid}
-				isInstructor={role.indexOf("Instructor") !== -1}
-			/>
-			<SuccessDialog
-				open={openSuccess}
-				close={handleClose}
-				label="Your Workshop Is Ready"
-			>
-				<div className={classes.link}>
-					<Typography variant="subtitle1" component="h2" >
-						Here is the workshop link to share with your participants <br />
+		<div className={classes.container}>
+			<Paper variant="outlined" className={classes.root}>
+				{workshopsError && !workshopsResponse.status ?
+					<Typography variant="subtitle2" color="secondary" align="center" component="div">
+						Workshop service is down at the moment.
 					</Typography>
-					<Typography variant="h6" >
-						{workshopLink}
-					</Typography>
-				</div>
-			</SuccessDialog>
-		</Paper >
+					:
+					<>
+						<WorkshopAddEdit
+							close={handleClose}
+							data={row}
+							handleTabChange={handleTabChange}
+							handleSubmit={handleSubmit}
+							open={openAdd}
+							tabValue={tabValue}
+						/>
+						<WorkshopsHeader
+							handleAddClick={handleDialogOpen}
+							isInstructor={role.indexOf("Instructor") !== -1}
+						/>
+						<WorkshopsTable
+							data={workshops}
+							onWorkshopEdit={handleWorkshopEdit}
+							gridRef={workshopsGrid}
+							isInstructor={role.indexOf("Instructor") !== -1}
+						/>
+						<SuccessDialog
+							open={openSuccess}
+							close={handleClose}
+							label="Your Workshop Is Ready"
+						>
+							<div className={classes.link}>
+								<Typography variant="subtitle1" component="h2" >
+									Here is the workshop link to share with your participants <br />
+								</Typography>
+								<Typography variant="h6" >
+									{workshopLink}
+								</Typography>
+							</div>
+						</SuccessDialog>
+					</>
+				}
+			</Paper >
+		</div>
 	);
 }
 

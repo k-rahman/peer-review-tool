@@ -44,6 +44,7 @@ namespace Workshop.Service.API
 
 
                         services.AddScoped<IWorkshopService, WorkshopService>();
+                        services.AddScoped<IParticipantService, ParticipantService>();
                         services.AddScoped<IParticipantRepository, ParticipantRepository>();
                         services.AddScoped<IWorkshopRepository, WorkshopRepository>();
                         services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -53,7 +54,7 @@ namespace Workshop.Service.API
                         services.AddDbContext<WorkshopContext>(options =>
                         {
                                 options.UseNpgsql(
-                                        Configuration.GetConnectionString("Default"),
+                                        Configuration.GetConnectionString("Workshop"),
                                         o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
                                 );
                         });
@@ -106,6 +107,14 @@ namespace Workshop.Service.API
                 // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
                 public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
                 {
+                        // PATH_BASE from env in docker-compose
+                        var pathBase = Configuration["PATH_BASE"];
+
+                        if (!string.IsNullOrEmpty(pathBase))
+                        {
+                                app.UsePathBase(pathBase);
+                        }
+
                         if (env.IsDevelopment())
                         {
                                 app.UseDeveloperExceptionPage();
@@ -113,7 +122,7 @@ namespace Workshop.Service.API
                                 app.UseSwagger();
                                 app.UseSwaggerUI(c =>
                                 {
-                                        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Workshop.Service.API v1");
+                                        c.SwaggerEndpoint($"{ (!string.IsNullOrEmpty(pathBase) ? pathBase : string.Empty) }/swagger/v1/swagger.json", "Workshop.Service.API v1");
                                         c.RoutePrefix = string.Empty;
                                 });
                         }

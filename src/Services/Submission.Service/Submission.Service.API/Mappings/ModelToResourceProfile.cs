@@ -8,10 +8,7 @@ namespace Submission.Service.API.Mappings
         {
                 public ModelToResourceProfile()
                 {
-                        CreateMap<Domain.Models.Submission, SubmissionResource>()
-                        .ForMember(w => w.SubmissionStart, opt => opt.MapFrom(w => w.SubmissionDeadlines.SubmissionStart))
-                        .ForMember(w => w.SubmissionEnd, opt => opt.MapFrom(w => w.SubmissionDeadlines.SubmissionEnd));
-
+                        CreateMap<Domain.Models.Submission, SubmissionResource>();
                         CreateMap<SubmissionDeadlines, SubmissionDeadlinesResource>();
                 }
         }

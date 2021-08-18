@@ -67,6 +67,12 @@ namespace Workshop.Service.API.Migrations
                         .HasColumnType("character varying(255)")
                         .HasColumnName("email");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("name");
+
                     b.HasKey("Id");
 
                     b.ToTable("participants");

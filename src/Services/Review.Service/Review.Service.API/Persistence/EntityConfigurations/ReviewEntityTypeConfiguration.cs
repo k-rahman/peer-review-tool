@@ -27,6 +27,11 @@ namespace Review.Service.API.Persistence.EntityConfigurations
                               .HasMaxLength(255)
                               .IsRequired();
 
+                        builder.Property(review => review.Reviewer)
+                                .HasColumnName("reviewer")
+                                .HasMaxLength(255)
+                                .IsRequired();
+
                         builder.Property(review => review.SubmissionId)
                               .HasColumnName("submission_id");
 

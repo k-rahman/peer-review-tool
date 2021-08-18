@@ -1,57 +1,63 @@
-import React, { useEffect } from 'react';
-import { Typography } from "@material-ui/core";
+import React from 'react';
+import { makeStyles } from "@material-ui/core";
 import * as Yup from "yup";
-import { useRouteMatch } from "react-router-dom";
-import { useAuth0 } from '@auth0/auth0-react';
 
 import Form from "./forms/Form";
 import FormField from './forms/FormField';
 import SubmittButton from './forms/SubmitButton';
-import useApi from '../hooks/useApi';
-import submissions from '../api/submissions';
 
-const validationSchema = Yup.object({
-	content: Yup.string().required("Required*").min(5),
+const withStyles = makeStyles({
+	wrapper: {
+		width: "100%",
+		padding: [[6, 16]],
+	},
+	content: {
+		marginBottom: 24,
+	},
+	submitBtn: {
+		width: "100%",
+		padding: [[6, 0]],
+		textAlign: "right"
+	},
 });
 
-const initialValues = {
-	content: "",
-};
+const DuringSubmission = ({ handleSubmit, data }) => {
+	const classes = withStyles();
 
-const DuringSubmission = _ => {
-	const match = useRouteMatch();
-	const { user } = useAuth0();
-	const { request: getSubmission, data: submission } = useApi(submissions.getSubmission)
+	const validationSchema = Yup.object({
+		content: Yup.string().required("Required*").min(5),
+	});
 
-
-	useEffect(_ => {
-		getSubmission(match.params.uid, user.sub);
-	}, []);
-
-	const handleSubmit = _ => {
-
-	}
+	const initialValues = {
+		content: "",
+	};
 
 	return (
 		<>
-			<Typography variant="h4">
-				Your submission goes here
-			</Typography>
 			< Form
-				initialValues={submission ? submission.content : initialValues}
+				initialValues={{ content: data?.content } || initialValues}
 				validationSchema={validationSchema}
 				onSubmit={handleSubmit}
+				enableReinitialize={true}
 			>
-				<FormField
-					name="content"
-					label="Content"
-				/>
 
-				<SubmittButton
-					variant="contained"
-					color="primary"
-					title="Save"
-				/>
+				<div className={classes.wrapper}>
+					<div className={classes.content}>
+						<FormField
+							name="content"
+							label="Content"
+							multiline
+						/>
+					</div>
+
+					<div className={classes.submitBtn}>
+						<SubmittButton
+							variant="contained"
+							color="primary"
+							title="Save"
+						/>
+					</div>
+				</div>
 			</Form>
 		</>
 	);

@@ -1,15 +1,25 @@
 import React from "react";
 import { useFormikContext } from "formik";
-import { Button } from "@material-ui/core";
+import { Button, makeStyles } from "@material-ui/core";
 
-const SubmittButton = ({ variant, color, title }) => {
+const withStyles = makeStyles({
+	root: styles => ({
+		width: styles.width,
+		padding: styles.padding,
+		borderRadius: styles.borderRadius,
+	}),
+});
+
+const SubmittButton = ({ variant, color, title, styles }) => {
+	const classes = withStyles(styles);
 	const { handleSubmit } = useFormikContext();
 
 	return (
 		<Button
+			className={classes.root}
 			variant={variant}
 			color={color}
-			onClick={handleSubmit}>{title}</Button>
+			onClick={_ => { handleSubmit() }}>{title}</Button>
 	);
 }
 

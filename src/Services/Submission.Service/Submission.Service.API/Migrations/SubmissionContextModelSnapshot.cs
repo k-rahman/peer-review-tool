@@ -27,6 +27,12 @@ namespace Submission.Service.API.Migrations
                         .HasColumnName("id")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<string>("Author")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("author");
+
                     b.Property<string>("AuthorId")
                         .HasColumnType("text")
                         .HasColumnName("author_id");
@@ -39,17 +45,15 @@ namespace Submission.Service.API.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("modified");
 
-                    b.Property<int>("SubmissionDeadlinesId")
-                        .HasColumnType("integer")
-                        .HasColumnName("submission_deadlines_id");
-
                     b.Property<DateTimeOffset?>("Submitted")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("submitted");
 
-                    b.HasKey("Id");
+                    b.Property<Guid>("WorkshopUid")
+                        .HasColumnType("uuid")
+                        .HasColumnName("workshop_uid");
 
-                    b.HasIndex("SubmissionDeadlinesId");
+                    b.HasKey("Id");
 
                     b.ToTable("submissions");
                 });
@@ -83,22 +87,6 @@ namespace Submission.Service.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("submission_deadlines");
-                });
-
-            modelBuilder.Entity("Submission.Service.API.Domain.Models.Submission", b =>
-                {
-                    b.HasOne("Submission.Service.API.Domain.Models.SubmissionDeadlines", "SubmissionDeadlines")
-                        .WithMany("Submissions")
-                        .HasForeignKey("SubmissionDeadlinesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("SubmissionDeadlines");
-                });
-
-            modelBuilder.Entity("Submission.Service.API.Domain.Models.SubmissionDeadlines", b =>
-                {
-                    b.Navigation("Submissions");
                 });
 #pragma warning restore 612, 618
         }

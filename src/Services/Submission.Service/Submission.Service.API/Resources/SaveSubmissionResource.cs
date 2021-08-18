@@ -9,6 +9,6 @@ namespace Submission.Service.API.Resources
                 public string Content { get; set; }
 
                 [Required]
-                public int WorkshopId { get; set; }
+                public string Author { get; set; }
         }
 }

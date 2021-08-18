@@ -1,5 +1,6 @@
 // packages
 import React, { useEffect, useState } from 'react';
+import { isBefore, addMinutes } from "date-fns";
 import { useAuth0 } from '@auth0/auth0-react';
 import { makeStyles, Grid, Paper, Typography } from "@material-ui/core";
 
@@ -77,6 +78,22 @@ const Workshop = ({ match, history }) => {
 		error: reviewError
 	} = useApi(reviewService.getReviewDeadlines);
 
+	const {
+		request: getSubmissions,
+		data: submissions
+	} = useApi(submissionService.getSubmissions);
+
+	const {
+		request: getSubmission,
+		data: submission
+	} = useApi(submissionService.getSubmission)
+
+	const {
+		request: getReviewsSummary,
+		data: reviewsSummary
+	} = useApi(reviewService.getReviewsSummary);
+
+
 
 	const events = [
 		{ id: "published", date: workshop?.published, description: "Public" },
@@ -91,36 +108,71 @@ const Workshop = ({ match, history }) => {
 	}, [user]);
 
 	useEffect(() => {
-		getWorkshopByUid(match.params.uid);
+		let getWorkshopTimeoutHandle;
+		const getWorkshopByUidWithTimeout = _ => {
+			getWorkshopByUid(match.params.uid);
+			getWorkshopTimeoutHandle = setTimeout(_ => getWorkshopByUidWithTimeout(), 60000);
+		};
 
-		const getWorkshopIntervalHandle = setInterval(_ => getWorkshopByUid(match.params.uid), 20000);
-		return _ => clearInterval(getWorkshopIntervalHandle);
+		getWorkshopByUidWithTimeout();
+
+		return _ => clearTimeout(getWorkshopTimeoutHandle);
 	}, [match.params.uid]);
 
 	useEffect(() => {
-		getSubmissionDeadlines(match.params.uid);
+		let getSubmissionDeadlinesTimeoutHandle;
+		const getSubmissionDeadlinesWithTimeout = _ => {
+			getSubmissionDeadlines(match.params.uid);
+			getSubmissionDeadlinesTimeoutHandle = setTimeout(_ => getSubmissionDeadlinesWithTimeout(), 30000);
+		};
 
-		const getSubmissionDatesIntervalHandle = setInterval(_ => getSubmissionDeadlines(match.params.uid), 20000);
-		return _ => clearInterval(getSubmissionDatesIntervalHandle);
+		getSubmissionDeadlinesWithTimeout();
+
+		return _ => clearTimeout(getSubmissionDeadlinesTimeoutHandle);
 	}, [match.params.uid]);
 
 	useEffect(() => {
-		getReviewDeadlines(match.params.uid);
+		let getReviewDeadlinesTimeoutHandle;
+		const getReviewDeadlinesWithTimeout = _ => {
+			getReviewDeadlines(match.params.uid);
+			getReviewDeadlinesTimeoutHandle = setTimeout(_ => getReviewDeadlinesWithTimeout(), 20000);
+		};
 
-		const getReviewDatesIntervalHandle = setInterval(_ => getReviewDeadlines(match.params.uid), 20000);
-		return _ => clearInterval(getReviewDatesIntervalHandle);
+		getReviewDeadlinesWithTimeout();
+
+		return _ => clearTimeout(getReviewDeadlinesTimeoutHandle);
 	}, [match.params.uid]);
+
+	useEffect(_ => {
+		if (role.indexOf("Instructor") !== -1 && isBefore(new Date(submissionDeadlines?.submissionEnd), new Date())) // call it if submission phase ended
+			getSubmissions(match.params.uid);
+	}, [submissionDeadlines]);
+
+	useEffect(_ => {
+		if (role.indexOf("Participant") !== -1)
+			getSubmission(match.params.uid);
+	}, [submissionDeadlines]);
+
+	useEffect(_ => {
+		if (role.indexOf("Instructor") !== -1) {
+			if (isBefore(addMinutes(new Date(reviewDeadlines?.reviewStart), 1), new Date()))  // call it after 1 min from review start
+				getReviewsSummary(match.params.uid);
+		}
+		else {
+			if (isBefore(new Date(reviewDeadlines?.reviewEnd), new Date())) // call if after review is over
+				getReviewsSummary(match.params.uid);
+		}
+	}, [reviewDeadlines]);
 
 	if (workshopError && workshopResponse.status === 400) {
 		return <ErrorPage
 			animationData={badRequest}
-			label="You have used wrong workshop link, please contact your teacher!" />
+			label="You have used wrong workshop link, please contact your instructor!" />
 	}
 
 	if (workshopError && workshopResponse.status === 404) {
 		history.replace("/NotFound");
 	}
-
 	return (
 		<div className={classes.container}>
 			<Grid container spacing={0} >
@@ -151,15 +203,18 @@ const Workshop = ({ match, history }) => {
 					</>
 				}
 
-
-				{/*teacher workshop results summary*/}
+				{/*instructor workshop results summary*/}
 				{role.indexOf("Instructor") !== -1 &&
 					<Grid item sm={12}>
 						<Paper variant="outlined" className={classes.workshopSummaryPaper}>
 							<WorkshopSummary
 								data={workshop}
-								startDate={new Date(reviewDeadlines?.reviewStart)}
-								endDate={new Date(reviewDeadlines?.reviewEnd)}
+								reviewsSummary={reviewsSummary}
+								submissions={submissions}
+								submissionStartDate={new Date(submissionDeadlines?.submissionStart)}
+								submissionEndDate={new Date(submissionDeadlines?.submissionEnd)}
+								reviewStartDate={new Date(reviewDeadlines?.reviewStart)}
+								reviewEndDate={new Date(reviewDeadlines?.reviewEnd)}
 							/>
 						</Paper>
 					</Grid>
@@ -175,6 +230,7 @@ const Workshop = ({ match, history }) => {
 								</Typography>
 								:
 								<Submission
+									submission={submission}
 									startDate={new Date(submissionDeadlines?.submissionStart)}
 									endDate={new Date(submissionDeadlines?.submissionEnd)}
 								/>
@@ -195,6 +251,7 @@ const Workshop = ({ match, history }) => {
 								</>
 								:
 								<Review
+									reviewsSummary={reviewsSummary}
 									startDate={new Date(reviewDeadlines?.reviewStart)}
 									endDate={new Date(reviewDeadlines?.reviewEnd)}
 								/>
