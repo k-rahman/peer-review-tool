@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Review.Service.API.Persistence.Contexts;
@@ -9,9 +10,10 @@ using Review.Service.API.Persistence.Contexts;
 namespace Review.Service.API.Migrations
 {
     [DbContext(typeof(ReviewContext))]
-    partial class ReviewContextModelSnapshot : ModelSnapshot
+    [Migration("20210710204949_AddReviewerColumnToReviewsTable")]
+    partial class AddReviewerColumnToReviewsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -107,37 +109,6 @@ namespace Review.Service.API.Migrations
                     b.HasIndex("SubmissionId");
 
                     b.ToTable("reviews");
-                });
-
-            modelBuilder.Entity("Review.Service.API.Domain.Models.ReviewDeadlines", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<string>("InstructorId")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
-                        .HasColumnName("instructor_id");
-
-                    b.Property<DateTimeOffset>("ReviewEnd")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("review_end");
-
-                    b.Property<DateTimeOffset>("ReviewStart")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("review_start");
-
-                    b.Property<Guid>("Uid")
-                        .HasColumnType("uuid")
-                        .HasColumnName("uid");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("review_deadlines");
                 });
 
             modelBuilder.Entity("Review.Service.API.Domain.Models.Submission", b =>
